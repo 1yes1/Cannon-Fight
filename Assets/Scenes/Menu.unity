@@ -5798,7 +5798,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2053296712}
-  - component: {fileID: 2053296714}
+  - component: {fileID: 2053296713}
   m_Layer: 5
   m_Name: Player Items
   m_TagString: Untagged
@@ -5832,7 +5832,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &2053296714
+--- !u!114 &2053296713
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5844,6 +5844,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f980481d3c4af884a97106eb47679782, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerItemRightPrefab: {fileID: 5519941496789523718, guid: d4f778fd8c4f05f4080b4f154eb5fe5e,
+    type: 3}
+  _playerItemLeftPrefab: {fileID: 3575932805905873570, guid: 2e126c3fd0bb7a94ebba7a5d7a58865a,
+    type: 3}
 --- !u!1 &2069793998
 GameObject:
   m_ObjectHideFlags: 0
