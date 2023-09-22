@@ -8,10 +8,9 @@ using UnityEngine;
 
 namespace CannonFightBase
 {
-    public class GameManager : MonoBehaviourPunCallbacks
+    public class GameManager : MonoBehaviour
     {
         private static GameManager _instance;
-
 
         public bool useAndroidControllers = false;
 
@@ -43,14 +42,19 @@ namespace CannonFightBase
         private void OnEnable()
         {
             GameEventReceiver.BeforeOurPlayerSpawnedEvent += SetCannon;//Bu eventte GameManager ile Cannon a ulaşılmıyor çünkü atama yapılmadı
-            GameEventReceiver.OnOurPlayerSpawnedEvent += AddLeftCannonsCount;
+            GameEventReceiver.OnOurPlayerSpawnedEvent += IncreaseLeftCannonsCount;
+            GameEventReceiver.OnPlayerEnteredRoomEvent += OnPlayerEnteredRoom;
+            GameEventReceiver.OnPlayerLeftRoomEvent += OnPlayerLeftRoom;
             //GameEventReceiver.OnOurPlayerSpawnedEvent += OnOurPlayerSpawned;//Bu eventte GameManager ile Cannon a ulaşılıyor
         }
+
 
         private void OnDisable()
         {
             GameEventReceiver.BeforeOurPlayerSpawnedEvent -= SetCannon;
-            GameEventReceiver.OnOurPlayerSpawnedEvent -= AddLeftCannonsCount;
+            GameEventReceiver.OnOurPlayerSpawnedEvent -= IncreaseLeftCannonsCount;
+            GameEventReceiver.OnPlayerEnteredRoomEvent -= OnPlayerEnteredRoom;
+            GameEventReceiver.OnPlayerLeftRoomEvent -= OnPlayerLeftRoom;
             //GameEventReceiver.OnOurPlayerSpawnedEvent -= OnOurPlayerSpawned;
         }
 
@@ -90,9 +94,26 @@ namespace CannonFightBase
             GameEventCaller.OnOurPlayerSpawned();
         }
 
-        private void AddLeftCannonsCount()
+        private void IncreaseLeftCannonsCount()
         {
             _leftCannonsCount++;
+            GameEventCaller.OnPlayerCountInRoomChanged();
+        }
+
+        public void DecreaseLeftCannonsCount()
+        {
+            _leftCannonsCount--;
+            GameEventCaller.OnPlayerCountInRoomChanged();
+        }
+
+        public void OnPlayerEnteredRoom(Player player)
+        {
+            IncreaseLeftCannonsCount();
+        }
+
+        private void OnPlayerLeftRoom(Player obj)
+        {
+            DecreaseLeftCannonsCount();
         }
 
     }

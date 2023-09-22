@@ -72,14 +72,24 @@ namespace CannonFightBase
             _gameEventReceiver.BeforeOurPlayerSpawned();
         }
 
-        public void OnPlayerEntered(Player player)
-        {
-            _gameEventReceiver.OnPlayerEntered(player);
-        }
-
         public void OnGameSceneLoaded()
         {
             _gameEventReceiver.OnGameSceneLoaded();
+        }
+
+        public void OnPlayerEnteredRoom(Player player)
+        {
+            _gameEventReceiver.OnPlayerEnteredRoom(player);
+        }
+
+        public void OnPlayerLeftRoom(Player player)
+        {
+            _gameEventReceiver.OnPlayerLeftRoom(player);
+        }
+
+        public void OnPlayerCountInRoomChanged()
+        {
+            _gameEventReceiver.OnPlayerCountInRoomChanged();
         }
     }
 

@@ -28,6 +28,7 @@ namespace CannonFightBase
         {
             GameEventReceiver.OnOurPlayerSpawnedEvent += OnOurPlayerSpawned;
             GameEventReceiver.OnOurPlayerHealthChangedEvent += UpdateHealthText;
+            GameEventReceiver.OnPlayerCountInRoomChangedEvent += UpdateCannonsLeftText;
         }
 
 
@@ -35,6 +36,7 @@ namespace CannonFightBase
         {
             GameEventReceiver.OnOurPlayerSpawnedEvent -= OnOurPlayerSpawned;
             GameEventReceiver.OnOurPlayerHealthChangedEvent -= UpdateHealthText;
+            GameEventReceiver.OnPlayerCountInRoomChangedEvent -= UpdateCannonsLeftText;
         }
 
         private void OnOurPlayerSpawned()

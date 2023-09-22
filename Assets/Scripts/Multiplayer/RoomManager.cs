@@ -13,6 +13,8 @@ namespace CannonFightBase
     {
         private static RoomManager _instance;
 
+        private bool _isGameSceneLoaded = false;
+
         public static RoomManager Instance => _instance;
 
         private void OnEnable()
@@ -44,21 +46,17 @@ namespace CannonFightBase
         {
             if(scene.name == "Game")
             {
-                //if (PhotonNetwork.IsMasterClient)
-                //    PhotonNetwork.LocalPlayer.NickName = "MasterrYunusss";
-                //else
-                //    PhotonNetwork.LocalPlayer.NickName = "Client" + UnityEngine.Random.Range(0, 9999);
-
                 Debug.Log("NICKNAME: " + PhotonNetwork.LocalPlayer.NickName);
                 GameEventCaller.Instance.OnGameSceneLoaded();
-                //print("PhotonNetwork.CurrentRoom.PlayerCount: " + PhotonNetwork.CurrentRoom.PlayerCount);
-                //PlayerManager playerManager = PhotonNetwork.Instantiate("PlayerManager", Vector3.zero, Quaternion.identity).GetComponent<PlayerManager>();
+                _isGameSceneLoaded = true;
             }
         }
 
         public override void OnPlayerLeftRoom(Player otherPlayer)
         {
-
+            print("Left ROOOOOMMM " + otherPlayer.NickName);
+            if(_isGameSceneLoaded)
+                GameEventCaller.Instance?.OnPlayerLeftRoom(otherPlayer);
         }
 
         public override void OnMasterClientSwitched(Player newMasterClient)
@@ -69,7 +67,8 @@ namespace CannonFightBase
         public override void OnPlayerEnteredRoom(Player newPlayer)
         {
             print("Giriþ Ypatý");
-            GameEventCaller.Instance.OnPlayerEntered(newPlayer);
+            if(_isGameSceneLoaded)
+                GameEventCaller.Instance?.OnPlayerEnteredRoom(newPlayer);
         }
 
     }

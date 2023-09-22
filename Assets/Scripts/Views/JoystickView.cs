@@ -52,7 +52,7 @@ namespace CannonFightBase
         }
 
         //Returns 'true' if we touched or hovering on Unity UI element.
-        private bool IsPointerOverUIElement(List<RaycastResult> eventSystemRaysastResults,JoystickLayer joystickLayer)
+        private bool IsPointerOverUIElement(List<RaycastResult> eventSystemRaysastResults, JoystickLayer joystickLayer)
         {
             for (int index = 0; index < eventSystemRaysastResults.Count; index++)
             {

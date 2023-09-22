@@ -10,17 +10,32 @@ namespace CannonFightBase
     public class GameEventReceiver : IGameEvents
     {
         public static event Action OnGameSceneLoadedEvent;
-        public static event Action<Player> OnPlayerEnteredEvent;
+
+        public static event Action<Player> OnPlayerEnteredRoomEvent;
+
+        public static event Action<Player> OnPlayerLeftRoomEvent;
+
         public static event Action BeforeOurPlayerSpawnedEvent;
+
         public static event Action OnOurPlayerSpawnedEvent;
+
         public static event Action OnOurPlayerHealthChangedEvent;
+
         public static event Action OnMobileFireButtonClickedEvent;
+
         public static event Action<Skills> OnSkillBarFilledEvent;
+
         public static event Action<Potion> OnPotionCollectedEvent;
+
         public static event Action<Skill> OnSkillEndedEvent;
+
         public static event Action<Chest> OnChestOpenedEvent;
+
         public static event Action<Cannon> OnBoostStartedEvent;
+
         public static event Action<Cannon> OnBoostEndedEvent;
+
+        public static event Action OnPlayerCountInRoomChangedEvent;
 
         public void OnMobileFireButtonClicked()
         {
@@ -72,14 +87,24 @@ namespace CannonFightBase
             BeforeOurPlayerSpawnedEvent?.Invoke();
         }
 
-        public void OnPlayerEntered(Player player)
+        public void OnPlayerEnteredRoom(Player player)
         {
-            OnPlayerEnteredEvent?.Invoke(player);
+            OnPlayerEnteredRoomEvent?.Invoke(player);
         }
 
         public void OnGameSceneLoaded()
         {
             OnGameSceneLoadedEvent?.Invoke();
+        }
+
+        public void OnPlayerLeftRoom(Player player)
+        {
+            OnPlayerLeftRoomEvent?.Invoke(player);
+        }
+
+        public void OnPlayerCountInRoomChanged()
+        {
+            OnPlayerCountInRoomChangedEvent?.Invoke();
         }
     }
 }

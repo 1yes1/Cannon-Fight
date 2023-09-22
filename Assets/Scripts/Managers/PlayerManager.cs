@@ -28,7 +28,7 @@ namespace CannonFightBase
 
         private void Start()
         {
-            if(_photonView.IsMine)
+            if (_photonView.IsMine)
             {
                 CreateCannonPlayer();
             }
@@ -48,9 +48,9 @@ namespace CannonFightBase
         {
             _cannon = PhotonNetwork.Instantiate("Cannon", _spawnPoint.Position, _spawnPoint.Rotation).GetComponent<Cannon>();
 
-            foreach(var component in _cannon.GetComponents<ICannonBehaviour>())
+            foreach (var component in _cannon.GetComponents<ICannonBehaviour>())
                 component.OnSpawn();
-            
+
             GameEventCaller.Instance.BeforeOurPlayerSpawned();
         }
 

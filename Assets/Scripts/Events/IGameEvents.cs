@@ -30,7 +30,11 @@ namespace CannonFightBase
 
         public void OnBoostEnded(Cannon cannon);
 
-        public void OnPlayerEntered(Player player);
+        public void OnPlayerEnteredRoom(Player player);
+
+        public void OnPlayerLeftRoom(Player player);
+
+        public void OnPlayerCountInRoomChanged();
 
         public void OnGameSceneLoaded();
     }
