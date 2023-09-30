@@ -5877,6 +5877,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad082f987bb9c3e4a8c88c501771a005, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _defaultRoomProperties: {fileID: 11400000, guid: ab153fcbe9c14114391582ee0d680d1b,
+    type: 2}
 --- !u!4 &2069794000
 Transform:
   m_ObjectHideFlags: 0

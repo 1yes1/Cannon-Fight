@@ -28,7 +28,7 @@ namespace CannonFightBase
         {
             GameEventReceiver.OnOurPlayerSpawnedEvent += OnOurPlayerSpawned;
             GameEventReceiver.OnOurPlayerHealthChangedEvent += UpdateHealthText;
-            GameEventReceiver.OnPlayerCountInRoomChangedEvent += UpdateCannonsLeftText;
+            GameEventReceiver.OnLeftCannonsCountChangedEvent += UpdateCannonsLeftText;
         }
 
 
@@ -36,18 +36,17 @@ namespace CannonFightBase
         {
             GameEventReceiver.OnOurPlayerSpawnedEvent -= OnOurPlayerSpawned;
             GameEventReceiver.OnOurPlayerHealthChangedEvent -= UpdateHealthText;
-            GameEventReceiver.OnPlayerCountInRoomChangedEvent -= UpdateCannonsLeftText;
+            GameEventReceiver.OnLeftCannonsCountChangedEvent -= UpdateCannonsLeftText;
         }
 
         private void OnOurPlayerSpawned()
         {
             UpdateHealthText();
-            UpdateCannonsLeftText();
         }
 
-        private void UpdateCannonsLeftText()
+        private void UpdateCannonsLeftText(int leftCannonsCount)
         {
-            _cannonsLeftText.text = PhotonNetwork.CurrentRoom.PlayerCount.ToString();
+            _cannonsLeftText.text = leftCannonsCount.ToString();
         }
 
         private void UpdateHealthText()

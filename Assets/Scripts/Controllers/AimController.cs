@@ -81,10 +81,10 @@ namespace CannonFightBase
             if (_cannon.IsDead)
                 return;
 
-            if (Application.isFocused)
-                UnityEngine.Cursor.visible = false;
-            else
-                return;
+            //if (Application.isFocused)
+            //    UnityEngine.Cursor.visible = false;
+            //else
+            //    return;
 
             if (GameManager.Instance.useAndroidControllers)
                 SetMobileController();

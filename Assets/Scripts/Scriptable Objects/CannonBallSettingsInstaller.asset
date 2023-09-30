@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fd0ead00c9005a498f5d6b02ea94255, type: 3}
+  m_Name: CannonBallSettingsInstaller
+  m_EditorClassIdentifier: 
+  CannonBallSettings:
+    FireFrequency: 0.75
+    FireDamage: 10
+    FireRange: 50
+    FireBallScale: 0.99
+  GameInstallerSettings:
+    CannonBallPrefab: {fileID: 8603810811587003964, guid: 997d34fae555d24478528c63755a390c,
+      type: 3}
+  FireControllerSettings:
+    FireIgnoreLayers:
+      serializedVersion: 2
+      m_Bits: 68
+    FireFrequency: 0.25
+    FireDamage: 10
+    FireRange: 500
+    FireBallScale: 0.7

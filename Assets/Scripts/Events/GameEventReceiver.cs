@@ -19,6 +19,10 @@ namespace CannonFightBase
 
         public static event Action OnOurPlayerSpawnedEvent;
 
+        public static event Action<Player> OnPlayerDieEvent;
+
+        public static event Action<Player,Player> OnKillEvent;
+
         public static event Action OnOurPlayerHealthChangedEvent;
 
         public static event Action OnMobileFireButtonClickedEvent;
@@ -35,7 +39,7 @@ namespace CannonFightBase
 
         public static event Action<Cannon> OnBoostEndedEvent;
 
-        public static event Action OnPlayerCountInRoomChangedEvent;
+        public static event Action<int> OnLeftCannonsCountChangedEvent;
 
         public void OnMobileFireButtonClicked()
         {
@@ -102,9 +106,19 @@ namespace CannonFightBase
             OnPlayerLeftRoomEvent?.Invoke(player);
         }
 
-        public void OnPlayerCountInRoomChanged()
+        public void OnLeftCannonsCountChanged(int leftCannonsCount)
         {
-            OnPlayerCountInRoomChangedEvent?.Invoke();
+            OnLeftCannonsCountChangedEvent?.Invoke(leftCannonsCount);
+        }
+
+        public void OnPlayerDie(Player player)
+        {
+            OnPlayerDieEvent?.Invoke(player);
+        }
+
+        public void OnKill(Player killer, Player dead)
+        {
+            OnKillEvent?.Invoke(killer,dead);
         }
     }
 }

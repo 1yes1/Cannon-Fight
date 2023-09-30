@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 namespace CannonFightBase
 {
@@ -12,19 +13,21 @@ namespace CannonFightBase
     {
         public event Action OnDieEvent;
 
-        [SerializeField] private string denemeisim;
-
         [SerializeField] private GameObject _rotatorH;
 
         [SerializeField] private GameObject _rotatorV;
 
+        [SerializeField] private GameObject _cannonBallSpawnPoint;
+
         [SerializeField] private float _health = 100;
 
-
+        private PlayerManager _playerManager;
 
         private CannonController _cannonController;
 
         private CannonProperties _cannonProperties;
+
+        private CannonSkillHandler _cannonSkillHandler;
 
         private FireController _fireController;
 
@@ -35,9 +38,6 @@ namespace CannonFightBase
         private bool _isDead = false;
 
         private int _killCount;
-
-        private List<Skill> _usingSkills;
-
 
         public static Cannon Current
         {
@@ -74,10 +74,20 @@ namespace CannonFightBase
 
         public int KillCount => _killCount;
 
+        public CannonSkillHandler CannonSkillHandler => _cannonSkillHandler;
 
-        public void OnSpawn()
+        public GameObject CannonBallSpawnPoint => _cannonBallSpawnPoint;
+
+        [Inject]
+        public void Construct(FireController fireController, CannonSkillHandler cannonSkillHandler)
         {
-            denemeisim = PhotonNetwork.LocalPlayer.NickName;
+            _fireController = fireController;
+            _cannonSkillHandler = cannonSkillHandler;
+        }
+
+        public void OnSpawn(PlayerManager playerManager)
+        {
+            _playerManager = playerManager;
         }
 
         private void Awake()
@@ -89,22 +99,22 @@ namespace CannonFightBase
 
             LayerMask layerMask = LayerMask.NameToLayer("Player");
             gameObject.layer = layerMask;
-
-            _usingSkills = new List<Skill>();
             
             _cannonController = GetComponent<CannonController>();
             _cannonProperties = GetComponent<CannonProperties>();
             _animation = _rotatorV.GetComponent<Animation>();
-            _fireController = GetComponent<FireController>();
-            _fireController.OnFireEvent += OnFire;
         }
+
+
 
         private void OnEnable()
         {
             if (!_photonView.IsMine)
                 return;
 
-            GameEventReceiver.OnSkillBarFilledEvent += SetSkillProperty;
+            _fireController.OnFireEvent += OnFire;
+
+            //GameEventReceiver.OnSkillBarFilledEvent += SetSkillProperty;
         }
 
         private void OnDisable()
@@ -112,18 +122,14 @@ namespace CannonFightBase
             if (!_photonView.IsMine)
                 return;
 
-            GameEventReceiver.OnSkillBarFilledEvent -= SetSkillProperty;
+            //GameEventReceiver.OnSkillBarFilledEvent -= SetSkillProperty;
         }
 
-        //private IEnumerator Start()
-        //{
-        //    yield return new WaitForSeconds(2);
 
-        //    //Bu Gerekli sadece 1 kere çalýþmasý için
-        //    if (_photonView.IsMine)
-        //        print("Name: " + PhotonNetwork.LocalPlayer.NickName);
+        private void Start()
+        {
 
-        //}
+        }
 
         public void GetRotators(out GameObject rotatorH, out GameObject rotatorV)
         {
@@ -147,27 +153,7 @@ namespace CannonFightBase
             GameEventCaller.Instance.OnPotionCollected(potion);
         }
 
-        private void SetSkillProperty(Skills skill)
-        {
-            if (skill == Skills.Health)
-            {
-                Health = 150;
-            }
-            else if (skill == Skills.Damage)
-            {
-                _cannonProperties.SetSkillFireDamage();
-                Skill damageSkill = new Skill(GameManager.DefaultSkillProperties.DamageSkillTime,_cannonProperties.ResetSkillFireDamage, OnSkillTimeElapsed,Skills.Damage);
-                damageSkill.Initialize();
-                _usingSkills.Add(damageSkill);
-            }
-            else if (skill == Skills.MultiBall)
-            {
-                _fireController.SetMultiBallSkill();
-                Skill multiBallSkill = new Skill(GameManager.DefaultSkillProperties.MultiBallSkillTime, _fireController.ResetMultiBallSkill, OnSkillTimeElapsed,Skills.MultiBall);
-                multiBallSkill.Initialize();
-                _usingSkills.Add(multiBallSkill);
-            }
-        }
+
 
         public void TakeDamage(float damage, Vector3 hitPoint, Player attackerPlayer)
         {
@@ -199,19 +185,14 @@ namespace CannonFightBase
             PlayerManager playerManager = PlayerManager.Find(attackerPlayer);
             playerManager.GetKill();
 
+            _playerManager.OnDie(attackerPlayer);
+
             _isDead = true;
             OnDieEvent?.Invoke();
             print("---You Died!----");
         }
 
 
-        public void OnSkillTimeElapsed(Skill skill)
-        {
-            skill.Reset();
-            print("Skill Sona Erdi");   
-            _usingSkills.Remove(skill);
-            GameEventCaller.Instance.OnSkillEnded(skill);
-        }
 
 
         [PunRPC]
@@ -226,18 +207,7 @@ namespace CannonFightBase
         }
 
 
-        public bool CanCollectPotion(Skills skill)
-        {
-            if (!_photonView.IsMine)
-                return false;
 
-            for (int i = 0; i < _usingSkills.Count; i++)
-            {
-                if (_usingSkills[i].IsEqualToSkill(skill))
-                    return false;
-            }
-            return true;
-        }
 
     }
 

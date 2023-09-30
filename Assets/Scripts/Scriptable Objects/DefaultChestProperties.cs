@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
+using Zenject;
 
 namespace CannonFightBase
 {
     [CreateAssetMenu(fileName = "DefaultChestProperties", menuName = "CannonFight/DefaultChestProperties", order = 1)]
-    public class DefaultChestProperties: ScriptableObject
+    public class DefaultChestProperties: ScriptableObjectInstaller
     {
         [Header("Chest")]
 
@@ -25,6 +21,11 @@ namespace CannonFightBase
         public float StartFillFrequency = 2;
 
         public float RefillTime = 5;
+
+        public override void InstallBindings()
+        {
+            Container.Bind<DefaultChestProperties>().FromScriptableObjectResource("ScriptableObjects/DefaultChestProperties").AsSingle();
+        }
 
     }
 }

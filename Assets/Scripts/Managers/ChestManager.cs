@@ -67,8 +67,7 @@ namespace CannonFightBase
 
         private void FillChest()
         {
-            Chest chest = _chests.Find(x => x.IsOpened && !x.IsAlreadyOpened);
-
+            Chest chest = _chests.Find(x => !x.IsOpened && !x.IsAlreadyOpenedOneTime);
             if (chest == null)
             {
                 CancelInvoke(nameof(FillChest));

@@ -8,8 +8,9 @@ namespace CannonFightBase
     {
         public override void OnSkillBarFilled()
         {
+            base.OnSkillBarFilled();
             GameEventCaller.Instance.OnSkillBarFilled(Skill);
-            _skillIcon.color = Color.white;
+            StartCoroutine(SkillCountdown());
         }
     }
 }

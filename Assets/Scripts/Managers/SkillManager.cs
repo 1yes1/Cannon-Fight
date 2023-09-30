@@ -17,12 +17,12 @@ namespace CannonFightBase
         private void OnDisable()
         {
             GameEventReceiver.OnPotionCollectedEvent -= OnPotionCollected;
-            GameEventReceiver.OnSkillEndedEvent -= OnSkillEnded; 
+            GameEventReceiver.OnSkillEndedEvent -= OnSkillEnded;
         }
 
         private void OnPotionCollected(Potion potion)
         {
-            if(potion.Skill == Skills.Health)
+            if (potion.Skill == Skills.Health)
             {
                 GameEventCaller.Instance.OnSkillBarFilled(potion.Skill);
             }

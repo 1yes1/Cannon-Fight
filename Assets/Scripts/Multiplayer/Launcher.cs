@@ -74,7 +74,7 @@ namespace CannonFightBase
         private void CheckStartingGame()
         {
             print("PhotonNetwork.CurrentRoom.PlayerCount: " + PhotonNetwork.CurrentRoom.PlayerCount);
-            if (PhotonNetwork.CurrentRoom.PlayerCount == 2)
+            if (PhotonNetwork.CurrentRoom.PlayerCount == RoomManager.DefaultRoomProperties.MinPlayersCountToStart)
             {
                 //PhotonNetwork.LocalPlayer.SetCustomProperties();
                 UIManager.GetView<MatchingMenuView>().StartCountdown(OnCountdownFinished);

@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using Zenject;
 
 namespace CannonFightBase
 {
     [CreateAssetMenu(fileName = "DefaultSkillProperties", menuName = "CannonFight/DefaultSkillProperties", order = 1)]
-    public class DefaultSkillProperties: ScriptableObject
+    public class DefaultSkillProperties: ScriptableObjectInstaller<DefaultSkillProperties>
     {
         [Header("MultiBall")]
 
@@ -29,5 +30,9 @@ namespace CannonFightBase
 
         public int DamageSkillTime = 15;
 
+        public override void InstallBindings()
+        {
+            Container.Bind<DefaultSkillProperties>().FromScriptableObjectResource("ScriptableObjects/DefaultSkillProperties").AsSingle();
+        }
     }
 }

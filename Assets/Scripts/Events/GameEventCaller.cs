@@ -87,9 +87,19 @@ namespace CannonFightBase
             _gameEventReceiver.OnPlayerLeftRoom(player);
         }
 
-        public void OnPlayerCountInRoomChanged()
+        public void OnLeftCannonsCountChanged(int leftCannonsCount)
         {
-            _gameEventReceiver.OnPlayerCountInRoomChanged();
+            _gameEventReceiver.OnLeftCannonsCountChanged(leftCannonsCount);
+        }
+
+        public void OnPlayerDie(Player player)
+        {
+            _gameEventReceiver.OnPlayerDie(player);
+        }
+
+        public void OnKill(Player killer, Player dead)
+        {
+            _gameEventReceiver.OnKill(killer, dead);
         }
     }
 

@@ -14,9 +14,9 @@ namespace CannonFightBase
 
         private Animation _animation;
         private Potion _potion;
-        private bool _isOpened = true;
+        private bool _isOpened = false;
         private bool _isRefilling = false;
-        private bool _isAlreadyOpened = false;
+        private bool _isAlreadyOpenedOneTime = false;
 
         private const string AnimChestOpen = "ChestOpen";
         private const string AnimChestHit = "ChestHit";
@@ -26,7 +26,7 @@ namespace CannonFightBase
 
         public bool IsOpened => _isOpened;
 
-        public bool IsAlreadyOpened => _isAlreadyOpened;
+        public bool IsAlreadyOpenedOneTime => _isAlreadyOpenedOneTime;
 
         private void Awake()
         {
@@ -38,7 +38,8 @@ namespace CannonFightBase
             ChooseSkillRandomly();
             _animation.Play(AnimChestFill);
             _isRefilling = true;
-            _isAlreadyOpened = true;
+            _isOpened = true; //Ýlk baþta açýlmýþ olsun sonradan doldurulsun
+            _isAlreadyOpenedOneTime = true;
         }
 
         public void OnFillAnimationEnded()

@@ -1,5 +1,6 @@
 ﻿using EasyButtons;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,9 +12,9 @@ namespace CannonFightBase
 {
     public abstract class FillableBar: MonoBehaviour
     {
-        [SerializeField] private Skills _skill;
+        [SerializeField] protected Skills _skill;
 
-        [SerializeField] private Image _fillImage;
+        [SerializeField] protected Image _fillImage;
 
         [SerializeField] protected Image _skillIcon;
 
@@ -46,7 +47,25 @@ namespace CannonFightBase
                 OnSkillBarFilled();
         }
 
-        public abstract void OnSkillBarFilled();
+        public virtual void OnSkillBarFilled()
+        {
+            _skillIcon.color = Color.white;
+
+        }
+
+
+        protected IEnumerator SkillCountdown()
+        {
+            float skillTime = GameManager.DefaultSkillProperties.DamageSkillTime;
+            float count = skillTime;
+            while (count > 0)
+            {
+                _fillImage.fillAmount = count / skillTime;
+                count -= Time.deltaTime;
+                yield return null;
+            }
+        }
+
 
     }
 }

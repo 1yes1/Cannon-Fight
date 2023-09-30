@@ -36,7 +36,6 @@ namespace CannonFightBase
         //Our player joined to the room
         private void OnJoinedRoom()
         {
-            print("ben Girdim OnJoinedRoom");
 
             if (PhotonNetwork.LocalPlayer.IsMasterClient)
             {
@@ -51,7 +50,6 @@ namespace CannonFightBase
 
         private void OnPlayerJoinedRoom(Player player)
         {
-            print("Baþkasý girdi OnPlayerJoinedRoom");
             CreatePlayerItem(player);
         }
 
@@ -120,7 +118,6 @@ namespace CannonFightBase
                 placeIndex = PhotonNetwork.CurrentRoom.PlayerCount - 1;
 
             playerItem.transform.SetParent(_playerItemPlaces[placeIndex].transform);
-            print("  Player: " + playerItem.Player.NickName + " Is In The Right: " + isInTheRight);
             _playerItemPlaces[placeIndex].PlacePlayerItem(playerItem, isInTheRight);
 
         }

@@ -8,6 +8,6 @@ namespace CannonFightBase
 {
     public interface ICannonBehaviour
     {
-        public void OnSpawn();
+        public void OnSpawn(PlayerManager playerManager);
     }
 }

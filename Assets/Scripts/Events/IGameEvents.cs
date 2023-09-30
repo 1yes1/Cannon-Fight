@@ -14,6 +14,10 @@ namespace CannonFightBase
 
         public void OnOurPlayerSpawned();
 
+        public void OnPlayerDie(Player player);
+
+        public void OnKill(Player killer, Player dead);
+
         public void OnOurPlayerHealthChanged();
 
         public void OnMobileFireButtonClicked();
@@ -34,7 +38,7 @@ namespace CannonFightBase
 
         public void OnPlayerLeftRoom(Player player);
 
-        public void OnPlayerCountInRoomChanged();
+        public void OnLeftCannonsCountChanged(int leftCannonsCount);
 
         public void OnGameSceneLoaded();
     }

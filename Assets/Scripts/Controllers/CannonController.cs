@@ -34,7 +34,7 @@ namespace CannonFightBase
 
         private bool _isBoosting = false;
 
-        public void OnSpawn()
+        public void OnSpawn(PlayerManager playerManager)
         {
             if (!_photonView.IsMine)
                 return;

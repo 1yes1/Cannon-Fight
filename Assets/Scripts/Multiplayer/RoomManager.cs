@@ -15,7 +15,12 @@ namespace CannonFightBase
 
         private bool _isGameSceneLoaded = false;
 
+        [SerializeField] private DefaultRoomProperties _defaultRoomProperties;
+
+
         public static RoomManager Instance => _instance;
+
+        public static DefaultRoomProperties DefaultRoomProperties => Instance._defaultRoomProperties;
 
         private void OnEnable()
         {
@@ -54,7 +59,6 @@ namespace CannonFightBase
 
         public override void OnPlayerLeftRoom(Player otherPlayer)
         {
-            print("Left ROOOOOMMM " + otherPlayer.NickName);
             if(_isGameSceneLoaded)
                 GameEventCaller.Instance?.OnPlayerLeftRoom(otherPlayer);
         }
@@ -66,9 +70,30 @@ namespace CannonFightBase
 
         public override void OnPlayerEnteredRoom(Player newPlayer)
         {
-            print("Giriþ Ypatý");
             if(_isGameSceneLoaded)
                 GameEventCaller.Instance?.OnPlayerEnteredRoom(newPlayer);
+        }
+
+        public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
+        {
+            //if(targetPlayer.CustomProperties.ContainsKey("isDead") && (bool)changedProps["isDead"])
+            //{
+            //    GameEventCaller.Instance.OnPlayerDie(targetPlayer);
+            //}
+            //else if ((string)changedProps["killerPlayer"] != "")
+            //{
+            //    print("Girdi Kill Target: "+targetPlayer);
+            //    Player killerPlayer = null;
+            //    foreach (var item in PhotonNetwork.CurrentRoom.Players.Values)
+            //    {
+            //        if (item.UserId == (string)changedProps["killerPlayer"])
+            //            killerPlayer = item;
+            //    }
+
+            //    print("Girdi Kill Killer: " + killerPlayer);
+
+            //    GameEventCaller.Instance.OnKill(killerPlayer, targetPlayer);
+            //}
         }
 
     }

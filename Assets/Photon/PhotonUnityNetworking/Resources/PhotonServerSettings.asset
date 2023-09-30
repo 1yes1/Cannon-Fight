@@ -43,6 +43,7 @@ MonoBehaviour:
   - RPC_TakeDamage
   - RPC_RunDamageParticle
   - RPC_GetKill
+  - RPC_OnDie
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

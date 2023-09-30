@@ -4,6 +4,7 @@ using Photon.Realtime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace CannonFightBase
@@ -47,9 +48,8 @@ namespace CannonFightBase
         private void CreateCannonPlayer()
         {
             _cannon = PhotonNetwork.Instantiate("Cannon", _spawnPoint.Position, _spawnPoint.Rotation).GetComponent<Cannon>();
-
             foreach (var component in _cannon.GetComponents<ICannonBehaviour>())
-                component.OnSpawn();
+                component.OnSpawn(this);
 
             GameEventCaller.Instance.BeforeOurPlayerSpawned();
         }
@@ -69,5 +69,29 @@ namespace CannonFightBase
             PhotonNetwork.LocalPlayer.SetCustomProperties(hashtable);
         }
 
+
+        public void OnDie(Player attackerPlayer)
+        {
+            //Burada biz dahil herkese gönderiyoruz RpcTarget.All ile
+            //Herkesin scripti çalýþýyor ve kendi managerlarýna kill i bildiriyorlar
+            _photonView.RPC(nameof(RPC_OnDie), RpcTarget.All, attackerPlayer.ActorNumber,PhotonNetwork.LocalPlayer.ActorNumber);
+        }
+
+        [PunRPC]
+        private void RPC_OnDie(int attackerPlayer,int deadPlayer)
+        {
+            Debug.LogError("----RPC_OnDie Çalýþtý Attacker RPC User Id: " + attackerPlayer + " Dead: "+deadPlayer);
+
+            Player attacker = PhotonNetwork.CurrentRoom.GetPlayer(attackerPlayer);
+            Player dead = PhotonNetwork.CurrentRoom.GetPlayer(deadPlayer);
+
+            GameEventCaller.Instance.OnKill(attacker, dead);
+            GameEventCaller.Instance.OnPlayerDie(dead);
+
+            //Hashtable hashtable = new Hashtable();
+            //hashtable.Add("isDead", true);
+            //hashtable.Add("killerPlayer", attackerPlayer);
+            //PhotonNetwork.LocalPlayer.SetCustomProperties(hashtable);
+        }
     }
 }

@@ -14,34 +14,36 @@ namespace CannonFightBase
         [SerializeField] private TextMeshProUGUI _countdownText;
         [SerializeField] private float _countdown = 3;
 
-        private bool _isCountdownStarted = false;
-
         public override void Initialize()
         {
 
         }
 
-        private void Update()
-        {
-            if (_isCountdownStarted && _countdown > 0)
-            {
-                _countdown -= Time.deltaTime;
-                _countdownText.text = Mathf.Ceil(_countdown).ToString();
-                if (_countdown <= 0)
-                    CountdownFinished();
-            }
-        }
-
         public void StartCountdown(Action OnCountdownFinishedAction)
         {
             _onCountdownFinishedAction = OnCountdownFinishedAction;
-            _isCountdownStarted =true;
+            StartCoroutine(Countdown());
+        }
+
+        private IEnumerator Countdown()
+        {
+            float time = RoomManager.DefaultRoomProperties.GameStartCountdown;
+            while (time > 0)
+            {
+                _countdownText.text = Mathf.Ceil(time).ToString();
+                time -= Time.deltaTime;
+
+                if (time <= 0)
+                    CountdownFinished();
+
+                yield return null;
+            }
+
         }
 
         private void CountdownFinished()
         {
             _onCountdownFinishedAction();
-            _isCountdownStarted = false;
         }
 
     }

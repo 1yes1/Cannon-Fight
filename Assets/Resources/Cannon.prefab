@@ -274,11 +274,11 @@ GameObject:
   - component: {fileID: 7237865380203487800}
   - component: {fileID: -5750734509076137677}
   - component: {fileID: -7674019335970664583}
-  - component: {fileID: 7667398876714255915}
   - component: {fileID: 5668834787951280394}
   - component: {fileID: 6368468934152660216}
   - component: {fileID: 1479125968634123376}
   - component: {fileID: 4419987241141192940}
+  - component: {fileID: 1132920420878268896}
   m_Layer: 2
   m_Name: Cannon
   m_TagString: Cannon
@@ -305,7 +305,7 @@ Transform:
   - {fileID: 362571606356598264}
   - {fileID: 2445196406848672258}
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!136 &532163230176547558
 CapsuleCollider:
@@ -402,23 +402,6 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 1
   m_UseLocal: 1
---- !u!114 &7667398876714255915
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1834139609788682667}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d0272a4b2f13364aadde0b4a42ba738, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _fireIgnoreLayers:
-    serializedVersion: 2
-    m_Bits: 68
-  _ballSpawnPoint: {fileID: 6606380948602633816}
-  _crosshair: {fileID: 8100739128454525049}
 --- !u!114 &5668834787951280394
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -474,9 +457,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f05cb77a2ad6084586ebdb90d9045bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  denemeisim: 
   _rotatorH: {fileID: 8958301589156200143}
   _rotatorV: {fileID: 1692211308109857130}
+  _cannonBallSpawnPoint: {fileID: 0}
   _health: 100
 --- !u!114 &4419987241141192940
 MonoBehaviour:
@@ -496,6 +479,24 @@ MonoBehaviour:
   _fireDamage: 10
   _fireRange: 500
   _fireBallScale: 0.7
+--- !u!114 &1132920420878268896
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1834139609788682667}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0166d8ff8d905b048b2448179e1f5d11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _components:
+  - {fileID: 1479125968634123376}
+  _identifier: 
+  _useSceneContext: 1
+  _context: {fileID: 0}
+  _bindType: 0
 --- !u!1 &2548277890691378164
 GameObject:
   m_ObjectHideFlags: 0

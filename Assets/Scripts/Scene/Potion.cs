@@ -90,7 +90,7 @@ namespace CannonFightBase
         {
             if(other.CompareTag("Cannon"))
             {
-                if(other.GetComponent<Cannon>().CanCollectPotion(_skill))
+                if(other.GetComponent<Cannon>().CannonSkillHandler.CanCollectPotion(_skill))
                 {
                     other.GetComponent<Cannon>().OnPotionCollected(this);
                     ParticleManager.Instance.CreateAndPlay(ParticleManager.Instance.GetParticleTupleValue(_skill),null,transform.position);
@@ -100,15 +100,6 @@ namespace CannonFightBase
         }
 
     }
-
-    //[Serializable]
-    //public class PotionProperty
-    //{
-    //    public Material skillMaterial;
-
-    //    public Skills skill;
-    //}
-
 
 
 }

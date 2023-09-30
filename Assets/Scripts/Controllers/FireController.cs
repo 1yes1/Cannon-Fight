@@ -5,78 +5,58 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 namespace CannonFightBase
 {
-    public class FireController : MonoBehaviour
+    public class FireController : ITickable
     {
         public event Action OnFireEvent;
 
-        [SerializeField] private LayerMask _fireIgnoreLayers;
+        private Transform _ballSpawnPoint;
 
-        [SerializeField] private Transform _ballSpawnPoint;
+        private Transform _crosshair;
 
-        [SerializeField] private Transform _crosshair;
+        private Settings _settings;
         
-        private GamePanelView _gamePanel;//Bunun yerine On Fire metodu oluþtur
-
-        private CannonProperties _cannonProperties;
-
-        private PhotonView _photonView;
-
         private Cannon _cannon;
+
+        private CannonBall.Factory _cannonBallFactory;
 
         private float _frequencyStatus = 0;
 
-
         private bool _useMultiBallSkil = false;
 
-        private void Awake()
+
+
+        public FireController(Cannon cannon,CannonBall.Factory cannonBallFactory,Settings settings)
         {
-            _photonView = GetComponent<PhotonView>();
+            _cannonBallFactory = cannonBallFactory;
+            _cannon = cannon;
+            _settings = settings;
+            _ballSpawnPoint = _cannon.CannonBallSpawnPoint.transform;
 
-            _cannonProperties = GetComponent<CannonProperties>();
-            _cannon = GetComponent<Cannon>();
 
-
-            if (!_photonView.IsMine)
-                return;
-
-            _crosshair = GameObject.FindWithTag("Crosshair").transform;
-
-        }
-
-        void Start()
-        {
-            //_bottomPanel = UIManager.GetView<BottomPanelView>();
-
-        }
-
-        private void OnEnable()
-        {
             GameEventReceiver.OnMobileFireButtonClickedEvent += Fire;
+            
+            _crosshair = GameObject.FindWithTag("Crosshair").transform;
         }
 
-        private void OnDisable()
+        public void Tick()
         {
-            GameEventReceiver.OnMobileFireButtonClickedEvent -= Fire;
-        }
-
-        void Update()
-        {
-            if (!_photonView.IsMine)
+            if (!_cannon.OwnPhotonView.IsMine)
                 return;
 
             if (_cannon.IsDead)
                 return;
 
-            if(!GameManager.Instance.useAndroidControllers)
+            if (!GameManager.Instance.useAndroidControllers)
             {
                 if (InputManager.IsFiring && _frequencyStatus <= 0)
                 {
-                    if(_useMultiBallSkil)
+                    if (_useMultiBallSkil)
                     {
-                        StartCoroutine("MultiBallFire");
+                        _cannon.StartCoroutine(MultiBallFire());
                     }
                     else
                         Fire();
@@ -86,21 +66,8 @@ namespace CannonFightBase
             if (_frequencyStatus > 0)
             {
                 _frequencyStatus -= Time.deltaTime;
-                float val = (_frequencyStatus / _cannonProperties.FireFrequency);
             }
         }
-
-        //private void OnDrawGizmos()
-        //{
-        //    Ray ray = Camera.main.ScreenPointToRay(_crosshair.position);
-        //    RaycastHit hit;
-
-        //    if (Physics.Raycast(ray, out hit, 300, ~_fireIgnoreLayers))
-        //    {
-        //        Vector3 direction = hit.point - _ballSpawnPoint.position;
-        //        Debug.DrawRay(_ballSpawnPoint.position, direction * 5, Color.red);
-        //    }
-        //}
 
         IEnumerator MultiBallFire()
         {
@@ -115,41 +82,51 @@ namespace CannonFightBase
 
         private void Fire()
         {
+            if(_crosshair == null)
+            {
+                _crosshair = GameObject.FindWithTag("Crosshair").transform;
+                Debug.Log("GÝRDÝ ABÝ");
+            }
             Ray ray = Camera.main.ScreenPointToRay(_crosshair.position);
             RaycastHit hit;
 
-            if (Physics.Raycast(ray, out hit,300, ~_fireIgnoreLayers))
+            if (Physics.Raycast(ray, out hit,300, ~_settings.FireIgnoreLayers))
             {
                 Vector3 direction = hit.point - _ballSpawnPoint.position;
                 direction.Normalize();
                 //Burada oluþturulan toplar default olarak OwnCannonBall layer ýna sahip
-                CannonBall cannonBall = Instantiate(_cannonProperties.CannonBall, _ballSpawnPoint.position, _ballSpawnPoint.rotation);
-                cannonBall.Initialize(_cannonProperties.FireDamage, _cannon, _photonView.Owner);
+                CannonBall cannonBall = _cannonBallFactory.Create();
+                //CannonBall cannonBall = Instantiate(_cannonProperties.CannonBall, _ballSpawnPoint.position, _ballSpawnPoint.rotation);
+                cannonBall.Initialize(_settings.FireDamage, _cannon, _cannon.OwnPhotonView.Owner);
+
+                cannonBall.transform.position = _ballSpawnPoint.position;
+                cannonBall.transform.rotation = _ballSpawnPoint.rotation;
 
                 Rigidbody rigidbody = cannonBall.GetComponent<Rigidbody>();
-                rigidbody.AddForce(direction * _cannonProperties.FireRange, ForceMode.Impulse);
-                _frequencyStatus = _cannonProperties.FireFrequency;
+                rigidbody.AddForce(direction * _settings.FireRange, ForceMode.Impulse);
+                _frequencyStatus = _settings.FireFrequency;
 
                 ParticleManager.Instance.CreateAndPlay(ParticleManager.Instance.fireCannonBallParticle, _ballSpawnPoint, Vector3.zero, false, true);
 
                 OnFireEvent?.Invoke();
 
-                _photonView.RPC("RPC_Fire", RpcTarget.Others, _ballSpawnPoint.position, direction, _cannonProperties.FireRange, _cannonProperties.FireDamage);
+                _cannon.OwnPhotonView.RPC("RPC_Fire", RpcTarget.Others, _ballSpawnPoint.position, direction, _settings.FireRange, _settings.FireDamage);
             }
         }
 
         [PunRPC]
         private void RPC_Fire(Vector3 ballPosition,Vector3 ballDirection, float fireRange, float fireDamage,PhotonMessageInfo info)
         {
-            if (_photonView.IsMine)
+            if (_cannon.OwnPhotonView.IsMine)
                 return;
 
             Player owner = info.Sender;
 
-            print("Find Player: " + owner.NickName);
-
-            CannonBall cannonBall = Instantiate(_cannonProperties.CannonBall, ballPosition, Quaternion.identity);
+            CannonBall cannonBall = _cannonBallFactory.Create();
             cannonBall.Initialize(fireDamage,_cannon, owner);
+
+            cannonBall.transform.position = _ballSpawnPoint.position;
+            cannonBall.transform.rotation = _ballSpawnPoint.rotation;
 
             ParticleManager.Instance.CreateAndPlay(ParticleManager.Instance.fireCannonBallParticle, _ballSpawnPoint, ballPosition);
 
@@ -164,13 +141,26 @@ namespace CannonFightBase
 
         public void SetMultiBallSkill()
         {
-            print("SetMultiBallSkill");
             _useMultiBallSkil = true;
         }
 
         public void ResetMultiBallSkill(Skill skill)
         {
             _useMultiBallSkil = false;
+        }
+
+        [Serializable]
+        public class Settings
+        {
+            public LayerMask FireIgnoreLayers;
+
+            public float FireFrequency = 0.75f;
+
+            public float FireDamage = 10;
+
+            public float FireRange = 50;
+
+            public float FireBallScale = 0.7f;
         }
 
     }
