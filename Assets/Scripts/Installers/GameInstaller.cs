@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 using Zenject.SpaceFighter;
@@ -12,31 +13,33 @@ namespace CannonFightBase
 
         public override void InstallBindings()
         {
-            //Container.Bind<CannonBall>().FromComponentInNewPrefab(_settings.CannonBallPrefab);
+            Container.Bind<ParticleManager>().FromComponentInHierarchy().AsSingle();
 
-            Container.Bind<CannonSkillHandler>().AsTransient();
+            Container.Bind<Chest>().FromComponentsInHierarchy().AsSingle();
 
-            Container.BindInterfacesAndSelfTo<FireController>().AsTransient();
+            Container.Bind<CannonSkillHandler>().AsSingle();
+            Container.Bind<CannonDamageHandler>().AsSingle();
+            Container.BindInterfacesAndSelfTo<FireController>().AsSingle();
+            Container.BindInterfacesAndSelfTo<AimController>().AsSingle();
 
             Container.BindFactory<CannonBall, CannonBall.Factory>()
-            // We could just use FromMonoPoolableMemoryPool here instead, but
-            // for IL2CPP to work we need our pool class to be used explicitly here
-            .FromPoolableMemoryPool<CannonBall, CannonBallPool>(poolBinder => poolBinder
-            // Spawn 20 right off the bat so that we don't incur spikes at runtime
+            .FromPoolableMemoryPool<CannonBall, CannonBall.Pool>(poolBinder => poolBinder
             .WithInitialSize(5)
             .FromComponentInNewPrefab(_settings.CannonBallPrefab)
-            .UnderTransformGroup(nameof(CannonBallPool)));
+            .UnderTransformGroup("CannonBallPool"));
 
+            Container.BindFactory<Potion, Potion.Factory>()
+            .FromPoolableMemoryPool<Potion, Potion.Pool>(poolBinder => poolBinder
+            .WithInitialSize(5)
+            .FromComponentInNewPrefab(_settings.Potion)
+            .UnderTransformGroup("PotionPool"));
         }
 
         [Serializable]
         public class Settings
         {
             public CannonBall CannonBallPrefab;
-        }
-
-        public class CannonBallPool : MonoPoolableMemoryPool<IMemoryPool, CannonBall>
-        {
+            public Potion Potion;
         }
 
     }

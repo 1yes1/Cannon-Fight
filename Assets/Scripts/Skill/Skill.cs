@@ -8,8 +8,6 @@ namespace CannonFightBase
 {
     public class Skill : ISkill
     {
-        private Action<Skill> _onReset;
-
         private Action<Skill> _onTimeElapsed;
 
         private float _time;
@@ -18,9 +16,8 @@ namespace CannonFightBase
 
         private Skills _skill;
 
-        public Skill(float time, Action<Skill> onReset, Action<Skill> onTimeElapsed,Skills skill)
+        public Skill(float time, Action<Skill> onTimeElapsed,Skills skill)
         {
-            _onReset += onReset;
             _onTimeElapsed += onTimeElapsed;
             _time = time;
             _skill = skill;
@@ -33,7 +30,7 @@ namespace CannonFightBase
 
         public void Reset()
         {
-            _onReset?.Invoke(this);
+
         }
 
         public bool IsEqualToSkill(Skills skill)
@@ -43,6 +40,5 @@ namespace CannonFightBase
             else
                 return false;
         }
-
     }
 }

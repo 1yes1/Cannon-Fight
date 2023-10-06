@@ -177,7 +177,7 @@ GameObject:
   - component: {fileID: 9000306067076696046}
   - component: {fileID: 4877659513760431831}
   - component: {fileID: 7843884533760503680}
-  - component: {fileID: 7509962502588357334}
+  - component: {fileID: 8497418219458924009}
   m_Layer: 0
   m_Name: Potion Damage
   m_TagString: Untagged
@@ -238,7 +238,7 @@ Animation:
   m_PlayAutomatically: 0
   m_AnimatePhysics: 0
   m_CullingType: 0
---- !u!114 &7509962502588357334
+--- !u!114 &8497418219458924009
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -250,7 +250,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2a70d56ee7911645b39de95b12103b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _skill: 1
+  _meshRenderer: {fileID: 3982033172756969840}
 --- !u!1 &6898599409012071791
 GameObject:
   m_ObjectHideFlags: 0

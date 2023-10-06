@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fd0ead00c9005a498f5d6b02ea94255, type: 3}
+  m_Name: GameSettingsInstaller
+  m_EditorClassIdentifier: 
+  Prefabs:
+    CannonBallPrefab: {fileID: 8603810811587003964, guid: 997d34fae555d24478528c63755a390c,
+      type: 3}
+    Potion: {fileID: 8497418219458924009, guid: 8e9e874197dab294ca88a06753c70db2,
+      type: 3}
+  FireControllerSettings:
+    FireIgnoreLayers:
+      serializedVersion: 2
+      m_Bits: 68
+    FireFrequency: 0.2
+    FireDamage: 10
+    FireRange: 500
+    FireBallScale: 0.7
+  AimControllerSettings:
+    MaxVerticalAngle: 12
+    MaxHorizontalAngle: 60
+    HorizontalRotSpeed: 25
+    VerticalRotSpeed: 25
+    MobileHorizontalRotSpeed: 25
+    MobileVerticalRotSpeed: 25
+  CannonSkillHandlerSettings:
+    MultiBallSkillSettings:
+      MultiBallCount: 3
+      MultiBallFrequency: 0.1
+      MultiBallSkillTime: 10
+    DamageSkillSettings:
+      DamageMultiplier: 2
+      DamageSkillTime: 15
+  ChestSettings:
+    Health: 1
+    PotionFlightTime: 0.8
+    StartFillTime: 0.1
+    StartFillFrequency: 0.1
+    RefillTime: 1
+  RampSettings:
+    BoostMultiplier: 25
+  PotionSettings:
+    PotionTypes:
+    - Skill: 0
+      Material: {fileID: 2100000, guid: 2797e9cdc4ef3254082154cf60daa4f7, type: 2}
+    - Skill: 1
+      Material: {fileID: 2100000, guid: 7e35e673f741780409c87b75ecb7b084, type: 2}
+    - Skill: 2
+      Material: {fileID: 2100000, guid: 9b3398f90e3925e42a743d28c0f57c27, type: 2}

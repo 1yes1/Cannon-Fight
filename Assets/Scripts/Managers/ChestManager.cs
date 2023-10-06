@@ -3,27 +3,29 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Zenject;
 
 namespace CannonFightBase
 {
     public class ChestManager : MonoBehaviour
     {
-        private static ChestManager _instance;
-
-        [SerializeField] private List<Chest> _chests;
         [SerializeField] private List<Potion> _potions;
+
+        private List<Chest> _chests;
+
+        private Chest.Settings _chestSettings;
 
         private int _openedChestCount = 0;
 
-        public static ChestManager Instance => _instance;
+        [Inject]
+        public void Construct(Chest.Settings settings,List<Chest> chests)
+        {
+            _chestSettings = settings;
+            _chests = chests;
+        }
 
         private void Awake()
         {
-            if( _instance == null ) 
-                _instance = this;
-
-            _chests = FindObjectsOfType<Chest>().ToList();
-
             //CreateStack();
         }
 
@@ -39,7 +41,7 @@ namespace CannonFightBase
 
         private void Start()
         {
-            Invoke(nameof(StartFillChests), GameManager.DefaultChestProperties.StartFillTime);
+            Invoke(nameof(StartFillChests), _chestSettings.StartFillTime);
         }
 
         private void Update()
@@ -79,7 +81,7 @@ namespace CannonFightBase
 
         public void StartFillChests()
         {
-            InvokeRepeating(nameof(FillChest), GameManager.DefaultChestProperties.StartFillFrequency, GameManager.DefaultChestProperties.StartFillFrequency);
+            InvokeRepeating(nameof(FillChest), _chestSettings.StartFillFrequency, _chestSettings.StartFillFrequency);
         }
 
         public Potion GetPotion(Skills skill)

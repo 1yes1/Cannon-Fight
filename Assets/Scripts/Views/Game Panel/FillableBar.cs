@@ -22,6 +22,23 @@ namespace CannonFightBase
 
         public Skills Skill => _skill;
 
+
+        private void OnEnable()
+        {
+            GameEventReceiver.OnBeforeSkillCountdownStartedEvent += OnBeforeSkillCountdownStarted;
+        }
+
+        private void OnDisable()
+        {
+            GameEventReceiver.OnBeforeSkillCountdownStartedEvent -= OnBeforeSkillCountdownStarted;
+        }
+
+        private void OnBeforeSkillCountdownStarted(Skills skill, float time)
+        {
+            if(Skill == skill)
+                StartCoroutine(SkillCountdown(time));
+        }
+
         private void Start()
         {
             ResetFilling();
@@ -50,13 +67,13 @@ namespace CannonFightBase
         public virtual void OnSkillBarFilled()
         {
             _skillIcon.color = Color.white;
-
+            GameEventCaller.Instance.OnSkillBarFilled(Skill);
         }
 
 
-        protected IEnumerator SkillCountdown()
+        protected IEnumerator SkillCountdown(float time)
         {
-            float skillTime = GameManager.DefaultSkillProperties.DamageSkillTime;
+            float skillTime = time;
             float count = skillTime;
             while (count > 0)
             {

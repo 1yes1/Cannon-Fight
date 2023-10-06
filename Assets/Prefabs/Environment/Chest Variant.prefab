@@ -530,6 +530,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Golden Box
       objectReference: {fileID: 0}
+    - target: {fileID: 2106901570904592603, guid: 7a1fce56d91976e4fa7beccc0de8cc28,
+        type: 3}
+      propertyPath: m_Size.z
+      value: 2.1
+      objectReference: {fileID: 0}
     - target: {fileID: 2924937826586629879, guid: 7a1fce56d91976e4fa7beccc0de8cc28,
         type: 3}
       propertyPath: m_RootOrder

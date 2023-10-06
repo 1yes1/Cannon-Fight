@@ -10,6 +10,6 @@ namespace CannonFightBase
 {
     internal interface IDamageable
     {
-        public void TakeDamage(float damage,Vector3 hitPoint,Player attackerPlayer);
+        public void TakeDamage(int damage,Vector3 hitPoint,Player attackerPlayer);
     }
 }

@@ -32,6 +32,8 @@ namespace CannonFightBase
             _timer.Elapsed += (o, args) =>
             {
                 action?.Invoke(skill);
+                Debug.Log("Skill Bitti: "+skill.ToString());
+
                 Finished = true;
                 Dispose();
             };

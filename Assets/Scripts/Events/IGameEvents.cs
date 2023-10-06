@@ -16,6 +16,8 @@ namespace CannonFightBase
 
         public void OnPlayerDie(Player player);
 
+        public void OnPlayerFired();
+
         public void OnKill(Player killer, Player dead);
 
         public void OnOurPlayerHealthChanged();
@@ -23,6 +25,8 @@ namespace CannonFightBase
         public void OnMobileFireButtonClicked();
 
         public void OnSkillBarFilled(Skills skill);
+
+        public void OnBeforeSkillCountdownStarted(Skills skill, float time);
 
         public void OnPotionCollected(Potion potion);
 

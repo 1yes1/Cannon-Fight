@@ -6,7 +6,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
-using static UnityEngine.Rendering.DebugUI;
 
 namespace CannonFightBase
 {
@@ -15,12 +14,6 @@ namespace CannonFightBase
         private static GameManager _instance;
 
         public bool useAndroidControllers = false;
-
-        private DefaultSkillProperties _skillProperties;
-
-        private DefaultChestProperties _defaultChestProperties;
-
-        private DefaultRampProperties _defaultRampProperties;
 
         private Cannon _currentCannon;
 
@@ -34,20 +27,6 @@ namespace CannonFightBase
 
         public GameEventReceiver GameEventReceiver { get; private set; }
 
-        public static DefaultSkillProperties DefaultSkillProperties => Instance._skillProperties;
-
-        public static DefaultChestProperties DefaultChestProperties => Instance._defaultChestProperties;
-
-        public static DefaultRampProperties DefaultRampProperties => Instance._defaultRampProperties;
-
-
-        [Inject]
-        public void Construct(DefaultChestProperties defaultChestProperties,DefaultSkillProperties defaultSkillProperties,DefaultRampProperties defaultRampProperties)
-        {
-            _skillProperties = defaultSkillProperties;
-            _defaultChestProperties = defaultChestProperties;
-            _defaultRampProperties = defaultRampProperties;
-        }
 
         public int LeftCannonsCount
         {

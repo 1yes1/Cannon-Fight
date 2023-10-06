@@ -6,19 +6,13 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Security;
 using UnityEditor;
 using UnityEngine;
+using Zenject;
 using static UnityEngine.Rendering.DebugUI;
 using Object = UnityEngine.Object;
 
 public class ParticleManager : MonoBehaviour
 {
     private static ParticleManager _instance;
-
-    public List<ParticleTuple<Skills>> skillsParticleTuples;
-
-    public ParticleSystem takeDamageParticle;
-    public ParticleSystem fireCannonBallParticle;
-
-    private Dictionary<Type, IList> particleTuplesByType;
 
     public static ParticleManager Instance => _instance;
 
@@ -27,20 +21,29 @@ public class ParticleManager : MonoBehaviour
         if(_instance == null)
             _instance = this;
 
-        DefineParticleTuples();
-
     }
 
-    private void DefineParticleTuples()
+
+    public static T CreateWithFactory<T>(PlaceholderFactory<T> placeholderFactory, Vector3 worldPosition, Transform parent, bool isLoop)
     {
-        particleTuplesByType = new Dictionary<System.Type, IList>
-        {
-            { typeof(Skills), skillsParticleTuples },
-        };
+        T particleSystem = placeholderFactory.Create();
+
+        MonoBehaviour particle = (particleSystem as MonoBehaviour);
+
+        particle.transform.position = worldPosition;
+        particle.transform.parent = parent;
+
+        ParticleSystem particleSystem1 = particle.GetComponent<ParticleSystem>();
+
+        ParticleSystem.MainModule main = particleSystem1.main;
+        main.loop = isLoop;
+
+        return particleSystem;
     }
+
 
     //Zaten sahnede olanı oynatıyoruz
-    public void Play(ParticleSystem particle, bool loop)
+    public static void Play(ParticleSystem particle, bool loop)
     {
         if (particle != null)
         {
@@ -55,7 +58,7 @@ public class ParticleManager : MonoBehaviour
     }
 
 
-    public void Play(ParticleSystem particle, bool loop,Vector3 pos)
+    public static void Play(ParticleSystem particle, bool loop,Vector3 pos)
     {
         if (particle != null)
         {
@@ -71,7 +74,7 @@ public class ParticleManager : MonoBehaviour
     }
 
 
-    public void Stop(ParticleSystem particle,bool destroy)
+    public static void Stop(ParticleSystem particle,bool destroy)
     {
         ParticleSystem.MainModule main = particle.main;
 
@@ -84,7 +87,7 @@ public class ParticleManager : MonoBehaviour
     }
 
     //Yeni obje oluşturup pozisyon verip başlatıyoruz
-    public ParticleSystem CreateAndPlay(ParticleSystem particle,Transform parent,Vector3 position,bool loop = false,bool isLocalPosition = false)
+    public static ParticleSystem CreateAndPlay(ParticleSystem particle,Transform parent,Vector3 position,bool loop = false,bool isLocalPosition = false)
     {
         ParticleSystem returnPart = null;
         //Eğer particle atanmışsa
@@ -111,34 +114,6 @@ public class ParticleManager : MonoBehaviour
         return returnPart;
     }
 
-    public GameObject CreateAndPlayRandom(List<ParticleSystem> particles, GameObject parent, Vector3 position, bool loop)
-    {
-        int rand = UnityEngine.Random.Range(0, particles.Count);
-        GameObject returnPart = null;
-        //Eğer particle atanmışsa
-        if (particles[rand] != null)
-        {
-            ParticleSystem newParticle;
-            if (parent == null) newParticle = Instantiate(particles[rand]);
-            else newParticle = Instantiate(particles[rand], parent.transform);
-
-            newParticle.gameObject.SetActive(true);
-
-            ParticleSystem.MainModule main = newParticle.main;
-            main.loop = loop;
-            //main.stopAction = ParticleSystemStopAction.Destroy;
-
-            newParticle.gameObject.transform.position = position;
-
-            newParticle.Play();
-            returnPart = newParticle.gameObject;
-        }
-        else
-            Debug.LogWarning("Particle list element is null. Element: " + rand);
-        
-        return returnPart;
-
-    }
 
     //Belirli bir süree sonra oynatıyoruz
     public IEnumerator CreateAndPlay(ParticleSystem particle, GameObject parent, Vector3 position, bool loop,float time)
@@ -161,9 +136,10 @@ public class ParticleManager : MonoBehaviour
     }
 
 
-    public ParticleSystem GetParticleTupleValue<T>(T value) where T : System.Enum
+
+    public static ParticleSystem GetParticleTupleValue<T>(Dictionary<Type, IList> tuples,T value) where T : System.Enum
     {
-        if (particleTuplesByType.TryGetValue(typeof(T), out IList particleTuples))
+        if (tuples.TryGetValue(typeof(T), out IList particleTuples))
         {
             foreach (ParticleTuple<T> tuple in particleTuples)
             {
@@ -177,54 +153,7 @@ public class ParticleManager : MonoBehaviour
         Debug.LogWarning($"No particle system found for type: {value}");
         return null;
     }
-
-    //public IEnumerator ParticleFollowWithRaycast(ParticleSystem particle,GameObject followObject,Vector3 offsett)
-    //{
-
-    //    while (GameManager.instance.isGameRunning)
-    //    {
-    //        Vector3 start = particle.transform.position + new Vector3(0, 0.3f, 0);
-    //        Vector3 dir = Vector3.down;
-    //        RaycastHit hitInfo;
-    //        particle.transform.position = followObject.transform.position + offsett;
-
-    //        if (Physics.Raycast(start, dir, out hitInfo, 1f, layerMask))
-    //        {
-    //            //particle.transform.rotation = Quaternion.Euler(-90, 0, 0);
-    //            particle.transform.rotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
-    //        }
-
-    //        yield return null;
-    //    }
-    //}
-
-
-    //public IEnumerator ParticleFollow(ParticleSystem particle, GameObject followObject, Vector3 offsett)
-    //{
-
-    //    while (GameManager.instance.isGameRunning)
-    //    {
-    //        Vector3 start = particle.transform.position + new Vector3(0, 0.3f, 0);
-    //        Vector3 dir = Vector3.down;
-    //        RaycastHit hitInfo;
-    //        particle.transform.position = followObject.transform.position + offsett;
-
-    //        yield return null;
-    //    }
-    //}
-
-
-    //public bool IsParticleThere(ParticleSystem particle,GameObject parent)
-    //{
-    //    bool ans = false;
-    //    foreach (Transform item in parent.transform)
-    //    {
-    //        if (item.GetComponent<ParticleSystem>() != null && item.GetComponent<ParticleSystem>() == particle) ans = true;
-    //    }
-
-    //    return ans;
-    //}
-
+    
 
 
 

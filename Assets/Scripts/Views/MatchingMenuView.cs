@@ -10,24 +10,26 @@ namespace CannonFightBase
 {
     public class MatchingMenuView : UIView
     {
-        private event Action _onCountdownFinishedAction; 
         [SerializeField] private TextMeshProUGUI _countdownText;
+
         [SerializeField] private float _countdown = 3;
+
+        private event Action _onCountdownFinishedAction;
 
         public override void Initialize()
         {
 
         }
 
-        public void StartCountdown(Action OnCountdownFinishedAction)
+        public void StartCountdown(float countdown,Action OnCountdownFinishedAction)
         {
             _onCountdownFinishedAction = OnCountdownFinishedAction;
-            StartCoroutine(Countdown());
+            StartCoroutine(Countdown(countdown));
         }
 
-        private IEnumerator Countdown()
+        private IEnumerator Countdown(float countdown)
         {
-            float time = RoomManager.DefaultRoomProperties.GameStartCountdown;
+            float time = countdown;
             while (time > 0)
             {
                 _countdownText.text = Mathf.Ceil(time).ToString();

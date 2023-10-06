@@ -1,33 +1,17 @@
-using CannonFightUI;
-using Cinemachine;
-using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.UIElements;
+using Zenject;
 using static UnityEngine.UI.Image;
 
 namespace CannonFightBase
 {
-    public class AimController : MonoBehaviour
+    public class AimController : ITickable
     {
-        [SerializeField] private float _maxVerticalAngle = 45;
-
-        [SerializeField] private float _maxHorizontalAngle = 60;
-
-        [SerializeField] private float _horizontalRotSpeed = 25;
-
-        [SerializeField] private float _verticalRotSpeed = 25;
-
-        [SerializeField] private float _mobileHorizontalRotSpeed = 25;
-
-        [SerializeField] private float _mobileVerticalRotSpeed = 25;
-
-        private PhotonView _photonView;
-
-        private Camera _camera;
+        private Settings _settings;
 
         private Cannon _cannon;
 
@@ -35,47 +19,32 @@ namespace CannonFightBase
 
         private GameObject _rotatorV;
 
-        private float _horizontalAngle = 0;
-
-        private float _verticalAngle = 0;
-
-        private Vector3 _initialForward;
-
-        private Vector3 _initialRight;
-
-        private Vector3 _initialUp;
-
         private Vector3 _lastMousePosition;
 
         private float _angleHor;
 
         private float _angleVer;
 
-        private void Awake()
+        private Transform _transform;
+
+        public AimController(Cannon cannon, Settings settings)
         {
-            _photonView = GetComponent<PhotonView>();
+            _cannon = cannon;
+            _settings = settings;
+            _transform = cannon.transform;
 
-            if (!_photonView.IsMine)
-                return;
-
-            _cannon = GetComponent<Cannon>();
-
-            _camera = Camera.main;
+            //if (!_photonView.IsMine)
+            //    return;
 
             UnityEngine.Cursor.lockState = CursorLockMode.Confined;
-
             _cannon.GetRotators(out _rotatorH, out _rotatorV);
-
-        }
-
-        void Start()
-        {
             _lastMousePosition = Input.mousePosition;
         }
 
-        void Update()
+
+        public void Tick()
         {
-            if (!_photonView.IsMine)
+            if (!_cannon.OwnPhotonView.IsMine)
                 return;
 
             if (_cannon.IsDead)
@@ -120,58 +89,47 @@ namespace CannonFightBase
 
         private void RotateCannon(Vector3 delta)
         {
-            float hor = delta.x * _horizontalRotSpeed * Time.deltaTime;
+            float hor = delta.x * _settings.HorizontalRotSpeed * Time.deltaTime;
             hor = (Mathf.Abs(delta.x) < 0.25f) ? 0 : hor;
-            float ver = delta.y * _verticalRotSpeed * Time.deltaTime;
+            float ver = delta.y * _settings.VerticalRotSpeed * Time.deltaTime;
             ver = (Mathf.Abs(delta.y) < 0.25f) ? 0 : ver;
 
             _angleHor += hor;
-            _angleHor = Mathf.Clamp(_angleHor, -_maxHorizontalAngle, _maxHorizontalAngle);
+            _angleHor = Mathf.Clamp(_angleHor, -_settings.MaxHorizontalAngle, _settings.MaxHorizontalAngle);
             _angleVer += ver;
-            _angleVer = Mathf.Clamp(_angleVer, -_maxVerticalAngle, _maxVerticalAngle);
+            _angleVer = Mathf.Clamp(_angleVer, -_settings.MaxVerticalAngle, _settings.MaxVerticalAngle);
 
             float angle = 0;
             RaycastHit hit;
-            if (Physics.Raycast(transform.position, Vector3.down, out hit))
+            //Açýlacakkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
+            if (Physics.Raycast(_transform.position, Vector3.down, out hit))
             {
-                angle = Vector3.ProjectOnPlane(transform.position - Vector3.down, hit.normal).y;
+                angle = Vector3.ProjectOnPlane(_transform.position - Vector3.down, hit.normal).y;
             }
 
             _rotatorH.transform.localRotation = Quaternion.Euler(_rotatorH.transform.localEulerAngles.x, _angleHor, _rotatorH.transform.localEulerAngles.z);
             _rotatorV.transform.localRotation = Quaternion.Euler(-_angleVer, _rotatorV.transform.localEulerAngles.y, _rotatorV.transform.localEulerAngles.z);
 
 
-
             _lastMousePosition = Input.mousePosition;
         }
 
 
-        public static float ClampAngle(float angle, float min, float max)
+        [Serializable]
+        public class Settings
         {
-            if (min < 0 && max > 0 && (angle > max || angle < min))
-            {
-                angle -= 360;
-                if (angle > max || angle < min)
-                {
-                    if (Mathf.Abs(Mathf.DeltaAngle(angle, min)) < Mathf.Abs(Mathf.DeltaAngle(angle, max))) return min;
-                    else return max;
-                }
-            }
-            else if (min > 0 && (angle > max || angle < min))
-            {
-                angle += 360;
-                if (angle > max || angle < min)
-                {
-                    if (Mathf.Abs(Mathf.DeltaAngle(angle, min)) < Mathf.Abs(Mathf.DeltaAngle(angle, max))) return min;
-                    else return max;
-                }
-            }
+            public float MaxVerticalAngle = 45;
 
-            if (angle < min) return min;
-            else if (angle > max) return max;
-            else return angle;
+            public float MaxHorizontalAngle = 60;
+
+            public float HorizontalRotSpeed = 25;
+
+            public float VerticalRotSpeed = 25;
+
+            public float MobileHorizontalRotSpeed = 25;
+
+            public float MobileVerticalRotSpeed = 25;
         }
 
     }
-
 }

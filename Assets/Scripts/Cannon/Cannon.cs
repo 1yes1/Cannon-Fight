@@ -9,25 +9,21 @@ using Zenject;
 
 namespace CannonFightBase
 {
-    public class Cannon : MonoBehaviour, IDamageable,ICannonBehaviour
+    public class Cannon : MonoBehaviour,ICannonBehaviour
     {
-        public event Action OnDieEvent;
-
         [SerializeField] private GameObject _rotatorH;
 
         [SerializeField] private GameObject _rotatorV;
 
-        [SerializeField] private GameObject _cannonBallSpawnPoint;
-
-        [SerializeField] private float _health = 100;
+        [SerializeField] private Transform _cannonBallSpawnPoint;
 
         private PlayerManager _playerManager;
 
         private CannonController _cannonController;
 
-        private CannonProperties _cannonProperties;
-
         private CannonSkillHandler _cannonSkillHandler;
+
+        private CannonDamageHandler _cannonDamageHandler;
 
         private FireController _fireController;
 
@@ -56,33 +52,33 @@ namespace CannonFightBase
             }
         }
 
+        public PlayerManager PlayerManager => _playerManager;
+
         public PhotonView OwnPhotonView => _photonView;
-
-        public float Health
-        {
-            get { return _health; }
-            set
-            {
-                _health = (value < 0) ? 0 : value;
-
-                //if (_photonView.IsMine)
-                    GameEventCaller.Instance.OnOurPlayerHealthChanged();
-            }
-        }
 
         public bool IsDead => _isDead;
 
         public int KillCount => _killCount;
 
+        public int Health => _cannonDamageHandler.Health;
+
         public CannonSkillHandler CannonSkillHandler => _cannonSkillHandler;
 
-        public GameObject CannonBallSpawnPoint => _cannonBallSpawnPoint;
+        public Transform CannonBallSpawnPoint => _cannonBallSpawnPoint;
+
+        public Rigidbody Rigidbody => GetComponent<Rigidbody>();
 
         [Inject]
-        public void Construct(FireController fireController, CannonSkillHandler cannonSkillHandler)
+        public void Construct(
+            FireController fireController, 
+            CannonSkillHandler cannonSkillHandler,
+            CannonController cannonController,
+            CannonDamageHandler cannonDamageHandler)
         {
             _fireController = fireController;
             _cannonSkillHandler = cannonSkillHandler;
+            _cannonController = cannonController;
+            _cannonDamageHandler = cannonDamageHandler;
         }
 
         public void OnSpawn(PlayerManager playerManager)
@@ -93,26 +89,22 @@ namespace CannonFightBase
         private void Awake()
         {
             _photonView = GetComponent<PhotonView>();
-
             if (!_photonView.IsMine)
                 return;
 
             LayerMask layerMask = LayerMask.NameToLayer("Player");
             gameObject.layer = layerMask;
             
-            _cannonController = GetComponent<CannonController>();
-            _cannonProperties = GetComponent<CannonProperties>();
             _animation = _rotatorV.GetComponent<Animation>();
+
         }
-
-
 
         private void OnEnable()
         {
             if (!_photonView.IsMine)
                 return;
 
-            _fireController.OnFireEvent += OnFire;
+            GameEventReceiver.OnPlayerFiredEvent += OnFire;
 
             //GameEventReceiver.OnSkillBarFilledEvent += SetSkillProperty;
         }
@@ -153,61 +145,34 @@ namespace CannonFightBase
             GameEventCaller.Instance.OnPotionCollected(potion);
         }
 
+        public void Boost(float multiplier)
+        {
+            _cannonController.Boost(multiplier);
+        }
 
-
-        public void TakeDamage(float damage, Vector3 hitPoint, Player attackerPlayer)
+        public void TakeDamage(int damage, Vector3 hitPoint, Player attackerPlayer)
         {
             if (!_photonView.IsMine)
                 return;
 
-            Health -= damage;
-
-            print("Get Damage: " + damage);
-
-            ParticleSystem particleSystem = ParticleManager.Instance.CreateAndPlay(ParticleManager.Instance.takeDamageParticle, transform, hitPoint, false);
-            particleSystem.GetComponent<CFXR_Effect>().cameraShake.enabled = true;
-
-            if (Health <= 0)
-            {
-                Die(attackerPlayer);
-            }
-
-            _photonView.RPC(nameof(RPC_RunDamageParticle),RpcTarget.All,hitPoint);
+            _cannonDamageHandler.TakeDamage(damage,hitPoint,attackerPlayer);
         }
 
-        private void Die(Player attackerPlayer)
-        {
-            //if (!_photonView.IsMine)
-            //    return;
-            if (_isDead)
-                return;
 
+        public void SetSkillHealth(int health)
+        {
+            _cannonDamageHandler.Health = health;
+        }
+
+        public void Die(Player attackerPlayer)
+        {
             PlayerManager playerManager = PlayerManager.Find(attackerPlayer);
             playerManager.GetKill();
 
             _playerManager.OnDie(attackerPlayer);
 
-            _isDead = true;
-            OnDieEvent?.Invoke();
-            print("---You Died!----");
+            _cannonController.OnDie();
         }
-
-
-
-
-        [PunRPC]
-        private void RPC_RunDamageParticle(Vector3 hitPoint)
-        {
-            if (_photonView.IsMine)
-                return;
-
-            //print(" Alaannnn: " + PhotonNetwork.NickName);
-
-            ParticleManager.Instance.CreateAndPlay(ParticleManager.Instance.takeDamageParticle, null, hitPoint, false);
-        }
-
-
-
 
     }
 

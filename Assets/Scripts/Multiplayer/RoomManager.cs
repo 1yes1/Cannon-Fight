@@ -15,12 +15,8 @@ namespace CannonFightBase
 
         private bool _isGameSceneLoaded = false;
 
-        [SerializeField] private DefaultRoomProperties _defaultRoomProperties;
-
-
         public static RoomManager Instance => _instance;
 
-        public static DefaultRoomProperties DefaultRoomProperties => Instance._defaultRoomProperties;
 
         private void OnEnable()
         {

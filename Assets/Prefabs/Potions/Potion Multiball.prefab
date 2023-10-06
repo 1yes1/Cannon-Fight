@@ -262,7 +262,7 @@ GameObject:
   - component: {fileID: 8553096995256680012}
   - component: {fileID: 7675395553996912562}
   - component: {fileID: 5950442715707751010}
-  - component: {fileID: 1605824513747428550}
+  - component: {fileID: 6774988613878327539}
   m_Layer: 0
   m_Name: Potion Multiball
   m_TagString: Untagged
@@ -323,7 +323,7 @@ Animation:
   m_PlayAutomatically: 0
   m_AnimatePhysics: 0
   m_CullingType: 0
---- !u!114 &1605824513747428550
+--- !u!114 &6774988613878327539
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -332,7 +332,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 6800650970937721567}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e2a70d56ee7911645b39de95b12103b5, type: 3}
+  m_Script: {fileID: 11500000, guid: 2183667f15f2cfb45b2df18d18483011, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _skill: 0

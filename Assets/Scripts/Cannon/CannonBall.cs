@@ -14,7 +14,7 @@ namespace CannonFightBase
 {
     public class CannonBall:MonoBehaviour, IPoolable<IMemoryPool>
     {
-        private float _damage;
+        private int _damage;
 
         private IMemoryPool _pool;
 
@@ -24,7 +24,7 @@ namespace CannonFightBase
 
         private Rigidbody _rigidbody;
 
-        public void Initialize(float damage,Cannon cannon,Player player)
+        public void Initialize(int damage,Cannon cannon,Player player)
         {
             _damage = damage;
             _ownerCannon = cannon;
@@ -71,16 +71,9 @@ namespace CannonFightBase
 
         }
 
-        [Serializable]
-        public class Settings
+        public class Pool : MonoPoolableMemoryPool<IMemoryPool, CannonBall>
         {
-            public float FireFrequency = 0.75f;
 
-            public float FireDamage = 10;
-
-            public float FireRange = 50;
-
-            public float FireBallScale = 0.7f;
         }
 
     }

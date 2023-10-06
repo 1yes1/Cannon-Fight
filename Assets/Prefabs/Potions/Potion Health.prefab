@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 2665517298800010133}
   - component: {fileID: 7093676696875087812}
   - component: {fileID: 7924774697708445898}
-  - component: {fileID: 9160651878603995475}
+  - component: {fileID: -5509225301041597125}
   m_Layer: 0
   m_Name: Potion Health
   m_TagString: Untagged
@@ -155,7 +155,7 @@ Animation:
   m_PlayAutomatically: 0
   m_AnimatePhysics: 0
   m_CullingType: 0
---- !u!114 &9160651878603995475
+--- !u!114 &-5509225301041597125
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -164,11 +164,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 8086228706987470319}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e2a70d56ee7911645b39de95b12103b5, type: 3}
+  m_Script: {fileID: 11500000, guid: 90a3d4d3d292c8f4e942b7fd5d137d06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _skill: 2
-  _goGroundSpeed: 2
 --- !u!1 &8696358573294799982
 GameObject:
   m_ObjectHideFlags: 0

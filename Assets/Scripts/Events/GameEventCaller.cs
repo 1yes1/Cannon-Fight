@@ -101,6 +101,16 @@ namespace CannonFightBase
         {
             _gameEventReceiver.OnKill(killer, dead);
         }
+
+        public void OnPlayerFired()
+        {
+            _gameEventReceiver.OnPlayerFired();
+        }
+
+        public void OnBeforeSkillCountdownStarted(Skills skill,float time)
+        {
+            _gameEventReceiver.OnBeforeSkillCountdownStarted(skill,time);
+        }
     }
 
 }

@@ -57,11 +57,11 @@ WheelCollider:
     m_AsymptoteValue: 0.5
     m_Stiffness: 0.8
   m_SidewaysFriction:
-    m_ExtremumSlip: 0.5
-    m_ExtremumValue: 0.6
-    m_AsymptoteSlip: 0.5
-    m_AsymptoteValue: 0.75
-    m_Stiffness: 1
+    m_ExtremumSlip: 0.8
+    m_ExtremumValue: 1
+    m_AsymptoteSlip: 0.2
+    m_AsymptoteValue: 0.1
+    m_Stiffness: 2
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -128,11 +128,11 @@ WheelCollider:
     m_AsymptoteValue: 0.5
     m_Stiffness: 0.8
   m_SidewaysFriction:
-    m_ExtremumSlip: 0.5
-    m_ExtremumValue: 0.6
-    m_AsymptoteSlip: 0.5
-    m_AsymptoteValue: 0.75
-    m_Stiffness: 1
+    m_ExtremumSlip: 0.8
+    m_ExtremumValue: 1
+    m_AsymptoteSlip: 0.2
+    m_AsymptoteValue: 0.1
+    m_Stiffness: 2
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -274,11 +274,9 @@ GameObject:
   - component: {fileID: 7237865380203487800}
   - component: {fileID: -5750734509076137677}
   - component: {fileID: -7674019335970664583}
-  - component: {fileID: 5668834787951280394}
-  - component: {fileID: 6368468934152660216}
   - component: {fileID: 1479125968634123376}
-  - component: {fileID: 4419987241141192940}
   - component: {fileID: 1132920420878268896}
+  - component: {fileID: 6225228168628595631}
   m_Layer: 2
   m_Name: Cannon
   m_TagString: Cannon
@@ -304,6 +302,7 @@ Transform:
   - {fileID: 3772205518532849861}
   - {fileID: 362571606356598264}
   - {fileID: 2445196406848672258}
+  - {fileID: 1106745661830698719}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -402,49 +401,6 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 1
   m_UseLocal: 1
---- !u!114 &5668834787951280394
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1834139609788682667}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03d7418e0cbe9b049b329c9c06504f87, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _maxVerticalAngle: 12
-  _maxHorizontalAngle: 75
-  _horizontalRotSpeed: 25
-  _verticalRotSpeed: 25
-  _mobileHorizontalRotSpeed: 10
-  _mobileVerticalRotSpeed: 10
---- !u!114 &6368468934152660216
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1834139609788682667}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 939dc0310e8265e49922bc6e72cff948, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _motorForce: 2000
-  _breakForce: 1500
-  _maxSteerAngle: 15
-  _maxSpeed: 12
-  _upsideDownTorque: 5
-  _frontLeftWheelCollider: {fileID: 7796493059608989698}
-  _frontRightWheelCollider: {fileID: 3358294191865743686}
-  _rearLeftWheelCollider: {fileID: 5074029386771267393}
-  _rearRightWheelCollider: {fileID: 2619401739989112699}
-  _frontLeftWheelTransform: {fileID: 6773341418289817849}
-  _frontRightWheelTransform: {fileID: 7034073973171151581}
-  _rearLeftWheelTransform: {fileID: 8142410171387987993}
-  _rearRightWheelTransform: {fileID: 1847334099498967615}
 --- !u!114 &1479125968634123376
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -459,26 +415,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rotatorH: {fileID: 8958301589156200143}
   _rotatorV: {fileID: 1692211308109857130}
-  _cannonBallSpawnPoint: {fileID: 0}
+  _cannonBallSpawnPoint: {fileID: 6606380948602633816}
   _health: 100
---- !u!114 &4419987241141192940
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1834139609788682667}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d4b457c09246b740ade048b5b0cf073, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cannonBall: {fileID: 8603810811587003964, guid: 997d34fae555d24478528c63755a390c,
-    type: 3}
-  _fireFrequency: 0.2
-  _fireDamage: 10
-  _fireRange: 500
-  _fireBallScale: 0.7
 --- !u!114 &1132920420878268896
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -497,6 +435,24 @@ MonoBehaviour:
   _useSceneContext: 1
   _context: {fileID: 0}
   _bindType: 0
+--- !u!114 &6225228168628595631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1834139609788682667}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08eca9f7688a0a24685b89133b020c8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _scriptableObjectInstallers: []
+  _monoInstallers:
+  - {fileID: 6948092447955570424}
+  _installerPrefabs: []
+  _autoRun: 1
+  _kernel: {fileID: 0}
 --- !u!1 &2548277890691378164
 GameObject:
   m_ObjectHideFlags: 0
@@ -754,11 +710,11 @@ WheelCollider:
     m_AsymptoteValue: 0.5
     m_Stiffness: 0.8
   m_SidewaysFriction:
-    m_ExtremumSlip: 0.5
-    m_ExtremumValue: 0.6
-    m_AsymptoteSlip: 0.5
-    m_AsymptoteValue: 0.75
-    m_Stiffness: 1
+    m_ExtremumSlip: 0.8
+    m_ExtremumValue: 1
+    m_AsymptoteSlip: 0.2
+    m_AsymptoteValue: 0.1
+    m_Stiffness: 2
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -908,11 +864,11 @@ WheelCollider:
     m_AsymptoteValue: 0.5
     m_Stiffness: 0.8
   m_SidewaysFriction:
-    m_ExtremumSlip: 0.5
-    m_ExtremumValue: 0.6
-    m_AsymptoteSlip: 0.5
-    m_AsymptoteValue: 0.75
-    m_Stiffness: 1
+    m_ExtremumSlip: 0.8
+    m_ExtremumValue: 1
+    m_AsymptoteSlip: 0.2
+    m_AsymptoteValue: 0.1
+    m_Stiffness: 2
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -1268,6 +1224,64 @@ Transform:
   m_Father: {fileID: 7888563341216712891}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7826215060406167395
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1106745661830698719}
+  - component: {fileID: 6948092447955570424}
+  m_Layer: 2
+  m_Name: Installer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1106745661830698719
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7826215060406167395}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7888563341216712891}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6948092447955570424
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7826215060406167395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fff86e5ff2ffde4b8f2850d068b5cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cannonControllerSettings:
+    MotorForce: 2000
+    BreakForce: 1500
+    MaxSteerAngle: 15
+    MaxSpeed: 12
+    UpsideDownTorque: 5
+    FrontLeftWheelCollider: {fileID: 7796493059608989698}
+    FrontRightWheelCollider: {fileID: 3358294191865743686}
+    RearLeftWheelCollider: {fileID: 5074029386771267393}
+    RearRightWheelCollider: {fileID: 2619401739989112699}
+    FrontLeftWheelTransform: {fileID: 6773341418289817849}
+    FrontRightWheelTransform: {fileID: 7034073973171151581}
+    RearLeftWheelTransform: {fileID: 8142410171387987993}
+    RearRightWheelTransform: {fileID: 1847334099498967615}
 --- !u!1 &7857005873350148534
 GameObject:
   m_ObjectHideFlags: 0

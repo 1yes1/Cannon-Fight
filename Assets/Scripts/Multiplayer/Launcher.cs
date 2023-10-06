@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Zenject;
 
 namespace CannonFightBase
 {
@@ -24,7 +25,10 @@ namespace CannonFightBase
 
         [SerializeField] private TMP_InputField _nameText;
 
+        private Settings _settings;
+
         private string _gameVersion = "1";
+
 
         public static Launcher Instance => _instance;
 
@@ -36,6 +40,12 @@ namespace CannonFightBase
             if(!PhotonNetwork.LocalPlayer.IsMasterClient)
                 PhotonNetwork.AutomaticallySyncScene = true;
 
+        }
+
+        [Inject]
+        public void Construct(Settings settings)
+        {
+            _settings = settings;
         }
 
 
@@ -74,10 +84,10 @@ namespace CannonFightBase
         private void CheckStartingGame()
         {
             print("PhotonNetwork.CurrentRoom.PlayerCount: " + PhotonNetwork.CurrentRoom.PlayerCount);
-            if (PhotonNetwork.CurrentRoom.PlayerCount == RoomManager.DefaultRoomProperties.MinPlayersCountToStart)
+            if (PhotonNetwork.CurrentRoom.PlayerCount == _settings.MinPlayersCountToStart)
             {
                 //PhotonNetwork.LocalPlayer.SetCustomProperties();
-                UIManager.GetView<MatchingMenuView>().StartCountdown(OnCountdownFinished);
+                UIManager.GetView<MatchingMenuView>().StartCountdown(_settings.GameStartCountdown,OnCountdownFinished);
             }
         }
 
@@ -142,6 +152,14 @@ namespace CannonFightBase
             if(PhotonNetwork.LocalPlayer.IsMasterClient)
                 PhotonNetwork.LoadLevel(1);
 
+        }
+
+        [Serializable]
+        public class Settings
+        {
+            public int MinPlayersCountToStart = 2;
+
+            public float GameStartCountdown = 1;
         }
 
     }

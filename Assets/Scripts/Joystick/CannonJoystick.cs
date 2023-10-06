@@ -1,16 +1,7 @@
-using CannonFightUI;
-using EasyButtons;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.Rendering.Universal;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using UnityEngine.UIElements;
-using static CannonFightBase.JoystickView;
-using Image = UnityEngine.UI.Image;
 
 namespace CannonFightBase
 {

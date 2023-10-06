@@ -33,6 +33,8 @@ namespace CannonFightBase
 
         public static event Action<Skill> OnSkillEndedEvent;
 
+        public static event Action<Skills,float> OnBeforeSkillCountdownStartedEvent;
+
         public static event Action<Chest> OnChestOpenedEvent;
 
         public static event Action<Cannon> OnBoostStartedEvent;
@@ -40,6 +42,8 @@ namespace CannonFightBase
         public static event Action<Cannon> OnBoostEndedEvent;
 
         public static event Action<int> OnLeftCannonsCountChangedEvent;
+
+        public static event Action OnPlayerFiredEvent;
 
         public void OnMobileFireButtonClicked()
         {
@@ -119,6 +123,16 @@ namespace CannonFightBase
         public void OnKill(Player killer, Player dead)
         {
             OnKillEvent?.Invoke(killer,dead);
+        }
+
+        public void OnPlayerFired()
+        {
+            OnPlayerFiredEvent?.Invoke();
+        }
+
+        public void OnBeforeSkillCountdownStarted(Skills skill,float time)
+        {
+            OnBeforeSkillCountdownStartedEvent?.Invoke(skill,time);
         }
     }
 }

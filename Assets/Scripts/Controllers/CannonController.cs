@@ -3,26 +3,17 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 namespace CannonFightBase
 {
-    public class CannonController : MonoBehaviour, ICannonBehaviour
+    public class CannonController : IFixedTickable,ITickable,IInitializable,ICannonBehaviour
     {
-        [SerializeField] private float _motorForce, _breakForce, _maxSteerAngle, _maxSpeed;
+        private Settings  _settings;
 
-        [SerializeField] private float _upsideDownTorque = 5;
+        private Transform _transform;
 
-        [SerializeField] private WheelCollider _frontLeftWheelCollider, _frontRightWheelCollider;
-
-        [SerializeField] private WheelCollider _rearLeftWheelCollider, _rearRightWheelCollider;
-
-        [SerializeField] private Transform _frontLeftWheelTransform, _frontRightWheelTransform;
-
-        [SerializeField] private Transform _rearLeftWheelTransform, _rearRightWheelTransform;
-
-        private PhotonView _photonView;
-
-        private Cannon _cannon; 
+        private Cannon _cannon;
 
         private Rigidbody _rigidbody;
 
@@ -34,42 +25,38 @@ namespace CannonFightBase
 
         private bool _isBoosting = false;
 
+        public CannonController(Cannon cannon,Settings settings)
+        {
+            _cannon = cannon;
+            _settings = settings;
+        }
+
+        public void Initialize()
+        {
+            _rigidbody = _cannon.Rigidbody;
+            _transform = _cannon.transform;
+            
+            _rigidbody.maxLinearVelocity = _settings.MaxSpeed;
+
+        }
+
         public void OnSpawn(PlayerManager playerManager)
         {
-            if (!_photonView.IsMine)
+            if (!_cannon.OwnPhotonView.IsMine)
                 return;
 
-            _cannon.OnDieEvent += OnDie;
         }
 
         private void OnDisable()
         {
-            if (!_photonView.IsMine)
+            if (!_cannon.OwnPhotonView.IsMine)
                 return;
 
-            _cannon.OnDieEvent -= OnDie;
         }
 
-        private void Awake()
+        public void FixedTick()
         {
-            _photonView = GetComponent<PhotonView>();
-
-            if (!_photonView.IsMine)
-                return;
-
-            _cannon = GetComponent<Cannon>();
-
-            _rigidbody = GetComponent<Rigidbody>();
-            _rigidbody.maxLinearVelocity = _maxSpeed;
-        }
-        private void Start()
-        {
-
-        }
-
-        private void FixedUpdate()
-        {
-            if (!_photonView.IsMine)
+            if (!_cannon.OwnPhotonView.IsMine)
                 return;
 
             if (_cannon.IsDead)
@@ -81,9 +68,10 @@ namespace CannonFightBase
             UpdateWheels();
         }
 
-        private void Update()
+
+        public void Tick()
         {
-            if (!_photonView.IsMine)
+            if (!_cannon.OwnPhotonView.IsMine)
                 return;
 
             if (_cannon.IsDead)
@@ -104,7 +92,7 @@ namespace CannonFightBase
                 // Acceleration Input
                 verticalInput = CannonJoystick.Vertical;
 
-                float localForwardVelocity = Vector3.Dot(_rigidbody.velocity, transform.forward);
+                float localForwardVelocity = Vector3.Dot(_rigidbody.velocity, _transform.forward);
 
                 //print(localForwardVelocity);
                 // Breaking Input
@@ -137,33 +125,33 @@ namespace CannonFightBase
 
         private void HandleMotor()
         {
-            _frontLeftWheelCollider.motorTorque = verticalInput * _motorForce;
-            _frontRightWheelCollider.motorTorque = verticalInput * _motorForce;
-            currentbreakForce = isBreaking ? _breakForce : 0f;
+            _settings.FrontLeftWheelCollider.motorTorque = verticalInput * _settings.MotorForce;
+            _settings.FrontRightWheelCollider.motorTorque = verticalInput * _settings.MotorForce;
+            currentbreakForce = isBreaking ? _settings.BreakForce : 0f;
             ApplyBreaking();
         }
 
         private void ApplyBreaking()
         {
-            _frontRightWheelCollider.brakeTorque = currentbreakForce;
-            _frontLeftWheelCollider.brakeTorque = currentbreakForce;
-            _rearLeftWheelCollider.brakeTorque = currentbreakForce;
-            _rearRightWheelCollider.brakeTorque = currentbreakForce;
+            _settings.FrontRightWheelCollider.brakeTorque = currentbreakForce;
+            _settings.FrontLeftWheelCollider.brakeTorque = currentbreakForce;
+            _settings.RearLeftWheelCollider.brakeTorque = currentbreakForce;
+            _settings.RearRightWheelCollider.brakeTorque = currentbreakForce;
         }
 
         private void HandleSteering()
         {
-            currentSteerAngle = _maxSteerAngle * horizontalInput;
-            _frontLeftWheelCollider.steerAngle = currentSteerAngle;
-            _frontRightWheelCollider.steerAngle = currentSteerAngle;
+            currentSteerAngle = _settings.MaxSteerAngle * horizontalInput;
+            _settings.FrontLeftWheelCollider.steerAngle = currentSteerAngle;
+            _settings.FrontRightWheelCollider.steerAngle = currentSteerAngle;
         }
 
         private void UpdateWheels()
         {
-            UpdateSingleWheel(_frontLeftWheelCollider, _frontLeftWheelTransform);
-            UpdateSingleWheel(_frontRightWheelCollider, _frontRightWheelTransform);
-            UpdateSingleWheel(_rearRightWheelCollider, _rearRightWheelTransform);
-            UpdateSingleWheel(_rearLeftWheelCollider, _rearLeftWheelTransform);
+            UpdateSingleWheel(_settings.FrontLeftWheelCollider, _settings.FrontLeftWheelTransform);
+            UpdateSingleWheel(_settings.FrontRightWheelCollider, _settings.FrontRightWheelTransform);
+            UpdateSingleWheel(_settings.RearRightWheelCollider, _settings.RearRightWheelTransform);
+            UpdateSingleWheel(_settings.RearLeftWheelCollider, _settings.RearLeftWheelTransform);
         }
 
         private void UpdateSingleWheel(WheelCollider wheelCollider, Transform wheelTransform)
@@ -175,7 +163,7 @@ namespace CannonFightBase
             wheelTransform.position = pos;
         }
 
-        private void OnDie()
+        public void OnDie()
         {
             _rigidbody.isKinematic = true;
         }
@@ -184,40 +172,57 @@ namespace CannonFightBase
         {
             _isBoosting = true;
             _rigidbody.maxLinearVelocity = boostMultiplier;
-            _rigidbody.velocity = transform.forward * boostMultiplier;
-            Invoke(nameof(StopBoosting), 3);
-            GameEventCaller.Instance.OnBoostStarted(GetComponent<Cannon>());
+            _rigidbody.velocity = _transform.forward * boostMultiplier;
+            _cannon.Invoke(nameof(StopBoosting), 3);
+            GameEventCaller.Instance.OnBoostStarted(_cannon);
         }
 
         private void StopBoosting()
         {
             _isBoosting = false;
-            _rigidbody.maxLinearVelocity = _maxSpeed;
-            GameEventCaller.Instance.OnBoostEnded(GetComponent<Cannon>());
+            _rigidbody.maxLinearVelocity = _settings.MaxSpeed;
+            GameEventCaller.Instance.OnBoostEnded(_cannon);
         }
 
         private void CheckUpsideDown()
         {
-            float val = Vector3.Dot(transform.up, Vector3.down);
+            float val = Vector3.Dot(_transform.up, Vector3.down);
 
             if (val < 0)
                 return;
 
-            val = Vector3.Dot(transform.right, Vector3.up);
+            val = Vector3.Dot(_transform.right, Vector3.up);
             //print(val);
             if (val > 0.12f)
             {
-                _rigidbody.AddTorque(-transform.forward * _upsideDownTorque);
+                _rigidbody.AddTorque(-_transform.forward * _settings.UpsideDownTorque);
                 //print("Right");
             }
             else
             {
-                _rigidbody.AddTorque(transform.forward * _upsideDownTorque);
+                _rigidbody.AddTorque(_transform.forward * _settings.UpsideDownTorque);
                 //print("Left");
             }
 
         }
 
+
+        [Serializable]
+        public class Settings
+        {
+            public float MotorForce, BreakForce, MaxSteerAngle, MaxSpeed;
+
+            public float UpsideDownTorque = 5;
+
+            public WheelCollider FrontLeftWheelCollider, FrontRightWheelCollider;
+
+            public WheelCollider RearLeftWheelCollider, RearRightWheelCollider;
+
+            public Transform FrontLeftWheelTransform, FrontRightWheelTransform;
+
+            public Transform RearLeftWheelTransform, RearRightWheelTransform;
+        }
+        
     }
 
 }
