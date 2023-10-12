@@ -41,7 +41,7 @@ namespace CannonFightBase
 
         private void OnOurPlayerSpawned()
         {
-            UpdateHealthText();
+            //UpdateHealthText();
         }
 
         private void UpdateCannonsLeftText(int leftCannonsCount)

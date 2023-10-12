@@ -15,6 +15,8 @@ namespace CannonFightBase
     {
         private static Launcher _instance;
 
+        private Settings _settings;
+
         public static event Action OnJoinedRoomEvent;
 
         public static event Action OnLeftRoomEvent;
@@ -24,8 +26,8 @@ namespace CannonFightBase
         public static event Action<Player> OnPlayerLeftRoomEvent;
 
         [SerializeField] private TMP_InputField _nameText;
+        [SerializeField] private SceneContext _sceneContext;
 
-        private Settings _settings;
 
         private string _gameVersion = "1";
 
@@ -52,8 +54,13 @@ namespace CannonFightBase
         void Start()
         {
             Connect();
+
+            Invoke(nameof(Run), 2);
         }
 
+        void Run()
+        {
+        }
 
         public void Connect()
         {
@@ -157,7 +164,9 @@ namespace CannonFightBase
         [Serializable]
         public class Settings
         {
-            public int MinPlayersCountToStart = 2;
+            public int MinPlayersCountToStart = 1;
+
+            public int MinPlayersCountToLoadSettings = 2;
 
             public float GameStartCountdown = 1;
         }

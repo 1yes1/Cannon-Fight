@@ -12,3 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8721181f6e463554db8b687d07eb98bf, type: 3}
   m_Name: ServerSettingsInstaller
   m_EditorClassIdentifier: 
+  LauncherSettings:
+    MinPlayersCountToStart: 1
+    MinPlayersCountToLoadSettings: 2
+    GameStartCountdown: 1

@@ -35,7 +35,7 @@ public class CameraController : MonoBehaviour
     {
         virtualCamera = GetComponent<CinemachineVirtualCamera>();
         cannon = GetComponentInParent<Cannon>();
-        _photonView = GetComponent<PhotonView>();
+        _photonView = cannon.transform.GetComponent<PhotonView>();
     }
 
     private void Start()

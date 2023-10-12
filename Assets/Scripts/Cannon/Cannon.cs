@@ -9,15 +9,11 @@ using Zenject;
 
 namespace CannonFightBase
 {
-    public class Cannon : MonoBehaviour,ICannonBehaviour
+    public class Cannon : MonoBehaviour,ICannonBehaviour, IDamageable
     {
-        [SerializeField] private GameObject _rotatorH;
-
-        [SerializeField] private GameObject _rotatorV;
-
-        [SerializeField] private Transform _cannonBallSpawnPoint;
-
         private PlayerManager _playerManager;
+
+        private CannonView _cannonView;
 
         private CannonController _cannonController;
 
@@ -26,8 +22,6 @@ namespace CannonFightBase
         private CannonDamageHandler _cannonDamageHandler;
 
         private FireController _fireController;
-
-        private Animation _animation;
 
         private PhotonView _photonView;
 
@@ -64,21 +58,21 @@ namespace CannonFightBase
 
         public CannonSkillHandler CannonSkillHandler => _cannonSkillHandler;
 
-        public Transform CannonBallSpawnPoint => _cannonBallSpawnPoint;
-
-        public Rigidbody Rigidbody => GetComponent<Rigidbody>();
+        public Rigidbody Rigidbody => _cannonView.Rigidbody;
 
         [Inject]
         public void Construct(
             FireController fireController, 
             CannonSkillHandler cannonSkillHandler,
             CannonController cannonController,
-            CannonDamageHandler cannonDamageHandler)
+            CannonDamageHandler cannonDamageHandler,
+            CannonView cannonView)
         {
             _fireController = fireController;
             _cannonSkillHandler = cannonSkillHandler;
             _cannonController = cannonController;
             _cannonDamageHandler = cannonDamageHandler;
+            _cannonView = cannonView;
         }
 
         public void OnSpawn(PlayerManager playerManager)
@@ -95,49 +89,6 @@ namespace CannonFightBase
             LayerMask layerMask = LayerMask.NameToLayer("Player");
             gameObject.layer = layerMask;
             
-            _animation = _rotatorV.GetComponent<Animation>();
-
-        }
-
-        private void OnEnable()
-        {
-            if (!_photonView.IsMine)
-                return;
-
-            GameEventReceiver.OnPlayerFiredEvent += OnFire;
-
-            //GameEventReceiver.OnSkillBarFilledEvent += SetSkillProperty;
-        }
-
-        private void OnDisable()
-        {
-            if (!_photonView.IsMine)
-                return;
-
-            //GameEventReceiver.OnSkillBarFilledEvent -= SetSkillProperty;
-        }
-
-
-        private void Start()
-        {
-
-        }
-
-        public void GetRotators(out GameObject rotatorH, out GameObject rotatorV)
-        {
-            rotatorH = this._rotatorH;
-            rotatorV = this._rotatorV;
-        }
-
-        public Vector3 GetFireForwardDirection()
-        {
-            return _rotatorV.transform.forward;
-        }
-
-        private void OnFire()
-        {
-            _animation.Stop();
-            _animation.Play();
         }
 
         public void OnPotionCollected(Potion potion)
@@ -173,6 +124,13 @@ namespace CannonFightBase
 
             _cannonController.OnDie();
         }
+
+
+
+        public class Factory : PlaceholderFactory<Cannon>
+        {
+        }
+
 
     }
 

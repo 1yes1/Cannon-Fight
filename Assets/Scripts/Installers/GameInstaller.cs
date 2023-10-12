@@ -13,14 +13,18 @@ namespace CannonFightBase
 
         public override void InstallBindings()
         {
+            //Container.Bind<Cannon>().FromComponentInHierarchy().AsSingle();
+
             Container.Bind<ParticleManager>().FromComponentInHierarchy().AsSingle();
 
             Container.Bind<Chest>().FromComponentsInHierarchy().AsSingle();
 
-            Container.Bind<CannonSkillHandler>().AsSingle();
-            Container.Bind<CannonDamageHandler>().AsSingle();
-            Container.BindInterfacesAndSelfTo<FireController>().AsSingle();
-            Container.BindInterfacesAndSelfTo<AimController>().AsSingle();
+            Container.BindFactory<PlayerManager, PlayerManager.Factory>().FromComponentInNewPrefab(_settings.PlayerManagerPrefab).UnderTransformGroup("Cannons");
+
+            Container.BindFactory<Cannon, Cannon.Factory>()
+                .FromSubContainerResolve()
+                .ByNewPrefabInstaller<CannonInstaller>(_settings.CannonPrefab)
+                .UnderTransformGroup("Cannons");
 
             Container.BindFactory<CannonBall, CannonBall.Factory>()
             .FromPoolableMemoryPool<CannonBall, CannonBall.Pool>(poolBinder => poolBinder
@@ -33,11 +37,23 @@ namespace CannonFightBase
             .WithInitialSize(5)
             .FromComponentInNewPrefab(_settings.Potion)
             .UnderTransformGroup("PotionPool"));
+
+
         }
+
+
+        void InstallExecutionOrder()
+        {
+            //Container.BindExecutionOrder<AimController>(-30);
+            //Container.BindExecutionOrder<FireController>(-40);
+        }
+
 
         [Serializable]
         public class Settings
         {
+            public Cannon CannonPrefab;
+            public PlayerManager PlayerManagerPrefab;
             public CannonBall CannonBallPrefab;
             public Potion Potion;
         }

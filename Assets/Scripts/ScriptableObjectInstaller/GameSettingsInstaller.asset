@@ -13,6 +13,10 @@ MonoBehaviour:
   m_Name: GameSettingsInstaller
   m_EditorClassIdentifier: 
   Prefabs:
+    CannonPrefab: {fileID: 2035887262297318567, guid: 7b53674444e1ab044876138ca6891108,
+      type: 3}
+    PlayerManagerPrefab: {fileID: 1510533428790299928, guid: 97b0d50bbe09e0c4386f9670470c9e9e,
+      type: 3}
     CannonBallPrefab: {fileID: 8603810811587003964, guid: 997d34fae555d24478528c63755a390c,
       type: 3}
     Potion: {fileID: 8497418219458924009, guid: 8e9e874197dab294ca88a06753c70db2,

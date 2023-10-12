@@ -5,15 +5,21 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using Zenject;
+using static UnityEngine.Rendering.DebugUI;
 
 namespace CannonFightBase
 {
-    public class FireController : ITickable
+    public delegate void RpcDelegate(object[] parameters, PhotonMessageInfo info);
+
+    public class FireController : ITickable,IInitializable
     {
         private Settings _settings;
 
         private ParticleSettings _particleSettings;
+
+        private RPCMediator _RPCMediator;
 
         private CannonSkillHandler.Settings _cannonSkillHandlerSettings;
 
@@ -22,6 +28,8 @@ namespace CannonFightBase
         private Transform _crosshair;
 
         private Cannon _cannon;
+
+        private CannonView _cannonView;
 
         private CannonBall.Factory _cannonBallFactory;
 
@@ -33,14 +41,20 @@ namespace CannonFightBase
 
         private float _damageMultiplier = 1;
 
-        public FireController(Cannon cannon,CannonBall.Factory cannonBallFactory,Settings settings,CannonSkillHandler.Settings cannonSkillHandlerSettings, ParticleSettings particleSettings)
+        private const byte RPC_FIRE = 1;
+
+        public Cannon Cannon => _cannon;
+
+        public FireController(Cannon cannon,CannonView cannonView,CannonBall.Factory cannonBallFactory,Settings settings,CannonSkillHandler.Settings cannonSkillHandlerSettings, ParticleSettings particleSettings,RPCMediator rpcMediator)
         {
             _cannonBallFactory = cannonBallFactory;
             _cannon = cannon;
             _settings = settings;
-            _ballSpawnPoint = _cannon.CannonBallSpawnPoint;
+            _cannonView = cannonView;
+            _ballSpawnPoint = cannonView.CannonBallSpawnPoint;
             _cannonSkillHandlerSettings = cannonSkillHandlerSettings;
             _particleSettings = particleSettings;
+            _RPCMediator = rpcMediator;
 
             GameEventReceiver.OnMobileFireButtonClickedEvent += StartFire;
             GameEventReceiver.OnSkillBarFilledEvent += OnSkillBarFilled;
@@ -52,12 +66,13 @@ namespace CannonFightBase
 
         public void Initialize()
         {
-            _photonView = _cannon.OwnPhotonView;
+            _photonView = _cannonView.PhotonView;
+            _RPCMediator.AddToRPC(RPC_FIRE, RPC_Fire);
         }
 
         public void Tick()
         {
-            if (!_cannon.OwnPhotonView.IsMine)
+            if (!_photonView.IsMine)
                 return;
 
             if (_cannon.IsDead)
@@ -93,7 +108,7 @@ namespace CannonFightBase
             }
         }
 
-        private void StartFire()
+        public void StartFire()
         {
             if(_crosshair == null)
                 _crosshair = GameObject.FindWithTag("Crosshair").transform;
@@ -108,54 +123,23 @@ namespace CannonFightBase
 
                 Fire(_cannon.OwnPhotonView.Owner, _ballSpawnPoint.position, direction, _settings.FireRange, _settings.FireDamage);
 
-
-                //Burada oluþturulan toplar default olarak OwnCannonBall layer ýna sahip
-                //CannonBall cannonBall = _cannonBallFactory.Create();
-                ////CannonBall cannonBall = Instantiate(_cannonProperties.CannonBall, _ballSpawnPoint.position, _ballSpawnPoint.rotation);
-                //cannonBall.Initialize(_settings.FireDamage * _damageMultiplier, _cannon, _cannon.OwnPhotonView.Owner);
-
-                //cannonBall.transform.position = _ballSpawnPoint.position;
-                //cannonBall.transform.rotation = _ballSpawnPoint.rotation;
-
-                //Rigidbody rigidbody = cannonBall.GetComponent<Rigidbody>();
-                //rigidbody.AddForce(direction * _settings.FireRange, ForceMode.Impulse);
-
                 _frequencyStatus = _settings.FireFrequency;
-
 
                 GameEventCaller.Instance.OnPlayerFired();
 
-                _cannon.OwnPhotonView.RPC(nameof(RPC_StartFire), RpcTarget.Others, _ballSpawnPoint.position, direction, _settings.FireRange, _settings.FireDamage);
+                //_cannon.OwnPhotonView.RPC(nameof(_RPCMediator.RPC_StartFire), RpcTarget.Others, new object[] { _ballSpawnPoint.position, direction, _settings.FireRange, _settings.FireDamage });
+
+                _cannon.OwnPhotonView.RPC(nameof(_RPCMediator.RpcForwarder), RpcTarget.Others, RPC_FIRE, new object[] {_ballSpawnPoint.position, direction, _settings.FireRange, _settings.FireDamage });
             }
         }
 
-        [PunRPC]
-        private void RPC_StartFire(Vector3 ballPosition,Vector3 ballDirection, float fireRange, int fireDamage,PhotonMessageInfo info)
+        public void RPC_Fire(object[] objects, PhotonMessageInfo info)
         {
-            if (_cannon.OwnPhotonView.IsMine)
-                return;
-
-            Player owner = info.Sender;
-
-            //CannonBall cannonBall = _cannonBallFactory.Create();
-            //cannonBall.Initialize(fireDamage,_cannon, owner);
-            Fire(owner, ballPosition, ballDirection, fireRange, fireDamage);
-
-            //cannonBall.transform.position = _ballSpawnPoint.position;
-            //cannonBall.transform.rotation = _ballSpawnPoint.rotation;
-
-            //ParticleManager.Instance.CreateAndPlay(ParticleManager.Instance.fireCannonBallParticle, _ballSpawnPoint, ballPosition);
-
-            //Burada diðer kullanýcýlarýn toplarý oluþturulduðu için bu toplar bize hasar vermeli. Yani own deðil normal cannonball olmalý
-            //LayerMask layerMask = LayerMask.NameToLayer("CannonBall");
-            //cannonBall.gameObject.layer = layerMask;
-
-            //Rigidbody rigidbody = cannonBall.GetComponent<Rigidbody>();
-            //rigidbody.AddForce(ballDirection * fireRange, ForceMode.Impulse);
+            Fire(info.Sender, (Vector3)objects[0], (Vector3)objects[1], (float)objects[2], (int)objects[3]);
         }
 
 
-        private void Fire(Player owner,Vector3 ballPosition, Vector3 ballDirection, float fireRange, int fireDamage)
+        public void Fire(Player owner,Vector3 ballPosition, Vector3 ballDirection, float fireRange, int fireDamage)
         {
             CannonBall cannonBall = _cannonBallFactory.Create();
             cannonBall.Initialize(fireDamage, _cannon, owner);
@@ -235,6 +219,7 @@ namespace CannonFightBase
             public CannonDamageParticle.Factory ParticleFactory;
 
         }
+
 
     }
 }

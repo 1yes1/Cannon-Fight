@@ -15,7 +15,7 @@ namespace CannonFightBase
 
         public static event Action<Player> OnPlayerLeftRoomEvent;
 
-        public static event Action BeforeOurPlayerSpawnedEvent;
+        public static event Action OnBeforeOurPlayerSpawnedEvent;
 
         public static event Action OnOurPlayerSpawnedEvent;
 
@@ -90,9 +90,9 @@ namespace CannonFightBase
             OnOurPlayerHealthChangedEvent?.Invoke();
         }
 
-        public void BeforeOurPlayerSpawned()
+        public void OnBeforeOurPlayerSpawned()
         {
-            BeforeOurPlayerSpawnedEvent?.Invoke();
+            OnBeforeOurPlayerSpawnedEvent?.Invoke();
         }
 
         public void OnPlayerEnteredRoom(Player player)

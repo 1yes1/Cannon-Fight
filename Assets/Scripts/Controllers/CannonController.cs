@@ -15,6 +15,8 @@ namespace CannonFightBase
 
         private Cannon _cannon;
 
+        private CannonView _cannonView;
+
         private Rigidbody _rigidbody;
 
         private float horizontalInput, verticalInput;
@@ -25,15 +27,16 @@ namespace CannonFightBase
 
         private bool _isBoosting = false;
 
-        public CannonController(Cannon cannon,Settings settings)
+        public CannonController(Cannon cannon,CannonView view)
         {
             _cannon = cannon;
-            _settings = settings;
+            _settings = view.CannonControllerSettings;
+            _cannonView = view;
         }
 
         public void Initialize()
         {
-            _rigidbody = _cannon.Rigidbody;
+            _rigidbody = _cannonView.Rigidbody;
             _transform = _cannon.transform;
             
             _rigidbody.maxLinearVelocity = _settings.MaxSpeed;

@@ -41,7 +41,7 @@ namespace CannonFightBase
 
         private void Start()
         {
-            Invoke(nameof(StartFillChests), _chestSettings.StartFillTime);
+            //Invoke(nameof(StartFillChests), _chestSettings.StartFillTime);
         }
 
         private void Update()

@@ -37,9 +37,11 @@ namespace CannonFightBase
                 Destroy(gameObject);
                 return;
             }
-
-            DontDestroyOnLoad(gameObject);
-            _instance = this;
+            else
+            {
+                DontDestroyOnLoad(gameObject);
+                _instance = this;
+            }
         }
 
 

@@ -10,7 +10,7 @@ namespace CannonFightBase
 {
     public interface IGameEvents
     {
-        public void BeforeOurPlayerSpawned();
+        public void OnBeforeOurPlayerSpawned();
 
         public void OnOurPlayerSpawned();
 

@@ -17,6 +17,9 @@ namespace CannonFightBase
 
         private Cannon _currentCannon;
 
+        [Inject]
+        private Launcher.Settings _launcherSettings;
+
         private int _leftCannonsCount = 0;
 
         public static GameManager Instance => _instance;
@@ -34,9 +37,15 @@ namespace CannonFightBase
             set { _leftCannonsCount = value; GameEventCaller.OnLeftCannonsCountChanged(_leftCannonsCount); }
         }
 
+        public void Construct(Launcher.Settings settings)
+        {
+            _launcherSettings = settings;
+            print("Girrrr");
+        }
+
         private void OnEnable()
         {
-            GameEventReceiver.BeforeOurPlayerSpawnedEvent += SetCannon;//Bu eventte GameManager ile Cannon a ulaşılmıyor çünkü atama yapılmadı
+            GameEventReceiver.OnBeforeOurPlayerSpawnedEvent += OnBeforeOurPlayerSpawned;//Bu eventte GameManager ile Cannon a ulaşılmıyor çünkü atama yapılmadı
             GameEventReceiver.OnOurPlayerSpawnedEvent += OnOurPlayerSpawned;
             GameEventReceiver.OnPlayerEnteredRoomEvent += OnPlayerEnteredRoom;
             GameEventReceiver.OnPlayerLeftRoomEvent += OnPlayerLeftRoom;
@@ -46,7 +55,7 @@ namespace CannonFightBase
 
         private void OnDisable()
         {
-            GameEventReceiver.BeforeOurPlayerSpawnedEvent -= SetCannon;
+            GameEventReceiver.OnBeforeOurPlayerSpawnedEvent -= OnBeforeOurPlayerSpawned;
             GameEventReceiver.OnOurPlayerSpawnedEvent -= OnOurPlayerSpawned;
             GameEventReceiver.OnPlayerEnteredRoomEvent -= OnPlayerEnteredRoom;
             GameEventReceiver.OnPlayerLeftRoomEvent -= OnPlayerLeftRoom;
@@ -62,7 +71,6 @@ namespace CannonFightBase
             Initialize();
         }
 
-
         private void Initialize()
         {
             this.GameEventReceiver = new GameEventReceiver();
@@ -73,6 +81,16 @@ namespace CannonFightBase
                 item.RegisterCallerEvents();
             }
 
+        }
+
+        private void OnBeforeOurPlayerSpawned()
+        {
+            //if(PhotonNetwork.CurrentRoom.Players.Count >= _launcherSettings.MinPlayersCountToLoadSettings)
+
+            print("_launcherSettings.MinPlayersCountToStart: " + _launcherSettings.MinPlayersCountToStart);
+            print("Anlık Oyuncu: "+PhotonNetwork.CurrentRoom.Players.Count);
+
+            SetCannon();
         }
 
         private void SetCannon()

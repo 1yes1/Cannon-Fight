@@ -15,6 +15,8 @@ namespace CannonFightBase
 
         private Cannon _cannon;
 
+        private CannonView _cannonView;
+
         private GameObject _rotatorH;
 
         private GameObject _rotatorV;
@@ -27,33 +29,34 @@ namespace CannonFightBase
 
         private Transform _transform;
 
-        public AimController(Cannon cannon, Settings settings)
+        public AimController(Cannon cannon, CannonView cannonView, Settings settings)
         {
             _cannon = cannon;
             _settings = settings;
             _transform = cannon.transform;
-
+            _cannonView = cannonView;
             //if (!_photonView.IsMine)
             //    return;
-
+            Debug.Log("AimController Yüklendir");
             UnityEngine.Cursor.lockState = CursorLockMode.Confined;
-            _cannon.GetRotators(out _rotatorH, out _rotatorV);
+            _cannonView.GetRotators(out _rotatorH, out _rotatorV);
             _lastMousePosition = Input.mousePosition;
         }
 
 
         public void Tick()
         {
+            //return;
             if (!_cannon.OwnPhotonView.IsMine)
                 return;
 
             if (_cannon.IsDead)
                 return;
 
-            //if (Application.isFocused)
-            //    UnityEngine.Cursor.visible = false;
-            //else
-            //    return;
+            if (Application.isFocused)
+                UnityEngine.Cursor.visible = false;
+            else
+                return;
 
             if (GameManager.Instance.useAndroidControllers)
                 SetMobileController();

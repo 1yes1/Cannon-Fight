@@ -67,9 +67,9 @@ namespace CannonFightBase
             _gameEventReceiver.OnOurPlayerHealthChanged();
         }
 
-        public void BeforeOurPlayerSpawned()
+        public void OnBeforeOurPlayerSpawned()
         {
-            _gameEventReceiver.BeforeOurPlayerSpawned();
+            _gameEventReceiver.OnBeforeOurPlayerSpawned();
         }
 
         public void OnGameSceneLoaded()
