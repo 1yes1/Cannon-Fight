@@ -20,7 +20,7 @@ namespace CannonFightBase
 
         public void OnKill(Player killer, Player dead);
 
-        public void OnOurPlayerHealthChanged();
+        public void OnOurPlayerHealthChanged(int health);
 
         public void OnMobileFireButtonClicked();
 

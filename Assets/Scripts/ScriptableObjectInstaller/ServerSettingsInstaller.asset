@@ -15,4 +15,4 @@ MonoBehaviour:
   LauncherSettings:
     MinPlayersCountToStart: 1
     MinPlayersCountToLoadSettings: 2
-    GameStartCountdown: 1
+    GameStartCountdown: 0.1

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GameSettingsInstaller
   m_EditorClassIdentifier: 
   Prefabs:
-    CannonPrefab: {fileID: 2035887262297318567, guid: 7b53674444e1ab044876138ca6891108,
+    CannonPrefab: {fileID: 1532848633857551894, guid: 05cec7e0b912c804a98721e3b88cef50,
       type: 3}
     PlayerManagerPrefab: {fileID: 1510533428790299928, guid: 97b0d50bbe09e0c4386f9670470c9e9e,
       type: 3}
@@ -48,8 +48,8 @@ MonoBehaviour:
     Health: 1
     PotionFlightTime: 0.8
     StartFillTime: 0.1
-    StartFillFrequency: 0.1
-    RefillTime: 1
+    StartFillFrequency: 0.5
+    RefillTime: 2
   RampSettings:
     BoostMultiplier: 25
   PotionSettings:

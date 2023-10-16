@@ -17,8 +17,7 @@ namespace CannonFightBase
 
         private PlayerManager.Factory _playerManagerFactory;
 
-        public const byte SPAWN_PLAYER_MANAGER_EVENT_CODE = 0;
-        public const byte SPAWN_CANNON_EVENT_CODE = 1;
+
 
         public event Action OnSpawnPlayersEvent;
 
@@ -74,7 +73,7 @@ namespace CannonFightBase
                     CachingOption = EventCaching.AddToRoomCache
                 };
 
-                PhotonNetwork.RaiseEvent(SPAWN_PLAYER_MANAGER_EVENT_CODE, data, raiseEventOptions, SendOptions.SendUnreliable);
+                PhotonNetwork.RaiseEvent(EventCodeManager.SPAWN_PLAYER_MANAGER_EVENT_CODE, data, raiseEventOptions, SendOptions.SendUnreliable);
             }
             else
             {
@@ -87,7 +86,7 @@ namespace CannonFightBase
 
         public void EVENT_SpawnPlayerManager(EventData photonEvent)
         {
-            if (photonEvent.Code == SPAWN_PLAYER_MANAGER_EVENT_CODE)
+            if (photonEvent.Code == EventCodeManager.SPAWN_PLAYER_MANAGER_EVENT_CODE)
             {
                 object[] data = (object[])photonEvent.CustomData;
                 PlayerManager playerManager = _playerManagerFactory.Create();

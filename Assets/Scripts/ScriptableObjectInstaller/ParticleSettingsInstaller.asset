@@ -16,7 +16,7 @@ MonoBehaviour:
     FireCannonBallParticle: {fileID: 2172878749975733139, guid: e86376c67279c544f8411751f296566a,
       type: 3}
   CannonDamageHandlerParticles:
-    TakeDamageParticle: {fileID: 3924044575421212719, guid: 264f8ffd402305946811ca815350f6fc,
+    TakeDamageParticle: {fileID: 3924044575421212719, guid: 936f524092573c4418c4d36b19799853,
       type: 3}
   HittableParticles:
     HitParticle: {fileID: 3924044575421212719, guid: 264f8ffd402305946811ca815350f6fc,

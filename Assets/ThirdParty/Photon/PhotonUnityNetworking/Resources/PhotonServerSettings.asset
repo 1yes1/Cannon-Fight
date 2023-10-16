@@ -46,6 +46,8 @@ MonoBehaviour:
   - RPC_OnDie
   - RPC_StartFire
   - RpcForwarder
+  - RPCForwarder
+  - RPC_ChestStartedFilling
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

@@ -23,7 +23,7 @@ namespace CannonFightBase
 
         public static event Action<Player,Player> OnKillEvent;
 
-        public static event Action OnOurPlayerHealthChangedEvent;
+        public static event Action<int> OnOurPlayerHealthChangedEvent;
 
         public static event Action OnMobileFireButtonClickedEvent;
 
@@ -85,9 +85,9 @@ namespace CannonFightBase
             OnOurPlayerSpawnedEvent?.Invoke();
         }
 
-        public void OnOurPlayerHealthChanged()
+        public void OnOurPlayerHealthChanged(int health)
         {
-            OnOurPlayerHealthChangedEvent?.Invoke();
+            OnOurPlayerHealthChangedEvent?.Invoke(health);
         }
 
         public void OnBeforeOurPlayerSpawned()

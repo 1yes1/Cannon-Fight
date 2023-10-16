@@ -6,18 +6,26 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 namespace CannonFightBase
 {
-    public class CannonDamageHandler: IDamageable
+    public class CannonDamageHandler: IDamageable,IInitializable, IRpcMediator
     {
         private ParticleSettings _particleSettings;
 
+        private TakeDamageParticle.Factory _takeDamageParticleFactory;
+
         private Cannon _cannon;
+
+        private RPCMediator _rpcMediator;
 
         private int _health = 100;
 
-        private bool _isDead = false; 
+        private bool _isDead = false;
+
+        private const byte RPC_DAMAGE_PARTICLE = 2;
+
 
         public bool IsDead => _isDead;
 
@@ -28,21 +36,34 @@ namespace CannonFightBase
             {
                 _health = (value < 0) ? 0 : value;
 
-                //if (_photonView.IsMine)
-                GameEventCaller.Instance.OnOurPlayerHealthChanged();
+                if (_cannon.OwnPhotonView.IsMine)
+                    GameEventCaller.Instance.OnOurPlayerHealthChanged(_health);
             }
         }
-        public CannonDamageHandler(Cannon cannon, ParticleSettings particleSettings)
+        public CannonDamageHandler(Cannon cannon, ParticleSettings particleSettings, RPCMediator rpcMediator, TakeDamageParticle.Factory takeDamageParticleFactory)
         {
             _cannon = cannon;
             _particleSettings = particleSettings;
+            _rpcMediator = rpcMediator;
+            _takeDamageParticleFactory = takeDamageParticleFactory;
+        }
+
+        public void Initialize()
+        {
+            _rpcMediator.AddToRPC(RPC_DAMAGE_PARTICLE, this);
         }
 
         public void TakeDamage(int damage, Vector3 hitPoint, Player attackerPlayer)
         {
-            _health -= damage;
+            TakeDamageParticle particleSystem = ParticleManager.CreateWithFactory<TakeDamageParticle>(_takeDamageParticleFactory, hitPoint, null, false);
 
-            ParticleSystem particleSystem = ParticleManager.CreateAndPlay(_particleSettings.TakeDamageParticle, _cannon.transform, hitPoint, false);
+            //Take Damage i çalýþtýrmasý gereken bilgisayar bu bilgisayar deðilse devam etme. Particle oluþturmak yeterli
+            if (!_cannon.OwnPhotonView.IsMine)
+                return;
+
+            Health -= damage;
+
+            particleSystem.GetComponent<CFXR_Effect>().enabled = true;
             particleSystem.GetComponent<CFXR_Effect>().cameraShake.enabled = true;
 
             if (Health <= 0)
@@ -50,23 +71,20 @@ namespace CannonFightBase
                 Die(attackerPlayer);
             }
 
-            _cannon.OwnPhotonView.RPC(nameof(RPC_RunDamageParticle), RpcTarget.All, hitPoint);
+            _cannon.OwnPhotonView.RPC(nameof(_rpcMediator.RpcForwarder), RpcTarget.Others, RPC_DAMAGE_PARTICLE, new object[] { hitPoint });
         }
 
 
-
-
-        [PunRPC]
-        private void RPC_RunDamageParticle(Vector3 hitPoint)
+        public void RpcForwarder(object[] objects, PhotonMessageInfo info)
         {
-            if (_cannon.OwnPhotonView.IsMine)
-                return;
+            Vector3 hitPoint = (Vector3)objects[0];
+            RunDamageParticle(hitPoint);
+        }
 
-            //print(" Alaannnn: " + PhotonNetwork.NickName);
-
+        private void RunDamageParticle(Vector3 hitPoint)
+        {
             ParticleManager.CreateAndPlay(_particleSettings.TakeDamageParticle, null, hitPoint, false);
         }
-
 
 
         private void Die(Player attackerPlayer)
@@ -80,6 +98,8 @@ namespace CannonFightBase
 
             _isDead = true;
         }
+
+
 
         [Serializable]
         public class ParticleSettings

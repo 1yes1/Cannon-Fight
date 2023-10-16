@@ -1,3 +1,4 @@
+using CartoonFX;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace CannonFightBase
 
         protected ParticleSystem _particleSystem;
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             _pool.Despawn(this);
         }

@@ -8,12 +8,12 @@ namespace CannonFightBase
 {
     public class RPCMediator : MonoBehaviour
     {
-        private Dictionary<byte, RpcDelegate> _values;
+        private Dictionary<byte, IRpcMediator> _values;
         public bool dene = false;
-        public void AddToRPC(byte key, RpcDelegate rpcDelegate)
+        public void AddToRPC(byte key, IRpcMediator rpcMediator)
         {
             if(_values == null)
-                _values = new Dictionary<byte, RpcDelegate>();
+                _values = new Dictionary<byte, IRpcMediator>();
 
             dene = true;
             if (_values.ContainsKey(key))
@@ -21,7 +21,7 @@ namespace CannonFightBase
                 Debug.LogWarning("Keys cannot be the same!");
                 return;
             }
-            _values.Add(key, rpcDelegate);
+            _values.Add(key, rpcMediator);
         }
 
         //[PunRPC]
@@ -56,9 +56,9 @@ namespace CannonFightBase
             if (_values == null)
                 print("Heeey Ben null");
 
-            if (_values.TryGetValue(key, out RpcDelegate method))
+            if (_values.TryGetValue(key, out IRpcMediator rpcMediator))
             {
-                method(parameters,info);
+                rpcMediator.RpcForwarder(parameters,info);
             }
             else
             {

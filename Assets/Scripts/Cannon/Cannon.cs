@@ -85,7 +85,7 @@ namespace CannonFightBase
             _photonView = GetComponent<PhotonView>();
             if (!_photonView.IsMine)
                 return;
-
+            
             LayerMask layerMask = LayerMask.NameToLayer("Player");
             gameObject.layer = layerMask;
             
@@ -103,9 +103,6 @@ namespace CannonFightBase
 
         public void TakeDamage(int damage, Vector3 hitPoint, Player attackerPlayer)
         {
-            if (!_photonView.IsMine)
-                return;
-
             _cannonDamageHandler.TakeDamage(damage,hitPoint,attackerPlayer);
         }
 
@@ -125,7 +122,11 @@ namespace CannonFightBase
             _cannonController.OnDie();
         }
 
-
+        [PunRPC]
+        private void RPC_ChestStartedFilling(int chestIndex)
+        {
+            print("CHEST STARTED FILLING: " + chestIndex);
+        }
 
         public class Factory : PlaceholderFactory<Cannon>
         {

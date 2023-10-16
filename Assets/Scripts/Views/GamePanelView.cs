@@ -49,9 +49,9 @@ namespace CannonFightBase
             _cannonsLeftText.text = leftCannonsCount.ToString();
         }
 
-        private void UpdateHealthText()
+        private void UpdateHealthText(int health)
         {
-            _healthText.text = Cannon.Current.Health.ToString();
+            _healthText.text = health.ToString();
         }
 
         public void UpdateFrequencySlider(float val)

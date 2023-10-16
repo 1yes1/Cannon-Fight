@@ -15,6 +15,8 @@ namespace CannonFightBase
 
         public bool useAndroidControllers = false;
 
+        [SerializeField] private int _randomSeed = 999;
+
         private Cannon _currentCannon;
 
         [Inject]
@@ -40,7 +42,6 @@ namespace CannonFightBase
         public void Construct(Launcher.Settings settings)
         {
             _launcherSettings = settings;
-            print("Girrrr");
         }
 
         private void OnEnable()
@@ -67,6 +68,8 @@ namespace CannonFightBase
         {
             if (_instance == null)
                 _instance = this;
+
+            UnityEngine.Random.InitState(_randomSeed);
 
             Initialize();
         }

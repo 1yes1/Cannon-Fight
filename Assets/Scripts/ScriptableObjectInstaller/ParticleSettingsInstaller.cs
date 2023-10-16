@@ -33,5 +33,12 @@ public class ParticleSettingsInstaller : ScriptableObjectInstaller<ParticleSetti
         .FromComponentInNewPrefab(HittableParticles.HitParticle)
         .UnderTransformGroup("HitParticlePool"));
 
+        Container.BindFactory<TakeDamageParticle, TakeDamageParticle.Factory>()
+        .FromPoolableMemoryPool<TakeDamageParticle, TakeDamageParticle.Pool>(poolBinder => poolBinder
+        .WithInitialSize(5)
+        .FromComponentInNewPrefab(CannonDamageHandlerParticles.TakeDamageParticle)
+        .UnderTransformGroup("TakeDamageParticle"));
+
+
     }
 }

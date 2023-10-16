@@ -1,3 +1,6 @@
+using EasyButtons;
+using ExitGames.Client.Photon;
+using Photon.Pun;
 using Photon.Realtime;
 using System;
 using System.Collections;
@@ -10,6 +13,8 @@ namespace CannonFightBase
 {
     public class Chest : MonoBehaviour, IDamageable
     {
+        public event Action<Chest> OnChestFilled;
+
         [SerializeField] private Skills _skill;
 
         [SerializeField] private Transform _potionPlace;
@@ -22,7 +27,9 @@ namespace CannonFightBase
 
         private ParticleSettings _particleSettings;
 
-        private Animation _animation;
+        private AnimatorSettings _animatorSettings;
+
+        private Animator _animator;
 
         private Potion _potion;
 
@@ -34,7 +41,7 @@ namespace CannonFightBase
 
         private bool _isRefilling = false;
 
-        private bool _isAlreadyOpenedOneTime = false;
+        private bool _isFilled = false;
 
         private const string AnimChestOpen = "ChestOpen";
 
@@ -46,29 +53,43 @@ namespace CannonFightBase
 
         public bool IsOpened => _isOpened;
 
-        public bool IsAlreadyOpenedOneTime => _isAlreadyOpenedOneTime;
+        public bool IsFilled => _isFilled;
+
 
         private void Awake()
         {
-            _animation = GetComponent<Animation>();
+            _animator = GetComponent<Animator>();
         }
 
         [Inject]
-        public void Construct(Settings settings, Potion.Factory potionFactory, Potion.Settings potionSettings,ParticleSettings particleSettings)
+        public void Construct(Settings settings, Potion.Factory potionFactory, Potion.Settings potionSettings,ParticleSettings particleSettings, AnimatorSettings animatorSettings)
         {
             _settings = settings;
             _potionFactory = potionFactory;
             _potionSettings = potionSettings;
             _particleSettings = particleSettings;
+            _animatorSettings = animatorSettings;
+        }
+
+        private void Open()
+        {
+            _isOpened = true;
+            LastOpenedTime = Time.realtimeSinceStartup;
+
+            if(_potion != null)
+                _potion.ShowUp(_settings.PotionFlightTime, _potionTarget);
+
+            _animator.SetTrigger(_animatorSettings.OpenChest);
+            GameEventCaller.Instance.OnChestOpened(this);
         }
 
         public void Refill()
         {
             ChooseSkillRandomly();
-            _animation.Play(AnimChestFill);
+            _animator.SetTrigger(_animatorSettings.FillChest);
             _isRefilling = true;
             _isOpened = true; //Ýlk baþta açýlmýþ olsun sonradan doldurulsun
-            _isAlreadyOpenedOneTime = true;
+            _isFilled = true;
         }
 
         public void OnFillAnimationEnded()
@@ -82,6 +103,29 @@ namespace CannonFightBase
             _potion.transform.position = _potionPlace.transform.position;
             _potion.transform.rotation = Quaternion.identity;
             _potion.transform.SetParent(transform);
+            OnChestFilled?.Invoke(this);
+        }
+
+        [Button]
+        public void SetOpenState(bool isOpened)
+        {
+            if(isOpened)
+            {
+                Open();
+
+                if (_potion == null)
+                    return;
+                _potion.Dispose();
+                _potion = null;
+            }
+            else
+            {
+                //_animator.speed = 99;
+                //_animator.Play(_animatorSettings.OpenChest, -1,100);
+                //_animation.Sample();
+                //_animation.Stop();
+                //Potion da atanmalý
+            }
         }
 
         private Potion.PotionType GetRandomPotionProperties()
@@ -97,10 +141,10 @@ namespace CannonFightBase
             if (_isOpened)
                 return;
 
-            if (_animation.IsPlaying(AnimChestHit))
-                _animation.Stop();
+            //if (_animation.IsPlaying(AnimChestHit))
+            //    _animation.Stop();
 
-            _animation.Play(AnimChestHit);
+            //_animation.Play(AnimChestHit);
 
             _health -= damage;
 
@@ -115,19 +159,12 @@ namespace CannonFightBase
         }
 
 
-        private void Open()
-        {
-            _isOpened = true;
-            LastOpenedTime = Time.realtimeSinceStartup;
-            _potion.ShowUp(_settings.PotionFlightTime, _potionTarget);
-            _animation.Play(AnimChestOpen);
-            GameEventCaller.Instance.OnChestOpened(this);
-        }
 
         private void ChooseSkillRandomly()
         {
             _skill = (Skills)Random.Range(0, 3);
         }
+
 
         [Serializable]
         public class Settings
@@ -154,6 +191,14 @@ namespace CannonFightBase
         public class ParticleSettings
         {
             public ParticleSystem TakeDamageParticle;
+        }
+
+        [Serializable]
+        public class AnimatorSettings
+        {
+            public string OpenChest = "OpenChest";
+            public string HitChest = "HitChest";
+            public string FillChest = "FillChest";
         }
 
     }

@@ -11,15 +11,14 @@ using static UnityEngine.Rendering.DebugUI;
 
 namespace CannonFightBase
 {
-    public delegate void RpcDelegate(object[] parameters, PhotonMessageInfo info);
 
-    public class FireController : ITickable,IInitializable
+    public class FireController : ITickable,IInitializable,IRpcMediator
     {
         private Settings _settings;
 
         private ParticleSettings _particleSettings;
 
-        private RPCMediator _RPCMediator;
+        private RPCMediator _rpcMediator;
 
         private CannonSkillHandler.Settings _cannonSkillHandlerSettings;
 
@@ -54,7 +53,7 @@ namespace CannonFightBase
             _ballSpawnPoint = cannonView.CannonBallSpawnPoint;
             _cannonSkillHandlerSettings = cannonSkillHandlerSettings;
             _particleSettings = particleSettings;
-            _RPCMediator = rpcMediator;
+            _rpcMediator = rpcMediator;
 
             GameEventReceiver.OnMobileFireButtonClickedEvent += StartFire;
             GameEventReceiver.OnSkillBarFilledEvent += OnSkillBarFilled;
@@ -67,7 +66,7 @@ namespace CannonFightBase
         public void Initialize()
         {
             _photonView = _cannonView.PhotonView;
-            _RPCMediator.AddToRPC(RPC_FIRE, RPC_Fire);
+            _rpcMediator.AddToRPC(RPC_FIRE, this);
         }
 
         public void Tick()
@@ -127,17 +126,16 @@ namespace CannonFightBase
 
                 GameEventCaller.Instance.OnPlayerFired();
 
-                //_cannon.OwnPhotonView.RPC(nameof(_RPCMediator.RPC_StartFire), RpcTarget.Others, new object[] { _ballSpawnPoint.position, direction, _settings.FireRange, _settings.FireDamage });
+                //_cannon.OwnPhotonView.RPC(nameof(_rpcMediator.RPC_StartFire), RpcTarget.Others, new object[] { _ballSpawnPoint.position, direction, _settings.FireRange, _settings.FireDamage });
 
-                _cannon.OwnPhotonView.RPC(nameof(_RPCMediator.RpcForwarder), RpcTarget.Others, RPC_FIRE, new object[] {_ballSpawnPoint.position, direction, _settings.FireRange, _settings.FireDamage });
+                _cannon.OwnPhotonView.RPC(nameof(_rpcMediator.RpcForwarder), RpcTarget.Others, RPC_FIRE, new object[] {_ballSpawnPoint.position, direction, _settings.FireRange, _settings.FireDamage });
             }
         }
 
-        public void RPC_Fire(object[] objects, PhotonMessageInfo info)
+        public void RpcForwarder(object[] objects, PhotonMessageInfo info)
         {
             Fire(info.Sender, (Vector3)objects[0], (Vector3)objects[1], (float)objects[2], (int)objects[3]);
         }
-
 
         public void Fire(Player owner,Vector3 ballPosition, Vector3 ballDirection, float fireRange, int fireDamage)
         {
@@ -193,7 +191,6 @@ namespace CannonFightBase
         {
             _damageMultiplier = 1;
         }
-
 
 
         [Serializable]

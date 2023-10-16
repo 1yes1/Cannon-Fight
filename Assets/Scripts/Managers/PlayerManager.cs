@@ -87,7 +87,7 @@ namespace CannonFightBase
                 };
 
 
-                PhotonNetwork.RaiseEvent(SpawnManager.SPAWN_CANNON_EVENT_CODE, data, raiseEventOptions, SendOptions.SendUnreliable);
+                PhotonNetwork.RaiseEvent(EventCodeManager.SPAWN_CANNON_EVENT_CODE, data, raiseEventOptions, SendOptions.SendUnreliable);
             }
             else
             {
@@ -109,7 +109,7 @@ namespace CannonFightBase
             if (!_photonView.IsMine)
                 return;
 
-            if (photonEvent.Code == SpawnManager.SPAWN_CANNON_EVENT_CODE)
+            if (photonEvent.Code == EventCodeManager.SPAWN_CANNON_EVENT_CODE)
             {
                 object[] data = (object[])photonEvent.CustomData;
 
@@ -150,7 +150,7 @@ namespace CannonFightBase
         [PunRPC]
         private void RPC_OnDie(int attackerPlayer,int deadPlayer)
         {
-            Debug.LogError("----RPC_OnDie Çalýþtý Attacker RPC User Id: " + attackerPlayer + " Dead: "+deadPlayer);
+            //Debug.LogError("----RPC_OnDie Çalýþtý Attacker RPC User Id: " + attackerPlayer + " Dead: "+deadPlayer);
 
             Player attacker = PhotonNetwork.CurrentRoom.GetPlayer(attackerPlayer);
             Player dead = PhotonNetwork.CurrentRoom.GetPlayer(deadPlayer);

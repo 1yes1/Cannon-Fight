@@ -1,3 +1,6 @@
+using ExitGames.Client.Photon;
+using Photon.Pun;
+using Photon.Realtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,7 +12,7 @@ namespace CannonFightBase
 {
     public class ChestManager : MonoBehaviour
     {
-        [SerializeField] private List<Potion> _potions;
+        private PhotonView _photonView;
 
         private List<Chest> _chests;
 
@@ -26,22 +29,31 @@ namespace CannonFightBase
 
         private void Awake()
         {
+            _photonView = GetComponent<PhotonView>();
             //CreateStack();
         }
 
         private void OnEnable()
         {
             GameEventReceiver.OnChestOpenedEvent += OnChestOpened;
+            if (!PhotonNetwork.IsMasterClient)
+            {
+            }
         }
 
         private void OnDisable()
         {
             GameEventReceiver.OnChestOpenedEvent -= OnChestOpened;
+            if (!PhotonNetwork.IsMasterClient)
+            {
+            }
         }
 
         private void Start()
         {
-            //Invoke(nameof(StartFillChests), _chestSettings.StartFillTime);
+            if (PhotonNetwork.IsMasterClient)
+                Invoke(nameof(StartFillChests), _chestSettings.StartFillTime);
+
         }
 
         private void Update()
@@ -69,30 +81,44 @@ namespace CannonFightBase
 
         private void FillChest()
         {
-            Chest chest = _chests.Find(x => !x.IsOpened && !x.IsAlreadyOpenedOneTime);
+            Chest chest = _chests.Find(x => !x.IsOpened && !x.IsFilled);
             if (chest == null)
             {
                 CancelInvoke(nameof(FillChest));
                 return;
             }
-
             chest.Refill();
+            int chestIndex = _chests.IndexOf(chest);
+
+            if (!PhotonNetwork.IsConnected)
+                return;
+
+            ChestStartedFillingEvent(chestIndex);
         }
+
 
         public void StartFillChests()
         {
             InvokeRepeating(nameof(FillChest), _chestSettings.StartFillFrequency, _chestSettings.StartFillFrequency);
         }
 
-        public Potion GetPotion(Skills skill)
+
+
+        #region Events&RPCs
+
+        private void ChestStartedFillingEvent(int chestIndex)
         {
-            for (int i = 0; i < _potions.Count; i++)
-            {
-                if (_potions[i].Skill == skill)
-                    return _potions[i];
-            }
-            return null;
+            _photonView.RPC(nameof(RPC_ChestStartedFilling), RpcTarget.Others, chestIndex);
         }
+
+        [PunRPC]
+        private void RPC_ChestStartedFilling(int chestIndex)
+        {
+            _chests[chestIndex].Refill();
+        }
+
+        #endregion
+
 
     }
 }

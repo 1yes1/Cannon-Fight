@@ -8,7 +8,7 @@ using Zenject;
 
 namespace CannonFightBase
 {
-    public class Potion : MonoBehaviour, IPoolable<IMemoryPool>
+    public class Potion : MonoBehaviour, IPoolable<IMemoryPool>,IDisposable
     {
         [SerializeField] private MeshRenderer _meshRenderer;
 
@@ -117,7 +117,7 @@ namespace CannonFightBase
                     other.GetComponent<Cannon>().OnPotionCollected(this);
                     ParticleManager.CreateAndPlay(ParticleManager.GetParticleTupleValue(_particleSettings.ParticleTuplesByType, _skill),null,transform.position);
                     //Destroy(gameObject);
-                    _pool.Despawn(this);
+                    Dispose();
                 }
             }
         }
@@ -130,6 +130,11 @@ namespace CannonFightBase
         public void OnSpawned(IMemoryPool p1)
         {
             _pool = p1;
+        }
+
+        public void Dispose()
+        {
+            _pool.Despawn(this);
         }
 
         public class Factory : PlaceholderFactory<Potion>
