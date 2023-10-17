@@ -100,7 +100,7 @@ namespace CannonFightBase
             _angleHor += hor;
             _angleHor = Mathf.Clamp(_angleHor, -_settings.MaxHorizontalAngle, _settings.MaxHorizontalAngle);
             _angleVer += ver;
-            _angleVer = Mathf.Clamp(_angleVer, -_settings.MaxVerticalAngle, _settings.MaxVerticalAngle);
+            _angleVer = Mathf.Clamp(_angleVer, -_settings.MaxVerticalAngle + 10, _settings.MaxVerticalAngle);
 
             float angle = 0;
             RaycastHit hit;

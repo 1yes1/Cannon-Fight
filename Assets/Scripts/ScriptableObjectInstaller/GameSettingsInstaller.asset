@@ -30,7 +30,7 @@ MonoBehaviour:
     FireRange: 500
     FireBallScale: 0.7
   AimControllerSettings:
-    MaxVerticalAngle: 12
+    MaxVerticalAngle: 23
     MaxHorizontalAngle: 60
     HorizontalRotSpeed: 25
     VerticalRotSpeed: 25
