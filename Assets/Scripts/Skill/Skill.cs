@@ -25,7 +25,12 @@ namespace CannonFightBase
 
         public void Initialize()
         {
-            _skillTimer = new SkillTimer(this, _time, _onTimeElapsed);
+            _skillTimer = new SkillTimer(this, _time, OnSkillTimeElapsed);
+        }
+
+        private void OnSkillTimeElapsed()
+        {
+            _onTimeElapsed?.Invoke(this);
         }
 
         public void Reset()

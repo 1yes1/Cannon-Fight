@@ -83,13 +83,17 @@ namespace CannonFightBase
             GameEventCaller.Instance.OnChestOpened(this);
         }
 
-        public void Refill()
+        public void Refill(int potionIndex)
         {
             ChooseSkillRandomly();
             _animator.SetTrigger(_animatorSettings.FillChest);
             _isRefilling = true;
             _isOpened = true; //Ýlk baþta açýlmýþ olsun sonradan doldurulsun
             _isFilled = true;
+
+            _potion = _potionFactory.Create();
+            _potion.Initialize(_potionSettings.PotionTypes[potionIndex]);
+            _potion.gameObject.SetActive(false);
         }
 
         public void OnFillAnimationEnded()
@@ -97,12 +101,12 @@ namespace CannonFightBase
             _isOpened = false;
             _isRefilling = false;
             _health = _settings.Health;
-            _potion = _potionFactory.Create();
-            _potion.Initialize(GetRandomPotionProperties());
-            //_potion = Instantiate(ChestManager.Instance.GetPotion(_skill), _potionPlace.transform.position,Quaternion.identity);
+
             _potion.transform.position = _potionPlace.transform.position;
             _potion.transform.rotation = Quaternion.identity;
             _potion.transform.SetParent(transform);
+            _potion.gameObject.SetActive(true);
+
             OnChestFilled?.Invoke(this);
         }
 
@@ -126,13 +130,6 @@ namespace CannonFightBase
                 //_animation.Stop();
                 //Potion da atanmalý
             }
-        }
-
-        private Potion.PotionType GetRandomPotionProperties()
-        {
-            int rnd = Random.Range(0, _potionSettings.PotionTypes.Count);
-
-            return _potionSettings.PotionTypes[rnd];
         }
 
         public void TakeDamage(int damage, Vector3 hitPoint, Player attackerPlayer)

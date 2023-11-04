@@ -36,9 +36,9 @@ namespace CannonFightBase
 
         private float _frequencyStatus = 0;
 
-        private bool _useMultiBallSkil = false;
+        private bool _useMultiBallSkill = false;
 
-        private float _damageMultiplier = 1;
+        private int _fireDamage = 1;
 
         private const byte RPC_FIRE = 1;
 
@@ -54,19 +54,29 @@ namespace CannonFightBase
             _cannonSkillHandlerSettings = cannonSkillHandlerSettings;
             _particleSettings = particleSettings;
             _rpcMediator = rpcMediator;
-
-            GameEventReceiver.OnMobileFireButtonClickedEvent += StartFire;
-            GameEventReceiver.OnSkillBarFilledEvent += OnSkillBarFilled;
-            GameEventReceiver.OnSkillEndedEvent += OnSkillEnded;
-            
-            _crosshair = GameObject.FindWithTag("Crosshair").transform;
         }
-
 
         public void Initialize()
         {
             _photonView = _cannonView.PhotonView;
             _rpcMediator.AddToRPC(RPC_FIRE, this);
+            _crosshair = GameObject.FindWithTag("Crosshair").transform;
+
+            ResetDamageSkill();
+
+            AddEvents();
+        }
+
+        private void AddEvents()
+        {
+            GameEventReceiver.OnMobileFireButtonClickedEvent -= StartFire;
+            GameEventReceiver.OnSkillBarFilledEvent -= OnSkillBarFilled;
+            GameEventReceiver.OnSkillEndedEvent -= OnSkillEnded;
+
+            GameEventReceiver.OnMobileFireButtonClickedEvent += StartFire;
+            GameEventReceiver.OnSkillBarFilledEvent += OnSkillBarFilled;
+            GameEventReceiver.OnSkillEndedEvent += OnSkillEnded;
+
         }
 
         public void Tick()
@@ -81,7 +91,7 @@ namespace CannonFightBase
             {
                 if (InputManager.IsFiring && _frequencyStatus <= 0)
                 {
-                    if (_useMultiBallSkil)
+                    if (_useMultiBallSkill)
                     {
                         _cannon.StartCoroutine(MultiBallFire());
                     }
@@ -120,7 +130,7 @@ namespace CannonFightBase
                 Vector3 direction = hit.point - _ballSpawnPoint.position;
                 direction.Normalize();
 
-                Fire(_cannon.OwnPhotonView.Owner, _ballSpawnPoint.position, direction, _settings.FireRange, _settings.FireDamage);
+                Fire(_cannon.OwnPhotonView.Owner, _ballSpawnPoint.position, direction, _settings.FireRange, _fireDamage);
 
                 _frequencyStatus = _settings.FireFrequency;
 
@@ -128,7 +138,7 @@ namespace CannonFightBase
 
                 //_cannon.OwnPhotonView.RPC(nameof(_rpcMediator.RPC_StartFire), RpcTarget.Others, new object[] { _ballSpawnPoint.position, direction, _settings.FireRange, _settings.FireDamage });
 
-                _cannon.OwnPhotonView.RPC(nameof(_rpcMediator.RpcForwarder), RpcTarget.Others, RPC_FIRE, new object[] {_ballSpawnPoint.position, direction, _settings.FireRange, _settings.FireDamage });
+                _cannon.OwnPhotonView.RPC(nameof(_rpcMediator.RpcForwarder), RpcTarget.Others, RPC_FIRE, new object[] {_ballSpawnPoint.position, direction, _settings.FireRange, _fireDamage });
             }
         }
 
@@ -172,24 +182,24 @@ namespace CannonFightBase
 
         public void SetMultiBallSkill()
         {
-            _useMultiBallSkil = true;
+            _useMultiBallSkill = true;
         }
 
         public void ResetMultiBallSkill()
         {
-            _useMultiBallSkil = false;
+            _useMultiBallSkill = false;
         }
 
 
         public void SetDamageSkill()
         {
-            _damageMultiplier = _cannonSkillHandlerSettings.DamageSkillSettings.DamageMultiplier;
+            _fireDamage = _settings.FireDamage * _cannonSkillHandlerSettings.DamageSkillSettings.DamageMultiplier;
         }
 
 
         public void ResetDamageSkill()
         {
-            _damageMultiplier = 1;
+            _fireDamage = _settings.FireDamage;
         }
 
 

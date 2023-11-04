@@ -1,11 +1,15 @@
-﻿using Photon.Pun;
+﻿using CannonFightUI;
+using Photon.Pun;
 using Photon.Pun.Demo.PunBasics;
 using Photon.Realtime;
 using System;
 using System.Collections;
+using ExitGames.Client.Photon;
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
+using System.Linq;
 
 namespace CannonFightBase
 {
@@ -50,9 +54,11 @@ namespace CannonFightBase
             GameEventReceiver.OnOurPlayerSpawnedEvent += OnOurPlayerSpawned;
             GameEventReceiver.OnPlayerEnteredRoomEvent += OnPlayerEnteredRoom;
             GameEventReceiver.OnPlayerLeftRoomEvent += OnPlayerLeftRoom;
-            GameEventReceiver.OnPlayerDieEvent += OnPlayerDie;
+            GameEventReceiver.OnOurPlayerDiedEvent += OnOurPlayerDied;
+            GameEventReceiver.OnPlayerDiedEvent += OnPlayerDied;
             //GameEventReceiver.OnOurPlayerSpawnedEvent += OnOurPlayerSpawned;//Bu eventte GameManager ile Cannon a ulaşılıyor
         }
+
 
         private void OnDisable()
         {
@@ -60,7 +66,8 @@ namespace CannonFightBase
             GameEventReceiver.OnOurPlayerSpawnedEvent -= OnOurPlayerSpawned;
             GameEventReceiver.OnPlayerEnteredRoomEvent -= OnPlayerEnteredRoom;
             GameEventReceiver.OnPlayerLeftRoomEvent -= OnPlayerLeftRoom;
-            GameEventReceiver.OnPlayerDieEvent -= OnPlayerDie;
+            GameEventReceiver.OnOurPlayerDiedEvent -= OnOurPlayerDied;
+            GameEventReceiver.OnPlayerDiedEvent -= OnPlayerDied;
             //GameEventReceiver.OnOurPlayerSpawnedEvent -= OnOurPlayerSpawned;
         }
 
@@ -68,11 +75,12 @@ namespace CannonFightBase
         {
             if (_instance == null)
                 _instance = this;
-
-            UnityEngine.Random.InitState(_randomSeed);
-
+            
             Initialize();
+            
+            UnityEngine.Random.InitState(_randomSeed);
         }
+
 
         private void Initialize()
         {
@@ -83,7 +91,6 @@ namespace CannonFightBase
             {
                 item.RegisterCallerEvents();
             }
-
         }
 
         private void OnBeforeOurPlayerSpawned()
@@ -124,23 +131,45 @@ namespace CannonFightBase
             IncreaseLeftCannonsCount();
         }
 
-        private void OnPlayerLeftRoom(Player obj)
+        private void OnPlayerLeftRoom(Player player)
         {
-            if (!obj.CustomProperties.ContainsKey("isDead"))
+            if (!player.CustomProperties.Keys.Contains("isDead"))
+            {
                 DecreaseLeftCannonsCount();
+            }
         }
 
-        private void OnPlayerDie(Player player)
+        private void OnOurPlayerDied(Player player)
+        {
+            //DecreaseLeftCannonsCount();
+            UIManager.ShowWithDelay<DefeatedPanelView>(1.25f);
+            //PhotonNetwork.LeaveRoom();
+            print("YOU DIED");
+        }
+
+        private void OnPlayerDied(Player player)
         {
             DecreaseLeftCannonsCount();
-        }
 
+            Hashtable hashtable = new Hashtable
+            {
+                { "isDead", true }
+            };
+            player.SetCustomProperties(hashtable);
+
+            //Sadece biz kalmışız
+            print("-----------Kimler Kalmış-------" + LeftCannonsCount);
+
+            if(LeftCannonsCount == 1)
+            {
+                UIManager.ShowWithDelay<VictoryPanelView>(1.25f);
+            }
+        }
 
         private void OnOurPlayerSpawned()
         {
             CheckLeftCannonsCount();
         }
-
 
         private void CheckLeftCannonsCount()
         {

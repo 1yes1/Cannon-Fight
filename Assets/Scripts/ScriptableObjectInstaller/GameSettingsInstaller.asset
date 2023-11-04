@@ -31,11 +31,9 @@ MonoBehaviour:
     FireBallScale: 0.7
   AimControllerSettings:
     MaxVerticalAngle: 23
-    MaxHorizontalAngle: 60
-    HorizontalRotSpeed: 25
-    VerticalRotSpeed: 25
-    MobileHorizontalRotSpeed: 25
-    MobileVerticalRotSpeed: 25
+    MaxHorizontalAngle: 75
+    RotationSpeed: 50
+    MobileRotationSpeed: 25
   CannonSkillHandlerSettings:
     MultiBallSkillSettings:
       MultiBallCount: 3
@@ -43,7 +41,7 @@ MonoBehaviour:
       MultiBallSkillTime: 10
     DamageSkillSettings:
       DamageMultiplier: 2
-      DamageSkillTime: 15
+      DamageSkillTime: 10
   ChestSettings:
     Health: 1
     PotionFlightTime: 0.8
@@ -60,3 +58,7 @@ MonoBehaviour:
       Material: {fileID: 2100000, guid: 7e35e673f741780409c87b75ecb7b084, type: 2}
     - Skill: 2
       Material: {fileID: 2100000, guid: 9b3398f90e3925e42a743d28c0f57c27, type: 2}
+  AchievementManagerSettings:
+    levelEndSettings:
+      WinnerCoinMultiplier: 25
+      LoserCoinMultiplier: 10

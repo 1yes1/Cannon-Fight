@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace CannonFightBase
 {
@@ -19,7 +20,9 @@ namespace CannonFightBase
 
         public static event Action OnOurPlayerSpawnedEvent;
 
-        public static event Action<Player> OnPlayerDieEvent;
+        public static event Action<Player> OnOurPlayerDiedEvent;
+
+        public static event Action<Player> OnPlayerDiedEvent;
 
         public static event Action<Player,Player> OnKillEvent;
 
@@ -115,9 +118,14 @@ namespace CannonFightBase
             OnLeftCannonsCountChangedEvent?.Invoke(leftCannonsCount);
         }
 
-        public void OnPlayerDie(Player player)
+        public void OnOurPlayerDied(Player player)
         {
-            OnPlayerDieEvent?.Invoke(player);
+            OnOurPlayerDiedEvent?.Invoke(player);
+        }
+
+        public void OnPlayerDied(Player player)
+        {
+            OnPlayerDiedEvent?.Invoke(player);
         }
 
         public void OnKill(Player killer, Player dead)

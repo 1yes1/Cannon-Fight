@@ -1,0 +1,4 @@
+repository "Cannon Fight@yesari_1@cloud"
+  path "/"
+    br "/main"
+    co "/main"

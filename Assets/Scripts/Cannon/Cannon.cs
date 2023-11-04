@@ -4,6 +4,7 @@ using Photon.Realtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 using Zenject;
 
@@ -24,6 +25,8 @@ namespace CannonFightBase
         private FireController _fireController;
 
         private PhotonView _photonView;
+
+        private DenemeEvent _denemeEvent;
 
         private bool _isDead = false;
 
@@ -60,6 +63,7 @@ namespace CannonFightBase
 
         public Rigidbody Rigidbody => _cannonView.Rigidbody;
 
+
         [Inject]
         public void Construct(
             FireController fireController, 
@@ -83,6 +87,14 @@ namespace CannonFightBase
         private void Awake()
         {
             _photonView = GetComponent<PhotonView>();
+
+            //_denemeEvent = GetComponent<DenemeEvent>();
+
+            //_denemeEvent = new DenemeEvent();
+
+            //GameManager.Instance.AddListener(_denemeEvent);
+
+
             if (!_photonView.IsMine)
                 return;
             
@@ -93,7 +105,8 @@ namespace CannonFightBase
 
         public void OnPotionCollected(Potion potion)
         {
-            GameEventCaller.Instance.OnPotionCollected(potion);
+            if (_photonView.IsMine)
+                GameEventCaller.Instance.OnPotionCollected(potion);
         }
 
         public void Boost(float multiplier)
@@ -120,13 +133,11 @@ namespace CannonFightBase
             _playerManager.OnDie(attackerPlayer);
 
             _cannonController.OnDie();
+
+            _isDead = true;
+
         }
 
-        [PunRPC]
-        private void RPC_ChestStartedFilling(int chestIndex)
-        {
-            print("CHEST STARTED FILLING: " + chestIndex);
-        }
 
         public class Factory : PlaceholderFactory<Cannon>
         {

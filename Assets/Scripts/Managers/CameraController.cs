@@ -82,4 +82,7 @@ public class CameraController : MonoBehaviour
         //GetComponent<Cinemachine3rdPersonAim>().enabled = false;
     }
 
+    
+
 }
+

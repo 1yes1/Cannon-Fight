@@ -14,7 +14,9 @@ namespace CannonFightBase
 
         public void OnOurPlayerSpawned();
 
-        public void OnPlayerDie(Player player);
+        public void OnOurPlayerDied(Player player);
+
+        public void OnPlayerDied(Player player);
 
         public void OnPlayerFired();
 

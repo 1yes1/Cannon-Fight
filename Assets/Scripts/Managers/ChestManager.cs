@@ -1,4 +1,5 @@
 using ExitGames.Client.Photon;
+using ModestTree;
 using Photon.Pun;
 using Photon.Realtime;
 using System;
@@ -7,29 +8,34 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Zenject;
+using Random = UnityEngine.Random;
 
 namespace CannonFightBase
 {
     public class ChestManager : MonoBehaviour
     {
-        private PhotonView _photonView;
-
-        private List<Chest> _chests;
-
-        private Chest.Settings _chestSettings;
-
         private int _openedChestCount = 0;
 
+        private PhotonView PhotonView { get; set; }
+
+        private List<Chest> Chests { get;  set; }
+
+        private Chest.Settings ChestSettings { get; set; }
+
+        private Potion.Settings PotionSettings { get; set; }
+
+
         [Inject]
-        public void Construct(Chest.Settings settings,List<Chest> chests)
+        public void Construct(Chest.Settings settings,List<Chest> chests, Potion.Settings potionSettings)
         {
-            _chestSettings = settings;
-            _chests = chests;
+            ChestSettings = settings;
+            Chests = chests;
+            PotionSettings = potionSettings;
         }
 
         private void Awake()
         {
-            _photonView = GetComponent<PhotonView>();
+            PhotonView = GetComponent<PhotonView>();
             //CreateStack();
         }
 
@@ -38,6 +44,7 @@ namespace CannonFightBase
             GameEventReceiver.OnChestOpenedEvent += OnChestOpened;
             if (!PhotonNetwork.IsMasterClient)
             {
+                PhotonNetwork.NetworkingClient.EventReceived += EVENT_ChestFilled;
             }
         }
 
@@ -46,30 +53,37 @@ namespace CannonFightBase
             GameEventReceiver.OnChestOpenedEvent -= OnChestOpened;
             if (!PhotonNetwork.IsMasterClient)
             {
+                PhotonNetwork.NetworkingClient.EventReceived -= EVENT_ChestFilled;
             }
         }
 
         private void Start()
         {
             if (PhotonNetwork.IsMasterClient)
-                Invoke(nameof(StartFillChests), _chestSettings.StartFillTime);
+                Invoke(nameof(StartFillChests), ChestSettings.StartFillTime);
 
         }
 
         private void Update()
         {
-            if(Time.frameCount % 10 == 0 && _openedChestCount > 0)
+            if(Time.frameCount % 10 == 0 && _openedChestCount > 0 && PhotonNetwork.IsMasterClient)
                 CheckRefillTimes();
         }
 
         private void CheckRefillTimes()
         {
-            for (int i = 0; i < _chests.Count; i++)
+            //Refill için de random ayarlama olcak master ile ve senkronize edilecek
+            for (int i = 0; i < Chests.Count; i++)
             {
-                if (_chests[i].CanRefill())
+                if (Chests[i].CanRefill())
                 {
                     _openedChestCount--;
-                    _chests[i].Refill();
+                    int potionIndex = GetRandomPotionTypeIndex();
+                    int chestIndex = i;
+                    Chests[chestIndex].Refill(potionIndex);
+
+                    ChestStartedFillingRpc(chestIndex, potionIndex);
+                    ChestFilledEvent(chestIndex, potionIndex);
                 }
             }
         }
@@ -79,45 +93,91 @@ namespace CannonFightBase
             _openedChestCount++;
         }
 
+        public void StartFillChests()
+        {
+            InvokeRepeating(nameof(FillChest), ChestSettings.StartFillFrequency, ChestSettings.StartFillFrequency);
+        }
+
+
         private void FillChest()
         {
-            Chest chest = _chests.Find(x => !x.IsOpened && !x.IsFilled);
+            Chest chest = Chests.Find(x => !x.IsOpened && !x.IsFilled);
             if (chest == null)
             {
                 CancelInvoke(nameof(FillChest));
                 return;
             }
-            chest.Refill();
-            int chestIndex = _chests.IndexOf(chest);
+
+            int potionIndex = GetRandomPotionTypeIndex();
+
+            chest.Refill(potionIndex);
+
+            int chestIndex = Chests.IndexOf(chest);
 
             if (!PhotonNetwork.IsConnected)
                 return;
 
-            ChestStartedFillingEvent(chestIndex);
+            ChestStartedFillingRpc(chestIndex, potionIndex);
+            ChestFilledEvent(chestIndex, potionIndex);
+
+
+
         }
-
-
-        public void StartFillChests()
-        {
-            InvokeRepeating(nameof(FillChest), _chestSettings.StartFillFrequency, _chestSettings.StartFillFrequency);
-        }
-
 
 
         #region Events&RPCs
 
-        private void ChestStartedFillingEvent(int chestIndex)
+        private void ChestStartedFillingRpc(int chestIndex,int potionIndex)
         {
-            _photonView.RPC(nameof(RPC_ChestStartedFilling), RpcTarget.Others, chestIndex);
+            PhotonView.RPC(nameof(RPC_ChestStartedFilling), RpcTarget.Others, chestIndex, potionIndex);
         }
 
         [PunRPC]
-        private void RPC_ChestStartedFilling(int chestIndex)
+        private void RPC_ChestStartedFilling(int chestIndex,int potionIndex)
         {
-            _chests[chestIndex].Refill();
+            Chests[chestIndex].Refill(potionIndex);
+        }
+
+        //Þimdilik kalsýn fakat her oyuncu ayný anda gireceði için gerek yok muhtemlen
+        private void ChestFilledEvent(int chestIndex, int potionIndex)
+        {
+            object[] data = new object[]
+            {
+                chestIndex,potionIndex
+            };
+
+            RaiseEventOptions raiseEventOptions = new RaiseEventOptions
+            {
+                Receivers = ReceiverGroup.Others,
+                CachingOption = EventCaching.AddToRoomCache
+            };
+
+            PhotonNetwork.RaiseEvent(EventCodeManager.CHEST_FILLED_EVENT_CODE, data, raiseEventOptions, SendOptions.SendUnreliable);
+        }
+
+
+        private void EVENT_ChestFilled(EventData photonEvent)
+        {
+            if (photonEvent.Code == EventCodeManager.CHEST_FILLED_EVENT_CODE)
+            {
+                object[] data = (object[])photonEvent.CustomData;
+                int chestIndex = (int)data[0];
+                int potionIndex = (int)data[1];
+
+                Chests[chestIndex].Refill(potionIndex);
+            }
+
         }
 
         #endregion
+
+
+        private int GetRandomPotionTypeIndex()
+        {
+            int rnd = Random.Range(0, PotionSettings.PotionTypes.Count);
+
+            return rnd;
+        }
 
 
     }

@@ -50,6 +50,26 @@ namespace CannonFightBase
 
         }
 
+
+        private void Update()
+        {
+            if(Input.GetKeyDown(KeyCode.G))
+            {
+                ShowHashes();
+            }
+        }
+
+        private void ShowHashes()
+        {
+            if (!_photonView.IsMine)
+                return;
+
+            foreach (Player item in PhotonNetwork.CurrentRoom.Players.Values)
+            {
+                print(item.NickName + ": hash: " + item.CustomProperties.Keys.Contains("isDead"));
+            }
+        }
+
         public void Initialize()
         {
             if (_photonView.IsMine)
@@ -142,28 +162,49 @@ namespace CannonFightBase
 
         public void OnDie(Player attackerPlayer)
         {
-            //Burada biz dahil herkese gönderiyoruz RpcTarget.All ile
-            //Herkesin scripti çalýþýyor ve kendi managerlarýna kill i bildiriyorlar
-            _photonView.RPC(nameof(RPC_OnDie), RpcTarget.All, attackerPlayer.ActorNumber,PhotonNetwork.LocalPlayer.ActorNumber);
+            //Burada diðerlerine öldüðümüzü bildiriyoruz
+            _photonView.RPC(nameof(RPC_OnDie), RpcTarget.Others, attackerPlayer.ActorNumber,PhotonNetwork.LocalPlayer.ActorNumber);
+
+            GameEventCaller.Instance.OnOurPlayerDied(PhotonNetwork.LocalPlayer);
+
+            //print("Biz Öldük: Dead:" + PhotonNetwork.LocalPlayer.NickName);
+
+            PhotonNetwork.Destroy(_cannon.gameObject);
+
+            Invoke(nameof(LeftRoom), 2);
         }
 
         [PunRPC]
         private void RPC_OnDie(int attackerPlayer,int deadPlayer)
         {
-            //Debug.LogError("----RPC_OnDie Çalýþtý Attacker RPC User Id: " + attackerPlayer + " Dead: "+deadPlayer);
-
+            //Birisi ölmüþ onun haberini alýyoruz. Yazýk olmuþ
             Player attacker = PhotonNetwork.CurrentRoom.GetPlayer(attackerPlayer);
             Player dead = PhotonNetwork.CurrentRoom.GetPlayer(deadPlayer);
 
-            GameEventCaller.Instance.OnKill(attacker, dead);
-            GameEventCaller.Instance.OnPlayerDie(dead);
+            SetPlayerHashtables(dead);
 
-            //Hashtable hashtable = new Hashtable();
-            //hashtable.Add("isDead", true);
-            //hashtable.Add("killerPlayer", attackerPlayer);
-            //PhotonNetwork.LocalPlayer.SetCustomProperties(hashtable);
+            GameEventCaller.Instance.OnPlayerDied(dead);
+
+            GameEventCaller.Instance.OnKill(attacker, dead);
+
+            //print("Baþkasý Öldü: Attacker: " + attacker.NickName + " Dead:" + dead.NickName);
         }
 
+        private void SetPlayerHashtables(Player player)
+        {
+            Hashtable hashtable = new Hashtable
+            {
+                { "isDead", true }
+            };
+            player.SetCustomProperties(hashtable);
+        }
+
+
+        private void LeftRoom()
+        {
+            PhotonNetwork.Disconnect();
+        }
+        
 
         public class Factory : PlaceholderFactory<PlayerManager>
         {

@@ -26,6 +26,7 @@ namespace CannonFightUI
             for (int i = 0; i < _views.Length; i++)
             {
                 _views[i].Initialize();
+
                 if (!_views[i].isPopup)
                     _views[i].Hide();
                 else
@@ -79,6 +80,24 @@ namespace CannonFightUI
 
         }
 
+
+        public static T ShowWithDelay<T>(float delay,bool remember = true, bool isPopup = false) where T : UIView
+        {
+            UIView view = Show<T>(remember, isPopup);
+            view.Hide();
+
+            _instance.StartCoroutine(ShowDelay(view, delay));
+
+            return (T)view;
+        }
+
+        private static IEnumerator ShowDelay(UIView view,float time)
+        {
+            yield return new WaitForSeconds(time);
+            view.Show();
+        }
+
+
         public static void Show(UIView view, bool remember = true)
         {
             if(_instance._currentView != null)
@@ -106,5 +125,6 @@ namespace CannonFightUI
         }
 
     }
+
 }
 

@@ -21,8 +21,6 @@ namespace CannonFightBase
 
         private GameObject _rotatorV;
 
-        private Vector3 _lastMousePosition;
-
         private float _angleHor;
 
         private float _angleVer;
@@ -37,10 +35,8 @@ namespace CannonFightBase
             _cannonView = cannonView;
             //if (!_photonView.IsMine)
             //    return;
-            Debug.Log("AimController Yüklendir");
             UnityEngine.Cursor.lockState = CursorLockMode.Confined;
             _cannonView.GetRotators(out _rotatorH, out _rotatorV);
-            _lastMousePosition = Input.mousePosition;
         }
 
 
@@ -80,22 +76,30 @@ namespace CannonFightBase
                 if (!isRightSide)
                     continue;
 
-                RotateCannon(touch.deltaPosition);
+                RotateCannon(touch.deltaPosition,true);
             }
         }
 
         private void SetPcController()
         {
-            Vector3 delta = Input.mousePosition - _lastMousePosition;
-            RotateCannon(delta);
+            RotateCannon(Vector3.zero);
         }
 
-        private void RotateCannon(Vector3 delta)
+        private void RotateCannon(Vector3 delta,bool isMobile = false)
         {
-            float hor = delta.x * _settings.HorizontalRotSpeed * Time.deltaTime;
-            hor = (Mathf.Abs(delta.x) < 0.25f) ? 0 : hor;
-            float ver = delta.y * _settings.VerticalRotSpeed * Time.deltaTime;
-            ver = (Mathf.Abs(delta.y) < 0.25f) ? 0 : ver;
+            float deltaX = Input.GetAxis("Mouse X");
+            float deltaY = Input.GetAxis("Mouse Y");
+
+            if(isMobile)
+            {
+                deltaX = delta.x; 
+                deltaY = delta.y;
+            }
+
+            float hor = deltaX * _settings.RotationSpeed * Time.deltaTime;
+            //hor = (Mathf.Abs(delta.x) < 0.25f) ? 0 : hor;
+            float ver = deltaY * _settings.RotationSpeed * Time.deltaTime;
+            //ver = (Mathf.Abs(delta.y) < 0.25f) ? 0 : ver;
 
             _angleHor += hor;
             _angleHor = Mathf.Clamp(_angleHor, -_settings.MaxHorizontalAngle, _settings.MaxHorizontalAngle);
@@ -112,9 +116,6 @@ namespace CannonFightBase
 
             _rotatorH.transform.localRotation = Quaternion.Euler(_rotatorH.transform.localEulerAngles.x, _angleHor, _rotatorH.transform.localEulerAngles.z);
             _rotatorV.transform.localRotation = Quaternion.Euler(-_angleVer, _rotatorV.transform.localEulerAngles.y, _rotatorV.transform.localEulerAngles.z);
-
-
-            _lastMousePosition = Input.mousePosition;
         }
 
 
@@ -125,13 +126,9 @@ namespace CannonFightBase
 
             public float MaxHorizontalAngle = 60;
 
-            public float HorizontalRotSpeed = 25;
+            public float RotationSpeed = 25;
 
-            public float VerticalRotSpeed = 25;
-
-            public float MobileHorizontalRotSpeed = 25;
-
-            public float MobileVerticalRotSpeed = 25;
+            public float MobileRotationSpeed = 25;
         }
 
     }

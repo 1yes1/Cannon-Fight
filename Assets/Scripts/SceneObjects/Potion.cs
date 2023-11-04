@@ -45,6 +45,9 @@ namespace CannonFightBase
             if (_isShowedUp)
                 return;
 
+            if (target == null)
+                print("Potion Target is Null");
+
             _totalFlightTime = totalFlightTime;
             _target = target;
 
@@ -92,7 +95,7 @@ namespace CannonFightBase
 
             float t = 0;
 
-            while (Vector3.Distance(targetPos, transform.position) > 0.1f)
+            while (Vector3.Distance(targetPos, transform.position) > 0.1f && _totalFlightTime > t)
             {
                 float x = startPos.x + horizontalSpeed * t;
                 float y = startPos.y + verticalSpeed * t - 0.5f * gravity * t * t;

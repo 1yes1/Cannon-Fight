@@ -10,15 +10,13 @@ namespace CannonFightBase
 {
     public class SkillTimer:IDisposable
     {
-        public bool Finished = false;
-
         public bool Started = false;
 
         private float _time;
 
         private readonly Timer _timer;
 
-        public SkillTimer(Skill skill,float time,Action<Skill> action) 
+        public SkillTimer(Skill skill,float time,Action action) 
         {
             Debug.Log("Skill Başladı");
             _time = time;
@@ -31,11 +29,11 @@ namespace CannonFightBase
 
             _timer.Elapsed += (o, args) =>
             {
-                action?.Invoke(skill);
-                Debug.Log("Skill Bitti: "+skill.ToString());
+                Debug.Log("Skill Bitti: " + skill.ToString());
 
-                Finished = true;
-                Dispose();
+                action.Invoke();
+
+                //Dispose();
             };
 
             _timer.Start();

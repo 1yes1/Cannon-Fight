@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using CannonFightUI;
 using ExitGames.Client.Photon;
 using UnityEngine.SceneManagement;
+using System.Linq;
 
 namespace CannonFightBase
 {
@@ -42,6 +43,8 @@ namespace CannonFightBase
                 DontDestroyOnLoad(gameObject);
                 _instance = this;
             }
+
+            PhotonNetwork.EnableCloseConnection = true;
         }
 
 
@@ -93,6 +96,8 @@ namespace CannonFightBase
             //    GameEventCaller.Instance.OnKill(killerPlayer, targetPlayer);
             //}
         }
+
+
 
     }
 }

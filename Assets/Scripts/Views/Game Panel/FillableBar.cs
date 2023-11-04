@@ -81,6 +81,8 @@ namespace CannonFightBase
                 count -= Time.deltaTime;
                 yield return null;
             }
+
+            _fillImage.fillAmount = 0;
         }
 
 

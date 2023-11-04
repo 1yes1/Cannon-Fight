@@ -35,8 +35,9 @@ namespace CannonFightBase
 
         private void OnSkillEnded(Skill skill)
         {
-            FillableBar fillableBar = FindFillableBar(skill);
-            fillableBar.ResetFilling();
+            //FillableBar fillableBar = FindFillableBar(skill);
+            //fillableBar.ResetFilling();
+            //Eðer ResetFilling Çalýþtýrýrsak event devam etmiyor. Hata da vermiyor ama sýkýntýlý
         }
 
         private void Awake()

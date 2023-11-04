@@ -20,10 +20,11 @@ namespace CannonFightBase
             _settings = settings;
             _usingSkills = new List<Skill>();
 
+            GameEventReceiver.OnSkillBarFilledEvent -= SetSkillProperty;
             GameEventReceiver.OnSkillBarFilledEvent += SetSkillProperty;
         }
 
-        private void SetSkillProperty(Skills skill)
+        public void SetSkillProperty(Skills skill)
         {
             OnSkillBarFilled(skill);
 
@@ -49,6 +50,8 @@ namespace CannonFightBase
 
         public void OnSkillTimeElapsed(Skill skill)
         {
+            Debug.Log("Heyy: OnSkillTimeElapsed");
+
             skill.Reset();
             _usingSkills.Remove(skill);
             GameEventCaller.Instance.OnSkillEnded(skill);
