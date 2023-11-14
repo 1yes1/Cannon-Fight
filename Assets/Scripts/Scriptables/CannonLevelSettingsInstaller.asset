@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40899dbbb9f6565428cbf9a98d5008be, type: 3}
+  m_Name: CannonLevelSettingsInstaller
+  m_EditorClassIdentifier: 
+  DamageLevelSettings:
+    _upgradeType: 0
+    _startValue: 10
+    _valueMultiplierPerLevel: 2
+    _startPrice: 150
+    _priceMultiplierPerLevel: 200
+  FireRateLevelSettings:
+    _upgradeType: 2
+    _startValue: 0.5
+    _valueMultiplierPerLevel: -0.02
+    _startPrice: 200
+    _priceMultiplierPerLevel: 125
+  HealthLevelSettings:
+    _upgradeType: 3
+    _startValue: 100
+    _valueMultiplierPerLevel: 10
+    _startPrice: 250
+    _priceMultiplierPerLevel: 175
+  SpeedLevelSettings:
+    _upgradeType: 1
+    _startValue: 8
+    _valueMultiplierPerLevel: 0.5
+    _startPrice: 200
+    _priceMultiplierPerLevel: 150

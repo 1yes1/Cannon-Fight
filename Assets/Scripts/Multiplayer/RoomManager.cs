@@ -98,6 +98,15 @@ namespace CannonFightBase
         }
 
 
+        [Serializable]
+        public class Settings
+        {
+            public int MinPlayersCountToStart = 1;
+
+            public int MinPlayersCountToLoadSettings = 2;
+
+            public float GameStartCountdown = 1;
+        }
 
     }
 }

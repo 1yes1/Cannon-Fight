@@ -16,7 +16,7 @@ namespace CannonFightBase
     {
         private static Launcher _instance;
 
-        private Settings _settings;
+        private RoomManager.Settings _settings;
 
         public static event Action OnJoinedRoomEvent;
 
@@ -46,7 +46,7 @@ namespace CannonFightBase
         }
 
         [Inject]
-        public void Construct(Settings settings)
+        public void Construct(RoomManager.Settings settings)
         {
             _settings = settings;
         }
@@ -162,15 +162,6 @@ namespace CannonFightBase
 
         }
 
-        [Serializable]
-        public class Settings
-        {
-            public int MinPlayersCountToStart = 1;
-
-            public int MinPlayersCountToLoadSettings = 2;
-
-            public float GameStartCountdown = 1;
-        }
 
     }
 }

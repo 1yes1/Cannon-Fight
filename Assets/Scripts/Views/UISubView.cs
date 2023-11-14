@@ -10,7 +10,9 @@ namespace CannonFightUI
     {
         protected float _delay;
 
-        public abstract void Show(float subViewDelay);
+        public virtual void Show(float subViewDelay) => gameObject.SetActive(true);
+
+        public virtual void Hide() => gameObject.SetActive(false);
 
         public abstract void Initialize();
     }

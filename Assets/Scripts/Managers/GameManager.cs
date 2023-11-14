@@ -23,8 +23,8 @@ namespace CannonFightBase
 
         private Cannon _currentCannon;
 
-        [Inject]
-        private Launcher.Settings _launcherSettings;
+        private RoomManager.Settings _launcherSettings;
+
 
         private int _leftCannonsCount = 0;
 
@@ -43,7 +43,8 @@ namespace CannonFightBase
             set { _leftCannonsCount = value; GameEventCaller.OnLeftCannonsCountChanged(_leftCannonsCount); }
         }
 
-        public void Construct(Launcher.Settings settings)
+        [Inject]
+        public void Construct(RoomManager.Settings settings)
         {
             _launcherSettings = settings;
         }
@@ -79,6 +80,8 @@ namespace CannonFightBase
             Initialize();
             
             UnityEngine.Random.InitState(_randomSeed);
+
+
         }
 
 
@@ -109,7 +112,7 @@ namespace CannonFightBase
                 return;
 
             GameObject[] cannons = GameObject.FindGameObjectsWithTag("Cannon");
-
+            print(cannons.Length);
             for (int i = 0; i < cannons.Length; i++)
                 if (cannons[i].GetComponent<PhotonView>().IsMine)
                     _currentCannon = cannons[i].GetComponent<Cannon>();
@@ -178,6 +181,11 @@ namespace CannonFightBase
                 if (!item.CustomProperties.ContainsKey("isDead"))
                     LeftCannonsCount++;
             }
+        }
+
+        private void Update()
+        {
+
         }
 
     }

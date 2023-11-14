@@ -1010,7 +1010,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &88276586
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1050,7 +1050,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ec35892e1456a04bb37136cd78a2243, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isPopup: 1
+  isPopup: 0
   _killCountSubView: {fileID: 1850816543}
   _coinGainSubView: {fileID: 659108949}
   _rankSubView: {fileID: 1571971129}
@@ -6127,6 +6127,11 @@ PrefabInstance:
         type: 3}
       propertyPath: _monoInstallers.Array.data[1]
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7995844359253885155, guid: 9aba5dbea9a327a4fab4699175891ac9,
+        type: 3}
+      propertyPath: _scriptableObjectInstallers.Array.size
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8501833184704313356, guid: 9aba5dbea9a327a4fab4699175891ac9,
         type: 3}
@@ -12176,6 +12181,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 6.811
+      objectReference: {fileID: 0}
+    - target: {fileID: 3270900048579329465, guid: 2a16e0a53742fbd4c90bd1f5cdea5801,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 8182165384110551468, guid: 2a16e0a53742fbd4c90bd1f5cdea5801,
         type: 3}

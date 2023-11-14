@@ -1,31 +1,29 @@
-using System;
+using CannonFightUI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
+using System;
 
 namespace CannonFightBase
 {
     public class CoinManager : MonoBehaviour
     {
-        private static CoinManager _instance;
+        public static CoinManager _instance;
 
         private SaveSettings _saveSettings;
-
-        public static CoinManager Instance => _instance;
+        private CoinView _coinView;
 
         public static int CurrentCoin
         {
-            get 
-            { 
-                if (!PlayerPrefs.HasKey(Instance._saveSettings.CurrentCoin))
-                    PlayerPrefs.SetInt(Instance._saveSettings.CurrentCoin, 0);
-
-                return PlayerPrefs.GetInt(Instance._saveSettings.CurrentCoin);
+            get
+            {
+                return SaveManager.GetValue<int>(_instance._saveSettings.CurrentCoin);
             }
             set
             {
-                PlayerPrefs.SetInt(Instance._saveSettings.CurrentCoin, value);
+                SaveManager.SetValue<int>(_instance._saveSettings.CurrentCoin, value);
+                _instance._coinView.UpdateCoin(CurrentCoin);
             }
         }
 
@@ -39,19 +37,24 @@ namespace CannonFightBase
         {
             if(_instance == null)
                 _instance = this;
-
-            DontDestroyOnLoad(gameObject);
         }
 
         private void Start()
         {
-            CurrentCoin += 58;
+            _coinView = UIManager.GetView<CoinView>();
+
+            _coinView.UpdateCoin(CurrentCoin);
+
+            CurrentCoin += 888;
+
         }
+
 
         [Serializable]
         public class SaveSettings
         {
             public string CurrentCoin;
         }
+
     }
 }

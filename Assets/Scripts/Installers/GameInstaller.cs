@@ -38,14 +38,6 @@ namespace CannonFightBase
             .FromComponentInNewPrefab(_settings.Potion)
             .UnderTransformGroup("PotionPool"));
 
-
-        }
-
-
-        void InstallExecutionOrder()
-        {
-            //Container.BindExecutionOrder<AimController>(-30);
-            //Container.BindExecutionOrder<FireController>(-40);
         }
 
 

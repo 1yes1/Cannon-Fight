@@ -58,6 +58,7 @@ namespace CannonFightBase
 
         public void SpawnPlayerManager()
         {
+            print("Spawn Player Managers");
             PlayerManager playerManager = _playerManagerFactory.Create();
             PhotonView photonView = playerManager.GetComponent<PhotonView>();
 

@@ -1,0 +1,198 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bff5a2de336f99b49b981e2a0db33817, type: 3}
+  m_Name: AnimationSettingsInstaller
+  m_EditorClassIdentifier: 
+  ChestAnimatorSettings:
+    OpenChest: OpenChest
+    HitChest: HitChest
+    FillChest: FillChest
+  DefeatedPanelView:
+    DefeatedPanelView:
+      KillCountSubViewDelay: 1.5
+      CoinGainSubViewDelay: 3
+      RankSubViewDelay: 0.5
+      ShineSubViewDelay: 0
+      Panel:
+        Ease: 10
+        Delay: 0
+        Duration: 0.5
+        Value: 0
+        Vector: {x: 0, y: 0, z: 0}
+      ExitButton:
+        Ease: 0
+        Delay: 5.5
+        Duration: 0.5
+        Value: 0.7
+        Vector: {x: 0, y: 0, z: 0}
+  VictoryPanelView:
+    VictoryPanelView:
+      KillCountSubViewDelay: 1.5
+      CoinGainSubViewDelay: 3
+      RankSubViewDelay: 0.5
+      ShineSubViewDelay: 0.25
+      Panel:
+        Ease: 10
+        Delay: 0
+        Duration: 0.5
+        Value: 0
+        Vector: {x: 0, y: 0, z: 0}
+      ExitButton:
+        Ease: 10
+        Delay: 5.5
+        Duration: 0.5
+        Value: 0.7
+        Vector: {x: 0, y: 0, z: 0}
+    KillCountSubView:
+      Background:
+        Ease: 16
+        Delay: 0
+        Duration: 0.5
+        Value: 1
+        Vector: {x: 0, y: 0, z: 0}
+      SkullSettings:
+        Ease: 19
+        Delay: 0
+        Duration: 0.5
+        Value: 0
+        Vector: {x: 0, y: 0, z: 0}
+      KillTextSettings:
+        Ease: 19
+        Delay: 0.1
+        Duration: 0.25
+        Value: 0.1
+        Vector: {x: 0, y: 0, z: 0}
+    CoinGainSubView:
+      Background:
+        Ease: 16
+        Delay: 0
+        Duration: 0.5
+        Value: 1
+        Vector: {x: 0, y: 0, z: 0}
+      Coin:
+        Ease: 19
+        Delay: 0
+        Duration: 0.5
+        Value: 0
+        Vector: {x: 0, y: 0, z: 0}
+      CoinText:
+        Ease: 19
+        Delay: 0.25
+        Duration: 0.25
+        Value: 1
+        Vector: {x: 0, y: 0, z: 0}
+    RankSubView:
+      Background:
+        Ease: 10
+        Delay: 0
+        Duration: 0.5
+        Value: 624
+        Vector: {x: 0, y: 0, z: 0}
+      ShowBackgroundFadeDelay: 0.75
+      ShowBackgroundFadeDuration: 0.2
+      RankText:
+        Ease: 24
+        Delay: 0.5
+        Duration: 0.5
+        Value: 0
+        Vector: {x: 0, y: 0, z: 0}
+    ShineSubView:
+      ShineScaleUp:
+        Ease: 4
+        Delay: 0
+        Duration: 0.25
+        Value: 3
+        Vector: {x: 0, y: 0, z: 0}
+      ShineScaleDown:
+        Ease: 13
+        Delay: 0
+        Duration: 0.75
+        Value: 2
+        Vector: {x: 0, y: 0, z: 0}
+      ShineRotate:
+        Ease: 0
+        Delay: 0
+        Duration: 6
+        Value: 0
+        Vector: {x: 0, y: 0, z: 360}
+      ShineFade:
+        Ease: 0
+        Delay: 0.5
+        Duration: 0.75
+        Value: 0.05
+        Vector: {x: 0, y: 0, z: 0}
+      RadialShine:
+        Ease: 0
+        Delay: 1
+        Duration: 0.5
+        Value: 2
+        Vector: {x: 0, y: 0, z: 0}
+  UpgradeMenuView:
+    UpgradeMenuView:
+      Main:
+        Ease: 13
+        Delay: 0
+        Duration: 0.4
+        Value: 1
+        Vector: {x: 0, y: 0, z: 0}
+    UpgradePopupSubView:
+      Focus:
+        Ease: 10
+        Delay: 0
+        Duration: 0.5
+        Value: 0.75
+        Vector: {x: 1, y: 1, z: 1}
+      Popup:
+        Ease: 13
+        Delay: 0
+        Duration: 0.5
+        Value: 0
+        Vector: {x: 0.85, y: 0.85, z: 0.85}
+    UpgradedSubView:
+      Image:
+        Ease: 19
+        Delay: 0
+        Duration: 0.5
+        Value: 1
+        Vector: {x: 0, y: 0, z: 0}
+      LevelText:
+        Ease: 30
+        Delay: 0.2
+        Duration: 0.5
+        Value: 1
+        Vector: {x: 0, y: 0, z: 0}
+      ValueNameCouple:
+        Ease: 19
+        Delay: 0.2
+        Duration: 0.5
+        Value: 1
+        Vector: {x: 0, y: 0, z: 0}
+      ContinueButton:
+        Ease: 10
+        Delay: 0.25
+        Duration: 0.75
+        Value: 0.7
+        Vector: {x: 0, y: 0, z: 0}
+  WarningView:
+    WarningView:
+      WarningView:
+        Ease: 10
+        Delay: 0
+        Duration: 0.5
+        Value: 1
+        Vector: {x: 0, y: 0, z: 0}
+      WarningText:
+        Ease: 0
+        Delay: 2
+        Duration: 0.5
+        Value: 0
+        Vector: {x: 0, y: 0, z: 0}
