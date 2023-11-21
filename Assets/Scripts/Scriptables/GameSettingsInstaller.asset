@@ -39,7 +39,7 @@ MonoBehaviour:
       MultiBallSkillTime: 10
     DamageSkillSettings:
       DamageMultiplier: 2
-      DamageSkillTime: 10
+      DamageSkillTime: 2
   ChestSettings:
     Health: 1
     PotionFlightTime: 0.8

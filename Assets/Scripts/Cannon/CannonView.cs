@@ -1,4 +1,5 @@
 using Photon.Pun;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +7,7 @@ using Zenject;
 
 namespace CannonFightBase
 {
-    public class CannonView : MonoBehaviour,IInitializable
+    public class CannonView : MonoBehaviour
     {
         [SerializeField] private GameObject _rotatorH;
 
@@ -42,8 +43,6 @@ namespace CannonFightBase
         public void Construct(Cannon cannon)
         {
             _cannon = cannon;
-            print("Cannon View Construct");
-
         }
 
 
@@ -59,13 +58,7 @@ namespace CannonFightBase
 
         private void Awake()
         {
-            print("Cannon View Awake");
             _animation = _rotatorV.GetComponent<Animation>();
-        }
-
-        void Start()
-        {
-            print("Cannon View Start");
         }
 
         public void GetRotators(out GameObject rotatorH, out GameObject rotatorV)
@@ -82,16 +75,10 @@ namespace CannonFightBase
             if (_animation == null)
             {
                 _animation = gameObject.GetComponent<Animation>();
-                print("Animasyon yükleee");
             }
 
             _animation.Stop();
             _animation.Play();
-        }
-
-        public void Initialize()
-        {
-            print("Cannon View Initialized");
         }
     }
 }

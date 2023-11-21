@@ -9,7 +9,7 @@
 
     public interface ISkill
     {
-        public void Initialize();
+        public void Tick();
 
         public void Reset();
     }

@@ -24,15 +24,14 @@ namespace CannonFightBase
             _timer = new Timer()
             {
                 Interval = _time * 1000,
-                AutoReset = false
+                AutoReset = false,
             };
 
             _timer.Elapsed += (o, args) =>
             {
                 Debug.Log("Skill Bitti: " + skill.ToString());
 
-                action.Invoke();
-
+                action?.Invoke();
                 //Dispose();
             };
 

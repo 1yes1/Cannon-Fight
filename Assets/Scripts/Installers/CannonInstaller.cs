@@ -8,14 +8,13 @@ namespace CannonFightBase
 {
     public class CannonInstaller : Installer<CannonInstaller>
     {
-        //[SerializeField] private Cannon _cannon;
-        //[SerializeField] private CannonController.Settings _cannonControllerSettings;
-
         public override void InstallBindings()
         {
-            //Container.BindInstance(_cannon);
-            
-            //Container.Bind<Cannon>().AsSingle();
+            //Bu ikisi zenject binding ile bind ediliyordu normalde
+            //Fakat buraya aldýk þimdilik, eðer multiplayer iken sýkýntý çýkarýrsa yine zenjectbinding componenti ile yaparýz
+            Container.BindInterfacesAndSelfTo<Cannon>().FromComponentOnRoot();
+            Container.BindInterfacesAndSelfTo<CannonView>().FromComponentOnRoot();
+
             Container.BindInterfacesAndSelfTo<AimController>().AsSingle();
             Container.BindInterfacesAndSelfTo<CannonController>().AsSingle();
             Container.BindInterfacesAndSelfTo<FireController>().AsSingle();
@@ -24,9 +23,6 @@ namespace CannonFightBase
 
             Container.BindInterfacesAndSelfTo<CannonDamageHandler>().AsSingle();
             Container.BindInterfacesAndSelfTo<CannonSkillHandler>().AsSingle();
-
-            //Container.BindInterfacesAndSelfTo<CannonController>().AsSingle().WithArguments(_cannon, _cannonControllerSettings);
-            //Container.BindInstance(_cannonControllerSettings);
 
             InstallExecutionOrder();
         }

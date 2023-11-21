@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
+using Zenject;
 
 namespace CannonFightBase
 {
     public class Skill : ISkill
     {
         private Action<Skill> _onTimeElapsed;
+
+        private float _timeElapsed;
 
         private float _time;
 
@@ -18,14 +22,9 @@ namespace CannonFightBase
 
         public Skill(float time, Action<Skill> onTimeElapsed,SkillType skill)
         {
-            _onTimeElapsed += onTimeElapsed;
+            _onTimeElapsed = onTimeElapsed;
             _time = time;
             _skill = skill;
-        }
-
-        public void Initialize()
-        {
-            _skillTimer = new SkillTimer(this, _time, OnSkillTimeElapsed);
         }
 
         private void OnSkillTimeElapsed()
@@ -35,7 +34,7 @@ namespace CannonFightBase
 
         public void Reset()
         {
-
+            Debug.Log("Skill reset");
         }
 
         public bool IsEqualToSkill(SkillType skill)
@@ -44,6 +43,14 @@ namespace CannonFightBase
                 return true;
             else
                 return false;
+        }
+
+        public void Tick()
+        {
+            _timeElapsed += Time.deltaTime;
+
+            if (_timeElapsed >= _time)
+                OnSkillTimeElapsed();
         }
     }
 }

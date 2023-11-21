@@ -7,7 +7,7 @@ using Zenject;
 
 namespace CannonFightBase
 {
-    public class CannonSkillHandler : IInitializable,IPotionCollector
+    public class CannonSkillHandler : IInitializable,IPotionCollector,IDisposable,ITickable
     {
         private readonly Cannon _cannon;
 
@@ -21,7 +21,9 @@ namespace CannonFightBase
 
         private readonly MultiballSkillParticle.Factory _multiballSkillFactory;
 
-        private Transform _skillParticlePoint;
+        private readonly Transform _skillParticlePoint;
+
+        private PoolableParticleBase _skillParticle;
 
         private List<Skill> _usingSkills;
 
@@ -39,18 +41,16 @@ namespace CannonFightBase
             _healthSkillFactory = healthSkillFactory;
             _multiballSkillFactory = multiballSkillFactory;
 
+            _skillParticlePoint = _cannonView.SkillParticlePoint;
 
-
-            Debug.Log("CannonSkillHandler Constructor Çlaýþtý ");
         }
 
         public void Initialize()
         {
             _usingSkills = new List<Skill>();
+
             //OnSkillBarFilled(SkillType.Damage);
             GameEventReceiver.OnSkillBarFilledEvent += SetSkillProperty;
-            Debug.Log("CannonSkillHandler Initialize Çlaýþtý ");
-
 
         }
 
@@ -67,14 +67,12 @@ namespace CannonFightBase
             {
                 //_cannonProperties.SetSkillFireDamage();
                 Skill damageSkill = new Skill(_settings.DamageSkillSettings.DamageSkillTime, OnSkillTimeElapsed, SkillType.Damage);
-                damageSkill.Initialize();
                 _usingSkills.Add(damageSkill);
             }
             else if (skill == SkillType.MultiBall)
             {
                 //_fireController.SetMultiBallSkill();
                 Skill multiBallSkill = new Skill(_settings.MultiBallSkillSettings.MultiBallSkillTime, OnSkillTimeElapsed, SkillType.MultiBall);
-                multiBallSkill.Initialize();
                 _usingSkills.Add(multiBallSkill);
             }
         }
@@ -82,6 +80,8 @@ namespace CannonFightBase
         public void OnSkillTimeElapsed(Skill skill)
         {
             Debug.Log("Heyy: OnSkillTimeElapsed");
+            
+            _skillParticle.Dispose();
 
             skill.Reset();
             _usingSkills.Remove(skill);
@@ -106,21 +106,18 @@ namespace CannonFightBase
 
         private void OnSkillBarFilled(SkillType skill)
         {
-            _skillParticlePoint = _cannonView.SkillParticlePoint;
-            
-            Debug.Log(_damageSkillFactory);
             switch (skill)
             {
                 case SkillType.MultiBall:
-                    ParticleManager.CreateWithFactory<MultiballSkillParticle>(_multiballSkillFactory, _skillParticlePoint.position, _skillParticlePoint, true);
+                    _skillParticle = ParticleManager.CreateWithFactory<MultiballSkillParticle>(_multiballSkillFactory, _skillParticlePoint.position, _skillParticlePoint, true);
                     GameEventCaller.Instance.OnBeforeSkillCountdownStarted(skill, _settings.MultiBallSkillSettings.MultiBallSkillTime);
                     break;
                 case SkillType.Damage:
-                    ParticleManager.CreateWithFactory<DamageSkillParticle>(_damageSkillFactory, _cannonView.SkillParticlePoint.position, _cannonView.SkillParticlePoint, true);
+                    _skillParticle = ParticleManager.CreateWithFactory<DamageSkillParticle>(_damageSkillFactory, _skillParticlePoint.position, _skillParticlePoint, true);
                     GameEventCaller.Instance.OnBeforeSkillCountdownStarted(skill, _settings.DamageSkillSettings.DamageSkillTime);
                     break;
                 case SkillType.Health:
-                    ParticleManager.CreateWithFactory<HealthSkillParticle>(_healthSkillFactory, _skillParticlePoint.position, _skillParticlePoint, false);
+                    _skillParticle = ParticleManager.CreateWithFactory<HealthSkillParticle>(_healthSkillFactory, _skillParticlePoint.position, _skillParticlePoint, false);
                     break;
                 default:
                     break;
@@ -135,6 +132,22 @@ namespace CannonFightBase
 
         }
 
+        public void Dispose()
+        {
+            //Dispose etmemizin sebebi ayný OnDisable gibi.
+            //Eðer burada unsubscribe etmezsek, derlendikten sonra bir kere çalýþýyor tüm bu GameEvent ile çalýþanlar,
+            //daha sonra oyunu tekrar baþlatýnca çalýþmýyor
+            GameEventReceiver.OnSkillBarFilledEvent -= SetSkillProperty;
+        }
+
+        public void Tick()
+        {
+            if(_usingSkills.Count > 0)
+            {
+                for (int i = 0; i < _usingSkills.Count; i++)
+                    _usingSkills[i].Tick();
+            }
+        }
 
         [Serializable]
         public class Settings

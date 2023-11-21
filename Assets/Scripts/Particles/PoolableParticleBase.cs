@@ -33,7 +33,9 @@ namespace CannonFightBase
         {
             _pool = p1;
             _particleSystem = GetComponent<ParticleSystem>();
-            Invoke(nameof(Dispose), _particleSystem.main.duration);
+
+            if(!_particleSystem.main.loop)
+                Invoke(nameof(Dispose), _particleSystem.main.duration);
         }
     }
 }

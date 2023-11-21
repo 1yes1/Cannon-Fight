@@ -1087,10 +1087,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 90255abfa57d6ce4aa9cb289c032b6c0,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 8817711832085296678}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 90255abfa57d6ce4aa9cb289c032b6c0,
-        type: 3}
-      insertIndex: -1
       addedObject: {fileID: 1532848633857551894}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 90255abfa57d6ce4aa9cb289c032b6c0,
         type: 3}
@@ -1404,25 +1400,6 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 1
   m_UseLocal: 1
---- !u!114 &8817711832085296678
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8117292197792318527}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0166d8ff8d905b048b2448179e1f5d11, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _components:
-  - {fileID: 1532848633857551894}
-  - {fileID: 383931353902850423}
-  _identifier: 
-  _useSceneContext: 1
-  _context: {fileID: 0}
-  _bindType: 2
 --- !u!114 &1532848633857551894
 MonoBehaviour:
   m_ObjectHideFlags: 0
