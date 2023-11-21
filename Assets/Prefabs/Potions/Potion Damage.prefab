@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4545033745293336509}
   - component: {fileID: 6720660712888750667}
   - component: {fileID: 3982033172756969840}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Sphere.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 670959255111295845}
   - component: {fileID: 4509850442098210026}
   - component: {fileID: 5223718152467251455}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -178,7 +178,7 @@ GameObject:
   - component: {fileID: 4877659513760431831}
   - component: {fileID: 7843884533760503680}
   - component: {fileID: 8497418219458924009}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Potion Damage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -262,7 +262,7 @@ GameObject:
   - component: {fileID: 5521307613399272089}
   - component: {fileID: 633472836855115956}
   - component: {fileID: 2632424521435185758}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: PotionPurple Variant
   m_TagString: Untagged
   m_Icon: {fileID: 0}

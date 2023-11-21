@@ -14,27 +14,29 @@ namespace CannonFightBase
 
     public class FireController : ITickable,IInitializable,IRpcMediator
     {
-        private Settings _settings;
+        private readonly Settings _settings;
 
-        private ParticleSettings _particleSettings;
+        private readonly ParticleSettings _particleSettings;
 
-        private RPCMediator _rpcMediator;
+        private readonly RPCMediator _rpcMediator;
 
-        private CannonSkillHandler.Settings _cannonSkillHandlerSettings;
+        private readonly CannonSkillHandler.Settings _cannonSkillHandlerSettings;
+
+        private readonly Cannon _cannon;
+
+        private readonly CannonView _cannonView;
+
+        private readonly CannonBall.Factory _cannonBallFactory;
+
+        private readonly CannonTraits _cannonTraits;
 
         private Transform _ballSpawnPoint;
 
         private Transform _crosshair;
 
-        private Cannon _cannon;
-
-        private CannonView _cannonView;
-
-        private CannonBall.Factory _cannonBallFactory;
-
         private PhotonView _photonView;
 
-        private float _frequencyStatus = 0;
+        private float _fireRateStatus = 0;
 
         private bool _useMultiBallSkill = false;
 
@@ -44,7 +46,8 @@ namespace CannonFightBase
 
         public Cannon Cannon => _cannon;
 
-        public FireController(Cannon cannon,CannonView cannonView,CannonBall.Factory cannonBallFactory,Settings settings,CannonSkillHandler.Settings cannonSkillHandlerSettings, ParticleSettings particleSettings,RPCMediator rpcMediator)
+        public FireController(Cannon cannon,CannonView cannonView,CannonBall.Factory cannonBallFactory,Settings settings,CannonSkillHandler.Settings cannonSkillHandlerSettings, 
+            ParticleSettings particleSettings,CannonTraits cannonTraits,RPCMediator rpcMediator)
         {
             _cannonBallFactory = cannonBallFactory;
             _cannon = cannon;
@@ -54,6 +57,7 @@ namespace CannonFightBase
             _cannonSkillHandlerSettings = cannonSkillHandlerSettings;
             _particleSettings = particleSettings;
             _rpcMediator = rpcMediator;
+            _cannonTraits = cannonTraits;
         }
 
         public void Initialize()
@@ -89,7 +93,7 @@ namespace CannonFightBase
 
             if (!GameManager.Instance.useAndroidControllers)
             {
-                if (InputManager.IsFiring && _frequencyStatus <= 0)
+                if (InputManager.IsFiring && _fireRateStatus <= 0)
                 {
                     if (_useMultiBallSkill)
                     {
@@ -100,9 +104,9 @@ namespace CannonFightBase
                 }
             }
 
-            if (_frequencyStatus > 0)
+            if (_fireRateStatus > 0)
             {
-                _frequencyStatus -= Time.deltaTime;
+                _fireRateStatus -= Time.deltaTime;
             }
         }
 
@@ -132,7 +136,7 @@ namespace CannonFightBase
 
                 Fire(_cannon.OwnPhotonView.Owner, _ballSpawnPoint.position, direction, _settings.FireRange, _fireDamage);
 
-                _frequencyStatus = _settings.FireFrequency;
+                //_fireRateStatus = _settings.FireFrequency;
 
                 GameEventCaller.Instance.OnPlayerFired();
 
@@ -163,20 +167,20 @@ namespace CannonFightBase
             rigidbody.useGravity = false;
         }
 
-        private void OnSkillBarFilled(Skills skill)
+        private void OnSkillBarFilled(SkillType skill)
         {
-            if (skill == Skills.MultiBall)
+            if (skill == SkillType.MultiBall)
                 SetMultiBallSkill();
-            else if (skill == Skills.Damage)
+            else if (skill == SkillType.Damage)
                 SetDamageSkill();
         }
 
 
         private void OnSkillEnded(Skill skill)
         {
-            if (skill.IsEqualToSkill(Skills.MultiBall))
+            if (skill.IsEqualToSkill(SkillType.MultiBall))
                 ResetMultiBallSkill();
-            else if (skill.IsEqualToSkill(Skills.Damage))
+            else if (skill.IsEqualToSkill(SkillType.Damage))
                 ResetDamageSkill();
         }
 
@@ -193,13 +197,14 @@ namespace CannonFightBase
 
         public void SetDamageSkill()
         {
-            _fireDamage = _settings.FireDamage * _cannonSkillHandlerSettings.DamageSkillSettings.DamageMultiplier;
+            _fireDamage = _cannonTraits.Damage * _cannonSkillHandlerSettings.DamageSkillSettings.DamageMultiplier;
         }
 
 
         public void ResetDamageSkill()
         {
-            _fireDamage = _settings.FireDamage;
+            _fireDamage = _cannonTraits.Damage;
+            //Debug.Log("Damage: "+_cannonTraits.Damage);
         }
 
 
@@ -207,10 +212,6 @@ namespace CannonFightBase
         public class Settings
         {
             public LayerMask FireIgnoreLayers;
-
-            public float FireFrequency = 0.75f;
-
-            public int FireDamage = 10;
 
             public float FireRange = 50;
 

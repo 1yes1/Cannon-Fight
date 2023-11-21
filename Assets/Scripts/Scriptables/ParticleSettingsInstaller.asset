@@ -18,6 +18,13 @@ MonoBehaviour:
   CannonDamageHandlerParticles:
     TakeDamageParticle: {fileID: 3924044575421212719, guid: 936f524092573c4418c4d36b19799853,
       type: 3}
+  CannonParticleSettings:
+    DamageSkillParticle: {fileID: 3830818977505446444, guid: 76de7f610ea9ba148ba6661f6ea95598,
+      type: 3}
+    MultiBallSkillParticle: {fileID: 3257790659356053967, guid: c7168b2b3fb450343befae48c54e71b0,
+      type: 3}
+    HealthSkillParticle: {fileID: 2250147972323024225, guid: 8a086ef952955c6458045496a1999a52,
+      type: 3}
   HittableParticles:
     HitParticle: {fileID: 3924044575421212719, guid: 264f8ffd402305946811ca815350f6fc,
       type: 3}

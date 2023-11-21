@@ -8,7 +8,7 @@ namespace CannonFightBase
 {
     public class DenemeEvent
     {
-        public event Action<Skills> Merhaba;
+        public event Action<SkillType> Merhaba;
 
         public DenemeEvent()
         {
@@ -24,7 +24,7 @@ namespace CannonFightBase
         public void RunEvent()
         {
             Debug.Log("Heyyy  RunEvent");
-            Merhaba?.Invoke(Skills.MultiBall);
+            Merhaba?.Invoke(SkillType.MultiBall);
             Debug.Log("Heyyy RunEvnt Deneme Çalýþtý");
         }
 

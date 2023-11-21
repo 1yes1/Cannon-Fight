@@ -14,7 +14,7 @@ namespace CannonFightBase
 
         private ParticleSettings _particleSettings;
 
-        protected Skills _skill;
+        protected SkillType _skill;
         
         private IMemoryPool _pool;
 
@@ -26,7 +26,7 @@ namespace CannonFightBase
 
         private bool _isShowedUp = false;
 
-        public Skills Skill => _skill;
+        public SkillType Skill => _skill;
 
         [Inject]
         public void Construct(ParticleSettings particleSettings)
@@ -115,9 +115,9 @@ namespace CannonFightBase
         {
             if(other.CompareTag("Cannon"))
             {
-                if(other.GetComponent<Cannon>().CannonSkillHandler.CanCollectPotion(_skill))
+                if(other.GetComponent<IPotionCollector>().CanCollectPotion(_skill))
                 {
-                    other.GetComponent<Cannon>().OnPotionCollected(this);
+                    other.GetComponent<IPotionCollector>().Collect(this);
                     ParticleManager.CreateAndPlay(ParticleManager.GetParticleTupleValue(_particleSettings.ParticleTuplesByType, _skill),null,transform.position);
                     //Destroy(gameObject);
                     Dispose();
@@ -160,14 +160,14 @@ namespace CannonFightBase
         [Serializable]
         public class PotionType
         {
-            public Skills Skill;
+            public SkillType Skill;
             public Material Material;
         }
 
         [Serializable]
         public class ParticleSettings
         {
-            public List<ParticleTuple<Skills>> SkillsParticleTuples;
+            public List<ParticleTuple<SkillType>> SkillsParticleTuples;
 
             public Dictionary<Type, IList> ParticleTuplesByType;
 
@@ -175,7 +175,7 @@ namespace CannonFightBase
             {
                 ParticleTuplesByType = new Dictionary<System.Type, IList>
                 {
-                    { typeof(Skills), SkillsParticleTuples },
+                    { typeof(SkillType), SkillsParticleTuples },
                 };
             }
         }

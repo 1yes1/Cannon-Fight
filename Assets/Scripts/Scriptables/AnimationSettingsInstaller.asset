@@ -64,7 +64,7 @@ MonoBehaviour:
         Delay: 0
         Duration: 0.5
         Value: 0
-        Vector: {x: 0, y: 0, z: 0}
+        Vector: {x: 0.5, y: 0.5, z: 0.5}
       KillTextSettings:
         Ease: 19
         Delay: 0.1
@@ -83,7 +83,7 @@ MonoBehaviour:
         Delay: 0
         Duration: 0.5
         Value: 0
-        Vector: {x: 0, y: 0, z: 0}
+        Vector: {x: 0.2, y: 0.2, z: 0.2}
       CoinText:
         Ease: 19
         Delay: 0.25

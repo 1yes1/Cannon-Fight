@@ -26,9 +26,9 @@ namespace CannonFightBase
 
         public void OnMobileFireButtonClicked();
 
-        public void OnSkillBarFilled(Skills skill);
+        public void OnSkillBarFilled(SkillType skill);
 
-        public void OnBeforeSkillCountdownStarted(Skills skill, float time);
+        public void OnBeforeSkillCountdownStarted(SkillType skill, float time);
 
         public void OnPotionCollected(Potion potion);
 

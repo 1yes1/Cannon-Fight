@@ -241,7 +241,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8921966965463979460}
-  - {fileID: 8368895742555215297}
+  - {fileID: 2096174802341207548}
   - {fileID: 5520011957283297610}
   m_Father: {fileID: 0}
   m_RootOrder: -1
@@ -264,7 +264,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _background: {fileID: 3692603716516843927}
-  _coin: {fileID: 8403406132703897235}
+  _coin: {fileID: 2138564327446408878}
   _coinText: {fileID: 5891460128156016080}
 --- !u!1001 &4103336110207899117
 PrefabInstance:
@@ -323,6 +323,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 420
+      objectReference: {fileID: 0}
+    - target: {fileID: 2731118249186265105, guid: 7ad3e2673be4ab243983109aef13b3ad,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2731118249186265105, guid: 7ad3e2673be4ab243983109aef13b3ad,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2731118249186265105, guid: 7ad3e2673be4ab243983109aef13b3ad,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 2731118249186265105, guid: 7ad3e2673be4ab243983109aef13b3ad,
         type: 3}
@@ -389,13 +404,13 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7ad3e2673be4ab243983109aef13b3ad, type: 3}
---- !u!224 &8368895742555215297 stripped
+--- !u!224 &2096174802341207548 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2731118249186265105, guid: 7ad3e2673be4ab243983109aef13b3ad,
     type: 3}
   m_PrefabInstance: {fileID: 4103336110207899117}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &8403406132703897235 stripped
+--- !u!1 &2138564327446408878 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2692113123950361411, guid: 7ad3e2673be4ab243983109aef13b3ad,
     type: 3}

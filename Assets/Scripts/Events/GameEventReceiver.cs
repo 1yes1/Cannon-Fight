@@ -30,13 +30,13 @@ namespace CannonFightBase
 
         public static event Action OnMobileFireButtonClickedEvent;
 
-        public static event Action<Skills> OnSkillBarFilledEvent;
+        public static event Action<SkillType> OnSkillBarFilledEvent;
 
         public static event Action<Potion> OnPotionCollectedEvent;
 
         public static event Action<Skill> OnSkillEndedEvent;
 
-        public static event Action<Skills,float> OnBeforeSkillCountdownStartedEvent;
+        public static event Action<SkillType,float> OnBeforeSkillCountdownStartedEvent;
 
         public static event Action<Chest> OnChestOpenedEvent;
 
@@ -53,7 +53,7 @@ namespace CannonFightBase
             OnMobileFireButtonClickedEvent?.Invoke();
         }
 
-        public void OnSkillBarFilled(Skills skill)
+        public void OnSkillBarFilled(SkillType skill)
         {
             OnSkillBarFilledEvent?.Invoke(skill);
         }
@@ -138,7 +138,7 @@ namespace CannonFightBase
             OnPlayerFiredEvent?.Invoke();
         }
 
-        public void OnBeforeSkillCountdownStarted(Skills skill,float time)
+        public void OnBeforeSkillCountdownStarted(SkillType skill,float time)
         {
             OnBeforeSkillCountdownStartedEvent?.Invoke(skill,time);
         }

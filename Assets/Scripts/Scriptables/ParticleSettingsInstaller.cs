@@ -8,6 +8,7 @@ public class ParticleSettingsInstaller : ScriptableObjectInstaller<ParticleSetti
 
     public FireController.ParticleSettings FireControllerParticles;
     public CannonDamageHandler.ParticleSettings CannonDamageHandlerParticles;
+    public Cannon.ParticleSettings CannonParticleSettings;
     public Hittable.ParticleSettings HittableParticles;
     public Chest.ParticleSettings ChestParticles;
     public Potion.ParticleSettings PotionParticles;
@@ -39,6 +40,26 @@ public class ParticleSettingsInstaller : ScriptableObjectInstaller<ParticleSetti
         .FromComponentInNewPrefab(CannonDamageHandlerParticles.TakeDamageParticle)
         .UnderTransformGroup("TakeDamageParticle"));
 
+
+        //Skill Particles
+
+        Container.BindFactory<DamageSkillParticle, DamageSkillParticle.Factory>()
+        .FromPoolableMemoryPool<DamageSkillParticle, DamageSkillParticle.Pool>(poolBinder => poolBinder
+        .WithInitialSize(2)
+        .FromComponentInNewPrefab(CannonParticleSettings.DamageSkillParticle)
+        .UnderTransformGroup("DamageSkillParticle"));
+
+        Container.BindFactory<HealthSkillParticle, HealthSkillParticle.Factory>()
+        .FromPoolableMemoryPool<HealthSkillParticle, HealthSkillParticle.Pool>(poolBinder => poolBinder
+        .WithInitialSize(2)
+        .FromComponentInNewPrefab(CannonParticleSettings.HealthSkillParticle)
+        .UnderTransformGroup("HealthSkillParticle"));
+
+        Container.BindFactory<MultiballSkillParticle, MultiballSkillParticle.Factory>()
+        .FromPoolableMemoryPool<MultiballSkillParticle, MultiballSkillParticle.Pool>(poolBinder => poolBinder
+        .WithInitialSize(2)
+        .FromComponentInNewPrefab(CannonParticleSettings.MultiBallSkillParticle)
+        .UnderTransformGroup("MultiballSkillParticle"));
 
     }
 }

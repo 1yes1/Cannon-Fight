@@ -28,26 +28,21 @@ namespace CannonFightUI
             _delay = subViewDelay;
 
             _killCount = 5;
-            Vector3 defScale = _skull.transform.localScale;
-
+            
             _skull.transform.localScale = Vector3.zero;
             _background.transform.localScale = Vector3.zero;
             _killText.transform.localScale = Vector3.zero;
             _killText.text = "0";
 
             Tweener backgroundAnimation = _background.transform.DOScale(_animationSettings.Background.Value, _animationSettings.Background.Duration).SetEase(_animationSettings.Background.Ease).SetDelay(_animationSettings.Background.Delay);
-            Tween skullAnimation = _skull.transform.DOScale(defScale, _animationSettings.SkullSettings.Duration).SetEase(_animationSettings.SkullSettings.Ease).SetDelay(_animationSettings.SkullSettings.Delay);
-            Tween killTextAnimation = _killText.transform.DOScale(Vector3.one, _animationSettings.KillTextSettings.Duration).SetEase(_animationSettings.KillTextSettings.Ease); ;
+            Tweener skullAnimation = _skull.transform.DOScale(_animationSettings.SkullSettings.Vector, _animationSettings.SkullSettings.Duration).SetEase(_animationSettings.SkullSettings.Ease).SetDelay(_animationSettings.SkullSettings.Delay);
+            Tweener killTextAnimation = _killText.transform.DOScale(Vector3.one, _animationSettings.KillTextSettings.Duration).SetEase(_animationSettings.KillTextSettings.Ease).OnComplete(() => { StartCoroutine(SetKillCount()); });
 
             Sequence sequence = DOTween.Sequence(this);
-            sequence.SetDelay(_delay);
-            sequence.OnComplete(() => { StartCoroutine(SetKillCount()); });
-
             sequence.Append(backgroundAnimation);
             sequence.Append(skullAnimation);
             sequence.Append(killTextAnimation);
-
-
+            sequence.Play().SetDelay(_delay);
         }
 
         public override void Initialize()

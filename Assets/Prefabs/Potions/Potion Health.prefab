@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8461938578322976710}
   - component: {fileID: 2753029622504461097}
   - component: {fileID: 3801146240295562682}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Sphere.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 7093676696875087812}
   - component: {fileID: 7924774697708445898}
   - component: {fileID: -5509225301041597125}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Potion Health
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -167,6 +167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90a3d4d3d292c8f4e942b7fd5d137d06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _meshRenderer: {fileID: 0}
 --- !u!1 &8696358573294799982
 GameObject:
   m_ObjectHideFlags: 0
@@ -178,7 +179,7 @@ GameObject:
   - component: {fileID: 3587958184078862253}
   - component: {fileID: 3116758439288610162}
   - component: {fileID: 2516524624862774404}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: PotionPurple Variant
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -263,7 +264,7 @@ GameObject:
   - component: {fileID: 7969245673490354345}
   - component: {fileID: 5951503124696380944}
   - component: {fileID: 6218506260495845959}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}

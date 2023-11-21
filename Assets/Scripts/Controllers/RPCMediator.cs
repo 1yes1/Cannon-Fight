@@ -24,37 +24,12 @@ namespace CannonFightBase
             _values.Add(key, rpcMediator);
         }
 
-        //[PunRPC]
-        //public void RPC_StartFire(Vector3 ballPosition, Vector3 ballDirection, float fireRange, int fireDamage, PhotonMessageInfo info)
-        //{
-        //    if (_fireController.Cannon.OwnPhotonView.IsMine)
-        //        return;
-
-        //    Player owner = info.Sender;
-
-        //    //CannonBall cannonBall = _cannonBallFactory.Create();
-        //    //cannonBall.Initialize(fireDamage,_cannon, owner);
-        //    _fireController.Fire(owner, ballPosition, ballDirection, fireRange, fireDamage);
-
-        //    //cannonBall.transform.position = _ballSpawnPoint.position;
-        //    //cannonBall.transform.rotation = _ballSpawnPoint.rotation;
-
-        //    //ParticleManager.Instance.CreateAndPlay(ParticleManager.Instance.fireCannonBallParticle, _ballSpawnPoint, ballPosition);
-
-        //    //Burada diðer kullanýcýlarýn toplarý oluþturulduðu için bu toplar bize hasar vermeli. Yani own deðil normal cannonball olmalý
-        //    //LayerMask layerMask = LayerMask.NameToLayer("CannonBall");
-        //    //cannonBall.gameObject.layer = layerMask;
-
-        //    //Rigidbody rigidbody = cannonBall.GetComponent<Rigidbody>();
-        //    //rigidbody.AddForce(ballDirection * fireRange, ForceMode.Impulse);
-        //}
-
 
         [PunRPC]
         public void RpcForwarder(byte key, object[] parameters, PhotonMessageInfo info)
         {
             if (_values == null)
-                print("Heeey Ben null");
+                Debug.LogWarning("_values is null");
 
             if (_values.TryGetValue(key, out IRpcMediator rpcMediator))
             {

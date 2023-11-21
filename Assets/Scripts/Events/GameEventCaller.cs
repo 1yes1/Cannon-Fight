@@ -27,7 +27,7 @@ namespace CannonFightBase
             _gameEventReceiver.OnMobileFireButtonClicked();
         }
 
-        public void OnSkillBarFilled(Skills skill)
+        public void OnSkillBarFilled(SkillType skill)
         {
             _gameEventReceiver.OnSkillBarFilled(skill);
         }
@@ -112,10 +112,12 @@ namespace CannonFightBase
             _gameEventReceiver.OnPlayerFired();
         }
 
-        public void OnBeforeSkillCountdownStarted(Skills skill,float time)
+        public void OnBeforeSkillCountdownStarted(SkillType skill,float time)
         {
             _gameEventReceiver.OnBeforeSkillCountdownStarted(skill,time);
         }
+
+        
     }
 
 }

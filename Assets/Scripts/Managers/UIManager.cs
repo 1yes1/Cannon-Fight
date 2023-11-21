@@ -83,8 +83,7 @@ namespace CannonFightUI
 
         public static T ShowWithDelay<T>(float delay,bool remember = true, bool isPopup = false) where T : UIView
         {
-            UIView view = Show<T>(remember, isPopup);
-            view.Hide();
+            UIView view = GetView<T>();
 
             _instance.StartCoroutine(ShowDelay(view, delay));
 

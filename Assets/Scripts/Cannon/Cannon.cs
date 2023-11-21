@@ -10,7 +10,7 @@ using Zenject;
 
 namespace CannonFightBase
 {
-    public class Cannon : MonoBehaviour,ICannonBehaviour, IDamageable
+    public class Cannon : MonoBehaviour,IInitializable,ICannonBehaviour, IDamageable,IPotionCollector
     {
         private PlayerManager _playerManager;
 
@@ -20,13 +20,11 @@ namespace CannonFightBase
 
         private CannonSkillHandler _cannonSkillHandler;
 
+        private IPotionCollector _potionCollector;
+
         private CannonDamageHandler _cannonDamageHandler;
 
-        private FireController _fireController;
-
         private PhotonView _photonView;
-
-        private DenemeEvent _denemeEvent;
 
         private bool _isDead = false;
 
@@ -66,14 +64,13 @@ namespace CannonFightBase
 
         [Inject]
         public void Construct(
-            FireController fireController, 
             CannonSkillHandler cannonSkillHandler,
             CannonController cannonController,
             CannonDamageHandler cannonDamageHandler,
             CannonView cannonView)
         {
-            _fireController = fireController;
             _cannonSkillHandler = cannonSkillHandler;
+            _potionCollector = _cannonSkillHandler;
             _cannonController = cannonController;
             _cannonDamageHandler = cannonDamageHandler;
             _cannonView = cannonView;
@@ -84,29 +81,20 @@ namespace CannonFightBase
             _playerManager = playerManager;
         }
 
-        private void Awake()
+        public void Initialize()
         {
+            //Eðer Awake kullanýrsak,
+            //IInitializable olan class larýn Initialize() Metodu
+            //Normalde Startta çaðrýlmasý gerekirken Awake den önce çaðrýlýyor o yüzden hata alabiliyoruz
+
             _photonView = GetComponent<PhotonView>();
-
-            //_denemeEvent = GetComponent<DenemeEvent>();
-
-            //_denemeEvent = new DenemeEvent();
-
-            //GameManager.Instance.AddListener(_denemeEvent);
-
+            print("Photon View Atandý");
 
             if (!_photonView.IsMine)
                 return;
-            
+
             LayerMask layerMask = LayerMask.NameToLayer("Player");
             gameObject.layer = layerMask;
-            
-        }
-
-        public void OnPotionCollected(Potion potion)
-        {
-            if (_photonView.IsMine)
-                GameEventCaller.Instance.OnPotionCollected(potion);
         }
 
         public void Boost(float multiplier)
@@ -138,6 +126,23 @@ namespace CannonFightBase
 
         }
 
+        public bool CanCollectPotion(SkillType skill)
+        {
+            return _potionCollector.CanCollectPotion(skill);
+        }
+
+        public void Collect(Potion potion)
+        {
+            _potionCollector.Collect(potion);
+        }
+
+        [Serializable]
+        public struct ParticleSettings
+        {
+            public ParticleSystem DamageSkillParticle;
+            public ParticleSystem MultiBallSkillParticle;
+            public ParticleSystem HealthSkillParticle;
+        }
 
         public class Factory : PlaceholderFactory<Cannon>
         {

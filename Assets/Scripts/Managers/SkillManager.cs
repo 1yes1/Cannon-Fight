@@ -22,7 +22,7 @@ namespace CannonFightBase
 
         private void OnPotionCollected(Potion potion)
         {
-            if (potion.Skill == Skills.Health)
+            if (potion.Skill == SkillType.Health)
             {
                 GameEventCaller.Instance.OnSkillBarFilled(potion.Skill);
             }
@@ -45,7 +45,7 @@ namespace CannonFightBase
             _fillableBars = GetComponentsInChildren<FillableBar>();
         }
 
-        private FillableBar GetFillableBar(Skills skill)
+        private FillableBar GetFillableBar(SkillType skill)
         {
             for (int i = 0; i < _fillableBars.Length; i++)
             {

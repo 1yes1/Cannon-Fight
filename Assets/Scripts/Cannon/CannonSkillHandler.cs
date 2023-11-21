@@ -3,46 +3,77 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 namespace CannonFightBase
 {
-    public class CannonSkillHandler
+    public class CannonSkillHandler : IInitializable,IPotionCollector
     {
-        private Cannon _cannon;
+        private readonly Cannon _cannon;
+
+        private readonly CannonView _cannonView;
+
+        private readonly Settings _settings;
+
+        private readonly DamageSkillParticle.Factory _damageSkillFactory;
+
+        private readonly HealthSkillParticle.Factory _healthSkillFactory;
+
+        private readonly MultiballSkillParticle.Factory _multiballSkillFactory;
+
+        private Transform _skillParticlePoint;
 
         private List<Skill> _usingSkills;
 
-        private Settings _settings;
-
-        public CannonSkillHandler(Cannon cannon,Settings settings) 
+        public CannonSkillHandler(Cannon cannon,
+                                  CannonView cannonView,
+                                  Settings settings,
+                                  DamageSkillParticle.Factory damageSkillFactory,
+                                  HealthSkillParticle.Factory healthSkillFactory,
+                                  MultiballSkillParticle.Factory multiballSkillFactory) 
         {
             _cannon = cannon;
+            _cannonView = cannonView;
             _settings = settings;
-            _usingSkills = new List<Skill>();
+            _damageSkillFactory = damageSkillFactory;
+            _healthSkillFactory = healthSkillFactory;
+            _multiballSkillFactory = multiballSkillFactory;
 
-            GameEventReceiver.OnSkillBarFilledEvent -= SetSkillProperty;
-            GameEventReceiver.OnSkillBarFilledEvent += SetSkillProperty;
+
+
+            Debug.Log("CannonSkillHandler Constructor Çlaýþtý ");
         }
 
-        public void SetSkillProperty(Skills skill)
+        public void Initialize()
+        {
+            _usingSkills = new List<Skill>();
+            //OnSkillBarFilled(SkillType.Damage);
+            GameEventReceiver.OnSkillBarFilledEvent += SetSkillProperty;
+            Debug.Log("CannonSkillHandler Initialize Çlaýþtý ");
+
+
+        }
+
+
+        public void SetSkillProperty(SkillType skill)
         {
             OnSkillBarFilled(skill);
 
-            if (skill == Skills.Health)
+            if (skill == SkillType.Health)
             {
                 _cannon.SetSkillHealth(150);
             }
-            else if (skill == Skills.Damage)
+            else if (skill == SkillType.Damage)
             {
                 //_cannonProperties.SetSkillFireDamage();
-                Skill damageSkill = new Skill(_settings.DamageSkillSettings.DamageSkillTime, OnSkillTimeElapsed, Skills.Damage);
+                Skill damageSkill = new Skill(_settings.DamageSkillSettings.DamageSkillTime, OnSkillTimeElapsed, SkillType.Damage);
                 damageSkill.Initialize();
                 _usingSkills.Add(damageSkill);
             }
-            else if (skill == Skills.MultiBall)
+            else if (skill == SkillType.MultiBall)
             {
                 //_fireController.SetMultiBallSkill();
-                Skill multiBallSkill = new Skill(_settings.MultiBallSkillSettings.MultiBallSkillTime, OnSkillTimeElapsed, Skills.MultiBall);
+                Skill multiBallSkill = new Skill(_settings.MultiBallSkillSettings.MultiBallSkillTime, OnSkillTimeElapsed, SkillType.MultiBall);
                 multiBallSkill.Initialize();
                 _usingSkills.Add(multiBallSkill);
             }
@@ -59,7 +90,7 @@ namespace CannonFightBase
 
 
 
-        public bool CanCollectPotion(Skills skill)
+        public bool CanCollectPotion(SkillType skill)
         {
             //if (!Cannon.PhotonView.IsMine)
             //    return false;
@@ -73,12 +104,35 @@ namespace CannonFightBase
         }
 
 
-        private void OnSkillBarFilled(Skills skill)
+        private void OnSkillBarFilled(SkillType skill)
         {
-            if (skill == Skills.MultiBall)
-                GameEventCaller.Instance.OnBeforeSkillCountdownStarted(skill,_settings.MultiBallSkillSettings.MultiBallSkillTime);
-            else if(skill == Skills.Damage)
-                GameEventCaller.Instance.OnBeforeSkillCountdownStarted(skill,_settings.DamageSkillSettings.DamageSkillTime);
+            _skillParticlePoint = _cannonView.SkillParticlePoint;
+            
+            Debug.Log(_damageSkillFactory);
+            switch (skill)
+            {
+                case SkillType.MultiBall:
+                    ParticleManager.CreateWithFactory<MultiballSkillParticle>(_multiballSkillFactory, _skillParticlePoint.position, _skillParticlePoint, true);
+                    GameEventCaller.Instance.OnBeforeSkillCountdownStarted(skill, _settings.MultiBallSkillSettings.MultiBallSkillTime);
+                    break;
+                case SkillType.Damage:
+                    ParticleManager.CreateWithFactory<DamageSkillParticle>(_damageSkillFactory, _cannonView.SkillParticlePoint.position, _cannonView.SkillParticlePoint, true);
+                    GameEventCaller.Instance.OnBeforeSkillCountdownStarted(skill, _settings.DamageSkillSettings.DamageSkillTime);
+                    break;
+                case SkillType.Health:
+                    ParticleManager.CreateWithFactory<HealthSkillParticle>(_healthSkillFactory, _skillParticlePoint.position, _skillParticlePoint, false);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+
+        public void Collect(Potion potion)
+        {
+            if (_cannon.OwnPhotonView.IsMine)
+                GameEventCaller.Instance.OnPotionCollected(potion);
+
         }
 
 

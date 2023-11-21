@@ -1,6 +1,6 @@
 ﻿namespace CannonFightBase
 {
-    public enum Skills
+    public enum SkillType
     {
         MultiBall,
         Damage,

@@ -36,14 +36,14 @@ namespace CannonFightUI
             _coin.transform.localScale = Vector3.zero;
             _background.transform.localScale = Vector3.zero;
 
-            Sequence sequence = DOTween.Sequence();
+            Sequence sequence = DOTween.Sequence(this);
 
             Tweener backgroundAnimation = _background.transform.DOScale(_animationSettings.Background.Value,_animationSettings.Background.Duration).SetEase(_animationSettings.Background.Ease).SetDelay(_animationSettings.Background.Delay);
 
-            Tweener coinAnimation = _coin.transform.DOScale(coinScale, _animationSettings.Coin.Duration).SetEase(_animationSettings.Coin.Ease).SetDelay(_animationSettings.Coin.Delay).OnComplete(SetCoin);
-            sequence.SetDelay(_delay);
+            Tweener coinAnimation = _coin.transform.DOScale(_animationSettings.Coin.Vector, _animationSettings.Coin.Duration).SetEase(_animationSettings.Coin.Ease).SetDelay(_animationSettings.Coin.Delay).OnComplete(SetCoin);
             sequence.Append(backgroundAnimation);
             sequence.Append(coinAnimation);
+            sequence.Play().SetDelay(_delay);
         }
 
 

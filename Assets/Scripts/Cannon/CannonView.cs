@@ -6,13 +6,15 @@ using Zenject;
 
 namespace CannonFightBase
 {
-    public class CannonView : MonoBehaviour
+    public class CannonView : MonoBehaviour,IInitializable
     {
         [SerializeField] private GameObject _rotatorH;
 
         [SerializeField] private GameObject _rotatorV;
 
         [SerializeField] private Transform _cannonBallSpawnPoint;
+
+        [SerializeField] private Transform _skillParticlePoint;
 
         [SerializeField] private Rigidbody _rigidbody;
 
@@ -28,14 +30,20 @@ namespace CannonFightBase
 
         public Transform CannonBallSpawnPoint => _cannonBallSpawnPoint;
 
+        public Transform SkillParticlePoint => _skillParticlePoint;
+
         public Rigidbody Rigidbody => _rigidbody;
 
         public PhotonView PhotonView => _photonView;
+
+
 
         [Inject]
         public void Construct(Cannon cannon)
         {
             _cannon = cannon;
+            print("Cannon View Construct");
+
         }
 
 
@@ -51,12 +59,13 @@ namespace CannonFightBase
 
         private void Awake()
         {
+            print("Cannon View Awake");
             _animation = _rotatorV.GetComponent<Animation>();
         }
 
         void Start()
         {
-        
+            print("Cannon View Start");
         }
 
         public void GetRotators(out GameObject rotatorH, out GameObject rotatorV)
@@ -78,6 +87,11 @@ namespace CannonFightBase
 
             _animation.Stop();
             _animation.Play();
+        }
+
+        public void Initialize()
+        {
+            print("Cannon View Initialized");
         }
     }
 }

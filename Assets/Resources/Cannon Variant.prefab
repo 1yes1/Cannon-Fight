@@ -393,6 +393,37 @@ WheelCollider:
   m_LayerOverridePriority: 0
   m_Enabled: 1
   m_ProvidesContacts: 0
+--- !u!1 &4453995336706012631
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7912794713745854006}
+  m_Layer: 2
+  m_Name: SkillParticlePoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7912794713745854006
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4453995336706012631}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8929998779785305733}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4997016242804513501
 GameObject:
   m_ObjectHideFlags: 0
@@ -1024,6 +1055,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1426947807751703897}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 90255abfa57d6ce4aa9cb289c032b6c0,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7912794713745854006}
     - targetCorrespondingSourceObject: {fileID: -1350884686139076992, guid: 90255abfa57d6ce4aa9cb289c032b6c0,
         type: 3}
       insertIndex: -1
@@ -1296,7 +1331,7 @@ CapsuleCollider:
   m_Radius: 0.49073768
   m_Height: 1.6292344
   m_Direction: 2
-  m_Center: {x: 0.036685526, y: 0.65908974, z: 0.014425932}
+  m_Center: {x: 0, y: 0.65908974, z: 0.014425932}
 --- !u!54 &4378229522705564405
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1415,13 +1450,13 @@ MonoBehaviour:
   _rotatorH: {fileID: 7924364436602105187}
   _rotatorV: {fileID: 6079345027708898446}
   _cannonBallSpawnPoint: {fileID: 6449407168059960781}
+  _skillParticlePoint: {fileID: 7912794713745854006}
   _rigidbody: {fileID: 4378229522705564405}
   _photonView: {fileID: 6135040238033750706}
   _cannonControllerSettings:
     MotorForce: 2000
     BreakForce: 1500
     MaxSteerAngle: 15
-    MaxSpeed: 12
     UpsideDownTorque: 5
     FrontLeftWheelCollider: {fileID: 8864519759932728255}
     FrontRightWheelCollider: {fileID: 682656760871677003}

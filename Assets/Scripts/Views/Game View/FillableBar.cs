@@ -12,7 +12,7 @@ namespace CannonFightBase
 {
     public abstract class FillableBar: MonoBehaviour
     {
-        [SerializeField] protected Skills _skill;
+        [SerializeField] protected SkillType _skill;
 
         [SerializeField] protected Image _fillImage;
 
@@ -20,7 +20,7 @@ namespace CannonFightBase
 
         [Range(1, 4)][SerializeField] private int _partCount = 2;
 
-        public Skills Skill => _skill;
+        public SkillType Skill => _skill;
 
 
         private void OnEnable()
@@ -33,7 +33,7 @@ namespace CannonFightBase
             GameEventReceiver.OnBeforeSkillCountdownStartedEvent -= OnBeforeSkillCountdownStarted;
         }
 
-        private void OnBeforeSkillCountdownStarted(Skills skill, float time)
+        private void OnBeforeSkillCountdownStarted(SkillType skill, float time)
         {
             if(Skill == skill)
                 StartCoroutine(SkillCountdown(time));
@@ -83,6 +83,8 @@ namespace CannonFightBase
             }
 
             _fillImage.fillAmount = 0;
+            _skillIcon.color = Color.gray;
+
         }
 
 

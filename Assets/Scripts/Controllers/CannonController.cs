@@ -1,7 +1,4 @@
-using Photon.Pun;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
@@ -9,28 +6,33 @@ namespace CannonFightBase
 {
     public class CannonController : IFixedTickable,ITickable,IInitializable,ICannonBehaviour
     {
-        private Settings  _settings;
+        private readonly Settings  _settings;
+
+        private readonly Cannon _cannon;
+
+        private readonly CannonView _cannonView;
+
+        private readonly CannonTraits _cannonTraits;
 
         private Transform _transform;
 
-        private Cannon _cannon;
-
-        private CannonView _cannonView;
-
         private Rigidbody _rigidbody;
 
-        private float horizontalInput, verticalInput;
+        private float _horizontalInput, _verticalInput;
 
-        private float currentSteerAngle, currentbreakForce;
+        private float _currentSteerAngle, _currentbreakForce;
 
-        private bool isBreaking;
+        private float _maxSpeed;
+
+        private bool _isBreaking;
 
         private bool _isBoosting = false;
 
-        public CannonController(Cannon cannon,CannonView view)
+        public CannonController(Cannon cannon,CannonTraits cannonTraits,CannonView view)
         {
             _cannon = cannon;
             _settings = view.CannonControllerSettings;
+            _cannonTraits = cannonTraits;
             _cannonView = view;
         }
 
@@ -39,22 +41,20 @@ namespace CannonFightBase
             _rigidbody = _cannonView.Rigidbody;
             _transform = _cannon.transform;
             
-            _rigidbody.maxLinearVelocity = _settings.MaxSpeed;
-
+            _maxSpeed = _cannonTraits.Speed;
+            _rigidbody.maxLinearVelocity = _maxSpeed;
         }
 
         public void OnSpawn(PlayerManager playerManager)
         {
             if (!_cannon.OwnPhotonView.IsMine)
                 return;
-
         }
 
         private void OnDisable()
         {
             if (!_cannon.OwnPhotonView.IsMine)
                 return;
-
         }
 
         public void FixedTick()
@@ -89,38 +89,38 @@ namespace CannonFightBase
             if(GameManager.Instance.useAndroidControllers)
             {
                 // Steering Input
-                horizontalInput = CannonJoystick.Horizontal;
+                _horizontalInput = CannonJoystick.Horizontal;
                 //print(horizontalInput);
 
                 // Acceleration Input
-                verticalInput = CannonJoystick.Vertical;
+                _verticalInput = CannonJoystick.Vertical;
 
                 float localForwardVelocity = Vector3.Dot(_rigidbody.velocity, _transform.forward);
 
                 //print(localForwardVelocity);
                 // Breaking Input
-                if (verticalInput == -1 && localForwardVelocity > 0.1f)
+                if (_verticalInput == -1 && localForwardVelocity > 0.1f)
                 {
-                    isBreaking = true;
-                    verticalInput = 0;
+                    _isBreaking = true;
+                    _verticalInput = 0;
                     //print("Breaking");
                 }
                 else
                 {
                     //print("Not Breaking");
-                    isBreaking = false;
+                    _isBreaking = false;
                 }
             }
             else
             {
                 // Steering Input
-                horizontalInput = Input.GetAxis("Horizontal");
+                _horizontalInput = Input.GetAxis("Horizontal");
 
                 // Acceleration Input
-                verticalInput = Input.GetAxis("Vertical");
+                _verticalInput = Input.GetAxis("Vertical");
 
                 // Breaking Input
-                isBreaking = Input.GetKey(KeyCode.Space);
+                _isBreaking = Input.GetKey(KeyCode.Space);
             }
 
 
@@ -128,25 +128,25 @@ namespace CannonFightBase
 
         private void HandleMotor()
         {
-            _settings.FrontLeftWheelCollider.motorTorque = verticalInput * _settings.MotorForce;
-            _settings.FrontRightWheelCollider.motorTorque = verticalInput * _settings.MotorForce;
-            currentbreakForce = isBreaking ? _settings.BreakForce : 0f;
+            _settings.FrontLeftWheelCollider.motorTorque = _verticalInput * _settings.MotorForce;
+            _settings.FrontRightWheelCollider.motorTorque = _verticalInput * _settings.MotorForce;
+            _currentbreakForce = _isBreaking ? _settings.BreakForce : 0f;
             ApplyBreaking();
         }
 
         private void ApplyBreaking()
         {
-            _settings.FrontRightWheelCollider.brakeTorque = currentbreakForce;
-            _settings.FrontLeftWheelCollider.brakeTorque = currentbreakForce;
-            _settings.RearLeftWheelCollider.brakeTorque = currentbreakForce;
-            _settings.RearRightWheelCollider.brakeTorque = currentbreakForce;
+            _settings.FrontRightWheelCollider.brakeTorque = _currentbreakForce;
+            _settings.FrontLeftWheelCollider.brakeTorque = _currentbreakForce;
+            _settings.RearLeftWheelCollider.brakeTorque = _currentbreakForce;
+            _settings.RearRightWheelCollider.brakeTorque = _currentbreakForce;
         }
 
         private void HandleSteering()
         {
-            currentSteerAngle = _settings.MaxSteerAngle * horizontalInput;
-            _settings.FrontLeftWheelCollider.steerAngle = currentSteerAngle;
-            _settings.FrontRightWheelCollider.steerAngle = currentSteerAngle;
+            _currentSteerAngle = _settings.MaxSteerAngle * _horizontalInput;
+            _settings.FrontLeftWheelCollider.steerAngle = _currentSteerAngle;
+            _settings.FrontRightWheelCollider.steerAngle = _currentSteerAngle;
         }
 
         private void UpdateWheels()
@@ -183,7 +183,7 @@ namespace CannonFightBase
         private void StopBoosting()
         {
             _isBoosting = false;
-            _rigidbody.maxLinearVelocity = _settings.MaxSpeed;
+            _rigidbody.maxLinearVelocity = _maxSpeed;
             GameEventCaller.Instance.OnBoostEnded(_cannon);
         }
 
@@ -213,7 +213,7 @@ namespace CannonFightBase
         [Serializable]
         public class Settings
         {
-            public float MotorForce, BreakForce, MaxSteerAngle, MaxSpeed;
+            public float MotorForce, BreakForce, MaxSteerAngle;
 
             public float UpsideDownTorque = 5;
 

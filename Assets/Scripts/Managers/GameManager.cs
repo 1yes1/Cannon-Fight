@@ -25,7 +25,6 @@ namespace CannonFightBase
 
         private RoomManager.Settings _launcherSettings;
 
-
         private int _leftCannonsCount = 0;
 
         public static GameManager Instance => _instance;
@@ -81,7 +80,6 @@ namespace CannonFightBase
             
             UnityEngine.Random.InitState(_randomSeed);
 
-
         }
 
 
@@ -100,8 +98,8 @@ namespace CannonFightBase
         {
             //if(PhotonNetwork.CurrentRoom.Players.Count >= _launcherSettings.MinPlayersCountToLoadSettings)
 
-            print("_launcherSettings.MinPlayersCountToStart: " + _launcherSettings.MinPlayersCountToStart);
-            print("Anlık Oyuncu: "+PhotonNetwork.CurrentRoom.Players.Count);
+            //print("_launcherSettings.MinPlayersCountToStart: " + _launcherSettings.MinPlayersCountToStart);
+            //print("Anlık Oyuncu: "+PhotonNetwork.CurrentRoom.Players.Count);
 
             SetCannon();
         }
@@ -112,7 +110,6 @@ namespace CannonFightBase
                 return;
 
             GameObject[] cannons = GameObject.FindGameObjectsWithTag("Cannon");
-            print(cannons.Length);
             for (int i = 0; i < cannons.Length; i++)
                 if (cannons[i].GetComponent<PhotonView>().IsMine)
                     _currentCannon = cannons[i].GetComponent<Cannon>();
@@ -171,7 +168,8 @@ namespace CannonFightBase
 
         private void OnOurPlayerSpawned()
         {
-            CheckLeftCannonsCount();
+            if(PhotonNetwork.IsConnected)
+                CheckLeftCannonsCount();
         }
 
         private void CheckLeftCannonsCount()

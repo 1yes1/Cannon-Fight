@@ -17,10 +17,6 @@ namespace CannonFightBase
 
         private PlayerManager.Factory _playerManagerFactory;
 
-
-
-        public event Action OnSpawnPlayersEvent;
-
         private SpawnPoint[] _spawnPoints;
 
         [Inject]
@@ -58,7 +54,7 @@ namespace CannonFightBase
 
         public void SpawnPlayerManager()
         {
-            print("Spawn Player Managers");
+            //print("Spawn Player Managers");
             PlayerManager playerManager = _playerManagerFactory.Create();
             PhotonView photonView = playerManager.GetComponent<PhotonView>();
 
@@ -101,8 +97,10 @@ namespace CannonFightBase
         {
             //print("PhotonNetwork.LocalPlayer.ActorNumber: " + PhotonNetwork.LocalPlayer.ActorNumber);
             //print("PhotonNetwork.CurrentRoom.PlayerCount: " + PhotonNetwork.CurrentRoom.PlayerCount);
-            int index = (PhotonNetwork.LocalPlayer.ActorNumber > PhotonNetwork.CurrentRoom.PlayerCount) ? PhotonNetwork.LocalPlayer.ActorNumber - PhotonNetwork.CurrentRoom.PlayerCount: PhotonNetwork.LocalPlayer.ActorNumber - 1;
-
+            int index = 0;
+            if(PhotonNetwork.IsConnected)
+                index = (PhotonNetwork.LocalPlayer.ActorNumber > PhotonNetwork.CurrentRoom.PlayerCount) ? PhotonNetwork.LocalPlayer.ActorNumber - PhotonNetwork.CurrentRoom.PlayerCount: PhotonNetwork.LocalPlayer.ActorNumber - 1;
+            
             return _instance._spawnPoints[index];
         }
 

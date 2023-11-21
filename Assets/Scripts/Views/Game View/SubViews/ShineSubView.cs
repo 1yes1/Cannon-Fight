@@ -30,9 +30,7 @@ namespace CannonFightUI
 
         public override void Show(float subViewDelay)
         {
-
             _delay = subViewDelay;
-
             Tween scaleUp = _shine.transform.DOScale(_animationSettings.ShineScaleUp.Value, _animationSettings.ShineScaleUp.Duration)
                 .SetEase(_animationSettings.ShineScaleUp.Ease)
                 .SetDelay(_delay + _animationSettings.ShineScaleUp.Delay);
@@ -45,7 +43,7 @@ namespace CannonFightUI
             Tween fadeOut = _canvasGroup.DOFade(_animationSettings.ShineFade.Value, _animationSettings.ShineFade.Duration)
                 .SetDelay(_animationSettings.ShineFade.Delay);
 
-            Sequence sequence = DOTween.Sequence();
+            Sequence sequence = DOTween.Sequence(this);
             sequence.Append(scaleUp);
             sequence.Append(scaleDown);
             sequence.Join(fadeOut);
@@ -58,6 +56,8 @@ namespace CannonFightUI
             _radialShine.transform.DOScale(_animationSettings.RadialShine.Vector, _animationSettings.RadialShine.Duration)
                 .SetEase(_animationSettings.RadialShine.Ease)
                 .SetDelay(_animationSettings.RadialShine.Delay);
+
+            sequence.Play();
         }
 
 

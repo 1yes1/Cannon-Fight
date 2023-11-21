@@ -15,7 +15,7 @@ namespace CannonFightBase
     {
         public event Action<Chest> OnChestFilled;
 
-        [SerializeField] private Skills _skill;
+        [SerializeField] private SkillType _skill;
 
         [SerializeField] private Transform _potionPlace;
 
@@ -43,12 +43,6 @@ namespace CannonFightBase
 
         private bool _isFilled = false;
 
-        private const string AnimChestOpen = "ChestOpen";
-
-        private const string AnimChestHit = "ChestHit";
-
-        private const string AnimChestFill = "ChestFill";
-
         public float LastOpenedTime {  get; private set; }
 
         public bool IsOpened => _isOpened;
@@ -74,6 +68,7 @@ namespace CannonFightBase
         private void Open()
         {
             _isOpened = true;
+            _isFilled = false;
             LastOpenedTime = Time.realtimeSinceStartup;
 
             if(_potion != null)
@@ -159,7 +154,7 @@ namespace CannonFightBase
 
         private void ChooseSkillRandomly()
         {
-            _skill = (Skills)Random.Range(0, 3);
+            _skill = (SkillType)Random.Range(0, 3);
         }
 
 

@@ -14,9 +14,9 @@ namespace CannonFightBase
 
         private SkillTimer _skillTimer;
 
-        private Skills _skill;
+        private SkillType _skill;
 
-        public Skill(float time, Action<Skill> onTimeElapsed,Skills skill)
+        public Skill(float time, Action<Skill> onTimeElapsed,SkillType skill)
         {
             _onTimeElapsed += onTimeElapsed;
             _time = time;
@@ -38,7 +38,7 @@ namespace CannonFightBase
 
         }
 
-        public bool IsEqualToSkill(Skills skill)
+        public bool IsEqualToSkill(SkillType skill)
         {
             if(_skill == skill)
                 return true;

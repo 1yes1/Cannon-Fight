@@ -16,12 +16,14 @@ namespace CannonFightBase
             //Container.BindInstance(_cannon);
             
             //Container.Bind<Cannon>().AsSingle();
-            Container.Bind<CannonSkillHandler>().AsSingle();
-            Container.Bind<CannonDamageHandler>().AsSingle();
             Container.BindInterfacesAndSelfTo<AimController>().AsSingle();
             Container.BindInterfacesAndSelfTo<CannonController>().AsSingle();
             Container.BindInterfacesAndSelfTo<FireController>().AsSingle();
             Container.Bind<RPCMediator>().FromNewComponentOnRoot().AsSingle();
+            Container.Bind<CannonTraits>().AsSingle();
+
+            Container.BindInterfacesAndSelfTo<CannonDamageHandler>().AsSingle();
+            Container.BindInterfacesAndSelfTo<CannonSkillHandler>().AsSingle();
 
             //Container.BindInterfacesAndSelfTo<CannonController>().AsSingle().WithArguments(_cannon, _cannonControllerSettings);
             //Container.BindInstance(_cannonControllerSettings);
@@ -31,7 +33,7 @@ namespace CannonFightBase
 
         void InstallExecutionOrder()
         {
-            //Container.BindExecutionOrder<CannonController>(-20);
+            Container.BindExecutionOrder<CannonDamageHandler>(50);
         }
 
     }

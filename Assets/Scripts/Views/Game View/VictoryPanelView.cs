@@ -42,7 +42,6 @@ namespace CannonFightUI
         public override void Show()
         {
             base.Show();
-
             transform.localScale = Vector3.zero;
             transform.DOScale(Vector3.one, _animationSettings.Panel.Duration).SetEase(_animationSettings.Panel.Ease);
             _exitButton.transform.localScale = Vector3.zero;

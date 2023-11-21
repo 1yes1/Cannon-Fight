@@ -38,16 +38,9 @@ namespace CannonFightBase
             PhotonNetwork.NetworkingClient.EventReceived -= EVENT_SpawnCannon;
         }
 
-
-
         private void Awake()
         {
             _photonView = GetComponent<PhotonView>();
-        }
-
-        private void Start()
-        {
-
         }
 
 

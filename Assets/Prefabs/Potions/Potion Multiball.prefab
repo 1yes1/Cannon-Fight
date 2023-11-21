@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 348055880458858466}
   - component: {fileID: 3709648259190579271}
   - component: {fileID: 1486089084205241485}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: PotionPurple Variant
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 6873766325307970104}
   - component: {fileID: 5271003856933449804}
   - component: {fileID: 6966409179634384598}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -179,7 +179,7 @@ GameObject:
   - component: {fileID: 4934137883132288414}
   - component: {fileID: 4947991898130533053}
   - component: {fileID: 8301309854777030772}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Sphere.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -263,7 +263,7 @@ GameObject:
   - component: {fileID: 7675395553996912562}
   - component: {fileID: 5950442715707751010}
   - component: {fileID: 6774988613878327539}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Potion Multiball
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -335,3 +335,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2183667f15f2cfb45b2df18d18483011, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _meshRenderer: {fileID: 0}

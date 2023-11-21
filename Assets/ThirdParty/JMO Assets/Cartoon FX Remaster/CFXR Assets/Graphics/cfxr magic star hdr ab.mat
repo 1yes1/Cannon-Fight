@@ -13,12 +13,11 @@ Material:
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _ALPHABLEND_ON
-  - _CFXR_DITHERED_SHADOWS_ON
-  - _CFXR_HDR_BOOST
   - _CFXR_SINGLE_CHANNEL
   - _FADING_ON
   m_InvalidKeywords:
   - _
+  - _CFXR_DITHERED_SHADOWS_OFF
   - _CFXR_OVERLAYBLEND_RGBA
   - _CFXR_OVERLAYTEX_OFF
   m_LightmapFlags: 0
@@ -68,7 +67,7 @@ Material:
     - _BacklightTransmittance: 1
     - _BlendingType: 0
     - _BumpScale: 1
-    - _CFXR_DITHERED_SHADOWS: 1
+    - _CFXR_DITHERED_SHADOWS: 0
     - _CFXR_OVERLAYBLEND: 0
     - _CFXR_OVERLAYTEX: 0
     - _Cutoff: 0.1
@@ -80,7 +79,7 @@ Material:
     - _DstBlend: 10
     - _EdgeFadePow: 1
     - _FadeAlongU: 0
-    - _HdrBoost: 1
+    - _HdrBoost: 0
     - _HdrMultiply: 10
     - _IndirectLightingMix: 0.5
     - _InvertDissolveTex: 0
@@ -90,7 +89,7 @@ Material:
     - _SecondColorSmooth: 0.2
     - _ShadowStrength: 0.5
     - _SingleChannel: 1
-    - _SoftParticlesFadeDistanceFar: 2
+    - _SoftParticlesFadeDistanceFar: 1
     - _SoftParticlesFadeDistanceNear: 0
     - _SrcBlend: 5
     - _UVDistortionAdd: 0

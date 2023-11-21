@@ -70,7 +70,7 @@ namespace CannonFightBase
                 CheckRefillTimes();
         }
 
-        private void CheckRefillTimes()
+        internal void CheckRefillTimes()
         {
             //Refill için de random ayarlama olcak master ile ve senkronize edilecek
             for (int i = 0; i < Chests.Count; i++)

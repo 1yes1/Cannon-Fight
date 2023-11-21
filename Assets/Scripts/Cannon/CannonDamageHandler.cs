@@ -1,24 +1,23 @@
 using CartoonFX;
 using Photon.Pun;
-using Photon.Pun.Demo.PunBasics;
 using Photon.Realtime;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
 namespace CannonFightBase
 {
-    public class CannonDamageHandler: IDamageable,IInitializable, IRpcMediator
+    public class CannonDamageHandler: IDamageable, IRpcMediator,IInitializable
     {
-        private ParticleSettings _particleSettings;
+        private readonly ParticleSettings _particleSettings;
 
-        private TakeDamageParticle.Factory _takeDamageParticleFactory;
+        private readonly TakeDamageParticle.Factory _takeDamageParticleFactory;
 
-        private Cannon _cannon;
+        private readonly Cannon _cannon;
 
-        private RPCMediator _rpcMediator;
+        private readonly RPCMediator _rpcMediator;
+
+        private CannonTraits _cannonTraits;
 
         private int _health = 100;
 
@@ -37,12 +36,15 @@ namespace CannonFightBase
                 _health = (value < 0) ? 0 : value;
 
                 if (_cannon.OwnPhotonView.IsMine)
+                {
                     GameEventCaller.Instance.OnOurPlayerHealthChanged(_health);
+                }
             }
         }
-        public CannonDamageHandler(Cannon cannon, ParticleSettings particleSettings, RPCMediator rpcMediator, TakeDamageParticle.Factory takeDamageParticleFactory)
+        public CannonDamageHandler(Cannon cannon, CannonTraits cannonTraits, ParticleSettings particleSettings, RPCMediator rpcMediator, TakeDamageParticle.Factory takeDamageParticleFactory)
         {
             _cannon = cannon;
+            _cannonTraits = cannonTraits;
             _particleSettings = particleSettings;
             _rpcMediator = rpcMediator;
             _takeDamageParticleFactory = takeDamageParticleFactory;
@@ -50,6 +52,10 @@ namespace CannonFightBase
 
         public void Initialize()
         {
+            _health = _cannonTraits.Health;
+            GameEventCaller.Instance.OnOurPlayerHealthChanged(_health);
+
+
             _rpcMediator.AddToRPC(RPC_DAMAGE_PARTICLE, this);
         }
 
@@ -98,7 +104,6 @@ namespace CannonFightBase
 
             _isDead = true;
         }
-
 
 
         [Serializable]
