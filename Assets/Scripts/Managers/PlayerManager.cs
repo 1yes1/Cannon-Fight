@@ -65,10 +65,8 @@ namespace CannonFightBase
 
         public void Initialize()
         {
-            if (_photonView.IsMine)
-            {
+            if(_photonView.IsMine)
                 SpawnCannon();
-            }
         }
 
         public static PlayerManager Find(Player player)
@@ -78,6 +76,8 @@ namespace CannonFightBase
 
         private void SpawnCannon()
         {
+            print("----------------------Spawn Cannon---------------------");
+
             _cannon = _cannonFactory.Create();
             PhotonView photonView = _cannon.GetComponent<PhotonView>();
             
@@ -98,7 +98,6 @@ namespace CannonFightBase
                     Receivers = ReceiverGroup.Others,
                     CachingOption = EventCaching.AddToRoomCache
                 };
-
 
                 PhotonNetwork.RaiseEvent(EventCodeManager.SPAWN_CANNON_EVENT_CODE, data, raiseEventOptions, SendOptions.SendUnreliable);
             }
@@ -129,7 +128,7 @@ namespace CannonFightBase
                 Cannon cannon = _cannonFactory.Create();
                 PhotonView photonView = cannon.GetComponent<PhotonView>();
 
-                //print("---------GÝRDÝÝ: " + (int)data[2] + " PlayermANAGER: "+_photonView.ViewID);
+                //print("----------------------Spawn Cannon Misafir---------------------");
 
                 cannon.transform.position = (Vector3)data[0];
                 cannon.transform.rotation = (Quaternion)data[1];

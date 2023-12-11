@@ -19,6 +19,8 @@ namespace CannonFightBase
 
         private SpawnPoint[] _spawnPoints;
 
+        private PlayerManager _playerManager;
+
         [Inject]
         public void Construct(PlayerManager.Factory factory)
         {
@@ -27,13 +29,13 @@ namespace CannonFightBase
 
         private void OnEnable()
         {
-            GameEventReceiver.OnGameSceneLoadedEvent += SpawnPlayerManager;
+            GameEventReceiver.OnGameReadyToStartEvent += SpawnPlayerManager;
             PhotonNetwork.NetworkingClient.EventReceived += EVENT_SpawnPlayerManager;
         }
 
         private void OnDisable()
         {
-            GameEventReceiver.OnGameSceneLoadedEvent -= SpawnPlayerManager;
+            GameEventReceiver.OnGameReadyToStartEvent -= SpawnPlayerManager;
             PhotonNetwork.NetworkingClient.EventReceived -= EVENT_SpawnPlayerManager;
         }
 
@@ -54,15 +56,18 @@ namespace CannonFightBase
 
         public void SpawnPlayerManager()
         {
-            //print("Spawn Player Managers");
-            PlayerManager playerManager = _playerManagerFactory.Create();
-            PhotonView photonView = playerManager.GetComponent<PhotonView>();
+            //print("----------------------Spawn Player Managers---------------------");
+            if (_playerManager != null)
+                return;
+
+            _playerManager = _playerManagerFactory.Create();
+            PhotonView photonView = _playerManager.GetComponent<PhotonView>();
 
             if (PhotonNetwork.AllocateViewID(photonView))
             {
                 object[] data = new object[]
                 {
-                    playerManager.transform.position, playerManager.transform.rotation, photonView.ViewID
+                    _playerManager.transform.position, _playerManager.transform.rotation, photonView.ViewID
                 };
                 RaiseEventOptions raiseEventOptions = new RaiseEventOptions
                 {
@@ -75,21 +80,29 @@ namespace CannonFightBase
             else
             {
                 Debug.LogError("Failed to allocate a ViewId.");
-                Destroy(playerManager);
+                Destroy(_playerManager);
             }
 
-            playerManager.Initialize();
+            _playerManager.Initialize();
         }
 
         public void EVENT_SpawnPlayerManager(EventData photonEvent)
         {
+
             if (photonEvent.Code == EventCodeManager.SPAWN_PLAYER_MANAGER_EVENT_CODE)
             {
+                //if(_playerManager == null)
+                //{
+                //    print("Bizimk daha oluþmamýþ önce onu oluþturalým");
+                //    SpawnPlayerManager();
+                //}
                 object[] data = (object[])photonEvent.CustomData;
                 PlayerManager playerManager = _playerManagerFactory.Create();
                 PhotonView photonView = playerManager.GetComponent<PhotonView>();
                 photonView.ViewID = (int)data[2];
-                //print("------------- Girdi Event: "+ photonView.ViewID+" --------------------");
+                //print("----------------------Spawn Player Managers Misafir---------------------");
+
+                //print("------------- Girdi Event: " + photonView.ViewID + " --------------------");
             }
         }
 

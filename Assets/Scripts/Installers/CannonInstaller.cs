@@ -16,7 +16,7 @@ namespace CannonFightBase
             Container.BindInterfacesAndSelfTo<CannonView>().FromComponentOnRoot();
 
             Container.BindInterfacesAndSelfTo<AimController>().AsSingle();
-            Container.BindInterfacesAndSelfTo<CannonController>().AsSingle();
+            Container.BindInterfacesAndSelfTo<MovementController>().AsSingle();
             Container.BindInterfacesAndSelfTo<FireController>().AsSingle();
             Container.Bind<RPCMediator>().FromNewComponentOnRoot().AsSingle();
             Container.Bind<CannonTraits>().AsSingle();

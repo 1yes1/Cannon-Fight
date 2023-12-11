@@ -10,13 +10,13 @@ using Zenject;
 
 namespace CannonFightBase
 {
-    public class Cannon : MonoBehaviour,IInitializable,ICannonBehaviour, IDamageable,IPotionCollector
+    public class Cannon : MonoBehaviour,ICannonBehaviour, IDamageable,IPotionCollector
     {
         private PlayerManager _playerManager;
 
         private CannonView _cannonView;
 
-        private CannonController _cannonController;
+        private MovementController _cannonController;
 
         private CannonSkillHandler _cannonSkillHandler;
 
@@ -27,6 +27,8 @@ namespace CannonFightBase
         private PhotonView _photonView;
 
         private bool _isDead = false;
+
+        private bool _canDoAction = false;
 
         private int _killCount;
 
@@ -53,6 +55,8 @@ namespace CannonFightBase
 
         public bool IsDead => _isDead;
 
+        public bool CanDoAction => (_canDoAction && !_isDead);
+
         public int KillCount => _killCount;
 
         public int Health => _cannonDamageHandler.Health;
@@ -65,7 +69,7 @@ namespace CannonFightBase
         [Inject]
         public void Construct(
             CannonSkillHandler cannonSkillHandler,
-            CannonController cannonController,
+            MovementController cannonController,
             CannonDamageHandler cannonDamageHandler,
             CannonView cannonView)
         {
@@ -81,20 +85,33 @@ namespace CannonFightBase
             _playerManager = playerManager;
         }
 
-        public void Initialize()
+        public void Start()
         {
             //Eðer Awake kullanýrsak,
             //IInitializable olan class larýn Initialize() Metodu
             //Normalde Startta çaðrýlmasý gerekirken Awake den önce çaðrýlýyor o yüzden hata alabiliyoruz
 
             _photonView = GetComponent<PhotonView>();
-            print("Photon View Atandý");
+            _canDoAction = false;
 
             if (!_photonView.IsMine)
                 return;
 
             LayerMask layerMask = LayerMask.NameToLayer("Player");
             gameObject.layer = layerMask;
+
+            AddEvents();
+        }
+
+        private void AddEvents()
+        {
+            GameEventReceiver.OnGameStartedEvent -= OnGameStarted;
+            GameEventReceiver.OnGameStartedEvent += OnGameStarted;
+        }
+
+        private void OnGameStarted()
+        {
+            _canDoAction = true;
         }
 
         public void Boost(float multiplier)
@@ -142,6 +159,12 @@ namespace CannonFightBase
             public ParticleSystem DamageSkillParticle;
             public ParticleSystem MultiBallSkillParticle;
             public ParticleSystem HealthSkillParticle;
+        }
+
+        //Sahneden sürüklenecek bir þey varsa diye GameInstaller içinde Bind edilebilir
+        [Serializable]
+        public struct SceneSettings
+        {
         }
 
         public class Factory : PlaceholderFactory<Cannon>

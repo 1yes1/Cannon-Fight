@@ -52,8 +52,8 @@ namespace CannonFightBase
         {
             GameEventReceiver.OnBeforeOurPlayerSpawnedEvent += OnBeforeOurPlayerSpawned;//Bu eventte GameManager ile Cannon a ulaşılmıyor çünkü atama yapılmadı
             GameEventReceiver.OnOurPlayerSpawnedEvent += OnOurPlayerSpawned;
-            GameEventReceiver.OnPlayerEnteredRoomEvent += OnPlayerEnteredRoom;
-            GameEventReceiver.OnPlayerLeftRoomEvent += OnPlayerLeftRoom;
+            RoomManager.OnPlayerEnteredRoomEvent += OnPlayerEnteredRoom;
+            RoomManager.OnPlayerLeftRoomEvent += OnPlayerLeftRoom;
             GameEventReceiver.OnOurPlayerDiedEvent += OnOurPlayerDied;
             GameEventReceiver.OnPlayerDiedEvent += OnPlayerDied;
             //GameEventReceiver.OnOurPlayerSpawnedEvent += OnOurPlayerSpawned;//Bu eventte GameManager ile Cannon a ulaşılıyor
@@ -64,8 +64,8 @@ namespace CannonFightBase
         {
             GameEventReceiver.OnBeforeOurPlayerSpawnedEvent -= OnBeforeOurPlayerSpawned;
             GameEventReceiver.OnOurPlayerSpawnedEvent -= OnOurPlayerSpawned;
-            GameEventReceiver.OnPlayerEnteredRoomEvent -= OnPlayerEnteredRoom;
-            GameEventReceiver.OnPlayerLeftRoomEvent -= OnPlayerLeftRoom;
+            RoomManager.OnPlayerEnteredRoomEvent -= OnPlayerEnteredRoom;
+            RoomManager.OnPlayerLeftRoomEvent -= OnPlayerLeftRoom;
             GameEventReceiver.OnOurPlayerDiedEvent -= OnOurPlayerDied;
             GameEventReceiver.OnPlayerDiedEvent -= OnPlayerDied;
             //GameEventReceiver.OnOurPlayerSpawnedEvent -= OnOurPlayerSpawned;
@@ -75,9 +75,8 @@ namespace CannonFightBase
         {
             if (_instance == null)
                 _instance = this;
-            
+
             Initialize();
-            
             UnityEngine.Random.InitState(_randomSeed);
 
         }
@@ -103,6 +102,8 @@ namespace CannonFightBase
 
             SetCannon();
         }
+
+
 
         private void SetCannon()
         {
@@ -179,11 +180,6 @@ namespace CannonFightBase
                 if (!item.CustomProperties.ContainsKey("isDead"))
                     LeftCannonsCount++;
             }
-        }
-
-        private void Update()
-        {
-
         }
 
     }

@@ -2,11 +2,9 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using System;
-using System.Collections.Generic;
-using CannonFightUI;
 using ExitGames.Client.Photon;
 using UnityEngine.SceneManagement;
-using System.Linq;
+using Zenject;
 
 namespace CannonFightBase
 {
@@ -14,10 +12,18 @@ namespace CannonFightBase
     {
         private static RoomManager _instance;
 
-        private bool _isGameSceneLoaded = false;
+        public static event Action<Player> OnPlayerEnteredRoomEvent;
+        public static event Action<Player> OnPlayerLeftRoomEvent;
+
+        private RoomServerSettings _settings;
 
         public static RoomManager Instance => _instance;
 
+        [Inject]
+        public void Construct(RoomServerSettings settings)
+        {
+            _settings = settings;
+        }
 
         private void OnEnable()
         {
@@ -54,25 +60,25 @@ namespace CannonFightBase
             {
                 Debug.Log("NICKNAME: " + PhotonNetwork.LocalPlayer.NickName);
                 GameEventCaller.Instance.OnGameSceneLoaded();
-                _isGameSceneLoaded = true;
+            }
+        }
+
+        public override void OnJoinedRoom()
+        {
+            if(PhotonNetwork.IsMasterClient)
+            {
+                PhotonNetwork.CurrentRoom.MaxPlayers = _settings.PlayersInGame;
             }
         }
 
         public override void OnPlayerLeftRoom(Player otherPlayer)
         {
-            if(_isGameSceneLoaded)
-                GameEventCaller.Instance?.OnPlayerLeftRoom(otherPlayer);
-        }
-
-        public override void OnMasterClientSwitched(Player newMasterClient)
-        {
-            print("Master Client Switched");
+            OnPlayerLeftRoomEvent?.Invoke(otherPlayer);
         }
 
         public override void OnPlayerEnteredRoom(Player newPlayer)
         {
-            if(_isGameSceneLoaded)
-                GameEventCaller.Instance?.OnPlayerEnteredRoom(newPlayer);
+            OnPlayerEnteredRoomEvent?.Invoke(newPlayer);
         }
 
         public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
@@ -99,13 +105,31 @@ namespace CannonFightBase
 
 
         [Serializable]
-        public class Settings
+        public struct Settings
         {
-            public int MinPlayersCountToStart = 1;
+            public GameServerSettings GameServerSettings;
 
-            public int MinPlayersCountToLoadSettings = 2;
+            public RoomServerSettings RoomServerSettings;
+        }
 
-            public float GameStartCountdown = 1;
+        [Serializable]
+        public struct GameServerSettings
+        {
+            public float GameStartCountdown;
+
+            public float WaitAfterAllPlayersEnteredToGame;
+
+        }
+
+        [Serializable]
+        public struct RoomServerSettings
+        {
+            public int PlayersInGame;
+
+            public float WaitForPlayersUntilPlayWithBots;
+
+            public float WaitAfterAllPlayersEnteredToRoom;
+
         }
 
     }

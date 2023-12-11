@@ -8,11 +8,13 @@ namespace CannonFightBase
     [CreateAssetMenu(fileName = "ServerSettingsInstaller", menuName = "CannonFight/ServerSettingsInstaller", order = 2)]
     public class ServerSettingsInstaller : ScriptableObjectInstaller<ServerSettingsInstaller>
     {
-        public RoomManager.Settings GameServerSettings;
+        public RoomManager.Settings ServerSettings;
 
         public override void InstallBindings()
         {
-            Container.BindInstance(GameServerSettings);
+            Container.BindInstance(ServerSettings);
+            Container.BindInstance(ServerSettings.GameServerSettings);
+            Container.BindInstance(ServerSettings.RoomServerSettings);
         }
 
     }

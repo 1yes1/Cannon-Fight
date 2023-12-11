@@ -64,10 +64,9 @@ namespace CannonFightBase
         {
             _photonView = _cannonView.PhotonView;
             _rpcMediator.AddToRPC(RPC_FIRE, this);
-            _crosshair = GameObject.FindWithTag("Crosshair").transform;
+            _crosshair = UIManager.GetView<CrosshairView>().transform;
 
             ResetDamageSkill();
-
             AddEvents();
         }
 
@@ -88,7 +87,7 @@ namespace CannonFightBase
             if (!_photonView.IsMine)
                 return;
 
-            if (_cannon.IsDead)
+            if (!_cannon.CanDoAction)
                 return;
 
             if (!GameManager.Instance.useAndroidControllers)
@@ -123,9 +122,6 @@ namespace CannonFightBase
 
         public void StartFire()
         {
-            if(_crosshair == null)
-                _crosshair = GameObject.FindWithTag("Crosshair").transform;
-
             Ray ray = Camera.main.ScreenPointToRay(_crosshair.position);
             RaycastHit hit;
 
@@ -136,7 +132,7 @@ namespace CannonFightBase
 
                 Fire(_cannon.OwnPhotonView.Owner, _ballSpawnPoint.position, direction, _settings.FireRange, _fireDamage);
 
-                //_fireRateStatus = _settings.FireFrequency;
+                _fireRateStatus = _cannonTraits.FireRate;
 
                 GameEventCaller.Instance.OnPlayerFired();
 

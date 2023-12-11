@@ -21,6 +21,9 @@ MonoBehaviour:
       type: 3}
     Potion: {fileID: 8497418219458924009, guid: 8e9e874197dab294ca88a06753c70db2,
       type: 3}
+  UIPrefabs:
+    PlayerItem: {fileID: -2229278124077992145, guid: 267991cecb3db0d43bd1e75d83f7007e,
+      type: 3}
   FireControllerSettings:
     FireIgnoreLayers:
       serializedVersion: 2

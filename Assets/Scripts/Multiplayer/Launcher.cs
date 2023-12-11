@@ -2,12 +2,8 @@ using CannonFightUI;
 using Photon.Pun;
 using Photon.Realtime;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Zenject;
 
 namespace CannonFightBase
@@ -15,8 +11,6 @@ namespace CannonFightBase
     public class Launcher : MonoBehaviourPunCallbacks
     {
         private static Launcher _instance;
-
-        private RoomManager.Settings _settings;
 
         public static event Action OnJoinedRoomEvent;
 
@@ -26,12 +20,17 @@ namespace CannonFightBase
 
         public static event Action<Player> OnPlayerLeftRoomEvent;
 
+        private RoomManager.RoomServerSettings _settings;
+
+
+
         [SerializeField] private TMP_InputField _nameText;
+
         [SerializeField] private SceneContext _sceneContext;
 
+        private bool _canPlayWithBots = true;
 
         private string _gameVersion = "1";
-
 
         public static Launcher Instance => _instance;
 
@@ -46,21 +45,15 @@ namespace CannonFightBase
         }
 
         [Inject]
-        public void Construct(RoomManager.Settings settings)
+        public void Construct(RoomManager.RoomServerSettings settings)
         {
             _settings = settings;
         }
-
 
         void Start()
         {
             Connect();
 
-            Invoke(nameof(Run), 2);
-        }
-
-        void Run()
-        {
         }
 
         public void Connect()
@@ -81,27 +74,11 @@ namespace CannonFightBase
             PhotonNetwork.LeaveRoom();
         }
 
-
         private void CreateRoom()
         {
             string roomName = "Room " + UnityEngine.Random.Range(1, 1000);
             RoomOptions roomOptions = new RoomOptions() { MaxPlayers = 10, IsOpen = true, IsVisible = true };
             PhotonNetwork.CreateRoom(roomName, roomOptions);
-        }
-
-        private void CheckStartingGame()
-        {
-            print("PhotonNetwork.CurrentRoom.PlayerCount: " + PhotonNetwork.CurrentRoom.PlayerCount);
-            if (PhotonNetwork.CurrentRoom.PlayerCount == _settings.MinPlayersCountToStart)
-            {
-                //PhotonNetwork.LocalPlayer.SetCustomProperties();
-                UIManager.GetView<MatchingMenuView>().StartCountdown(_settings.GameStartCountdown,OnCountdownFinished);
-            }
-        }
-
-        public override void OnConnectedToMaster()
-        {
-            //print("ConnectedMaster");
         }
 
         public override void OnConnected()
@@ -118,8 +95,35 @@ namespace CannonFightBase
 
             OnJoinedRoomEvent?.Invoke();
 
-            //LoadingMenuView loadingMenuView = UIManager.Show<LoadingMenuView>();
-            CheckStartingGame();
+            UpdatePlayersCount();
+
+            CheckPlayersToStart();
+
+            if (PhotonNetwork.IsMasterClient)
+                Invoke(nameof(PlayWithBots), _settings.WaitForPlayersUntilPlayWithBots);
+        }
+
+        private void PlayWithBots()
+        {
+            if (PhotonNetwork.IsMasterClient && _canPlayWithBots)
+            {
+                SaveManager.SetValue<int>("playWithBots",1);
+                print("PlayWithBots");
+
+                PhotonNetwork.LoadLevel(1);
+            }
+        }
+
+
+        private void PlayWithPlayers()
+        {
+            if (PhotonNetwork.IsMasterClient && !_canPlayWithBots)
+            {
+                SaveManager.SetValue<int>("playWithBots", 0);
+                print("PlayWithPlayers");
+
+                PhotonNetwork.LoadLevel(1);
+            }
         }
 
         //Local Player left room
@@ -127,21 +131,21 @@ namespace CannonFightBase
         {
             OnLeftRoomEvent?.Invoke();
             UIManager.ShowLast();
-            //print("Left Room");
         }
 
         //Another Player joined room
         public override void OnPlayerEnteredRoom(Player newPlayer)
         {
             OnPlayerJoinedRoomEvent?.Invoke(newPlayer);
-
-            CheckStartingGame();
+            UpdatePlayersCount();
+            CheckPlayersToStart();
         }
 
         //Another Player left room
         public override void OnPlayerLeftRoom(Player otherPlayer)
         {
             OnPlayerLeftRoomEvent?.Invoke(otherPlayer);
+            UpdatePlayersCount();
         }
 
 
@@ -155,13 +159,22 @@ namespace CannonFightBase
 
         }
 
-        private void OnCountdownFinished()
+        private void CheckPlayersToStart()
         {
-            if(PhotonNetwork.LocalPlayer.IsMasterClient)
-                PhotonNetwork.LoadLevel(1);
+            //Sadece master isek oyunun baþlayýp baþlamayacaðýný ayarlayabilriz
+            if (!PhotonNetwork.IsMasterClient)
+                return;
 
+            if (PhotonNetwork.CurrentRoom.PlayerCount == _settings.PlayersInGame)
+            {
+                _canPlayWithBots = false;
+                Invoke(nameof(PlayWithPlayers),_settings.WaitAfterAllPlayersEnteredToRoom);
+            }
         }
 
-
+        private void UpdatePlayersCount()
+        {
+            UIManager.GetView<MatchingMenuView>().UpdatePlayersCount(PhotonNetwork.CurrentRoom.PlayerCount);
+        }
     }
 }

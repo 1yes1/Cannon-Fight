@@ -48,6 +48,8 @@ MonoBehaviour:
   - RpcForwarder
   - RPCForwarder
   - RPC_ChestStartedFilling
+  - RPC_StartGame
+  - RPC_StartCountdown
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

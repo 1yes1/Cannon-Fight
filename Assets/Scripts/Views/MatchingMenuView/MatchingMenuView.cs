@@ -10,7 +10,7 @@ namespace CannonFightBase
 {
     public class MatchingMenuView : UIView
     {
-        [SerializeField] private TextMeshProUGUI _countdownText;
+        [SerializeField] private TextMeshProUGUI _playersFoundText;
 
         [SerializeField] private float _countdown = 3;
 
@@ -19,6 +19,11 @@ namespace CannonFightBase
         public override void Initialize()
         {
 
+        }
+
+        public void UpdatePlayersCount(int playerCount)
+        {
+            _playersFoundText.text = "Players Found "+playerCount+"/4";
         }
 
         public void StartCountdown(float countdown,Action OnCountdownFinishedAction)
@@ -32,7 +37,7 @@ namespace CannonFightBase
             float time = countdown;
             while (time > 0)
             {
-                _countdownText.text = Mathf.Ceil(time).ToString();
+                _playersFoundText.text = Mathf.Ceil(time).ToString();
                 time -= Time.deltaTime;
 
                 if (time <= 0)

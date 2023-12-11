@@ -16,8 +16,6 @@ namespace CannonFightBase
 
         private float _time;
 
-        private SkillTimer _skillTimer;
-
         private SkillType _skill;
 
         public Skill(float time, Action<Skill> onTimeElapsed,SkillType skill)

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using CannonFightBase;
 
 namespace CannonFightUI
 {
@@ -18,6 +19,16 @@ namespace CannonFightUI
         private UIView _currentView;
 
         private readonly Stack<UIView> _history = new Stack<UIView>();
+
+        private void OnEnable()
+        {
+            GameEventReceiver.OnGameStartedEvent += OnGameStarted;
+        }
+
+        private void OnDisable()
+        {
+            GameEventReceiver.OnGameStartedEvent -= OnGameStarted;
+        }
 
         private void Awake()
         {
@@ -36,7 +47,6 @@ namespace CannonFightUI
             Show(_startingView, true);
         }
 
-
         public static T GetView<T>() where T : UIView
         {
             for (int i = 0; i < _instance._views.Length; i++)
@@ -49,7 +59,6 @@ namespace CannonFightUI
 
             return null;
         }
-
 
         public static T Show<T>(bool remember = true,bool isPopup = false) where T : UIView
         {
@@ -80,7 +89,6 @@ namespace CannonFightUI
 
         }
 
-
         public static T ShowWithDelay<T>(float delay,bool remember = true, bool isPopup = false) where T : UIView
         {
             UIView view = GetView<T>();
@@ -95,7 +103,6 @@ namespace CannonFightUI
             yield return new WaitForSeconds(time);
             view.Show();
         }
-
 
         public static void Show(UIView view, bool remember = true)
         {
@@ -114,13 +121,18 @@ namespace CannonFightUI
             _instance._currentView = view;
         }
 
-
         public static void ShowLast()
         {
             if( _instance._history.Count != 0)
             {
                 Show(_instance._history.Pop(),false);
             }
+        }
+
+
+        private void OnGameStarted()
+        {
+            Show<GamePanelView>(true,true);
         }
 
     }

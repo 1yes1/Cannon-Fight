@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,13 +10,15 @@ using static UnityEngine.UI.Image;
 
 namespace CannonFightBase
 {
-    public class AimController : ITickable
+    public class AimController : ITickable,IInitializable
     {
         private Settings _settings;
 
         private Cannon _cannon;
 
         private CannonView _cannonView;
+
+        private PhotonView _photonView;
 
         private GameObject _rotatorH;
 
@@ -37,16 +40,22 @@ namespace CannonFightBase
             //    return;
             UnityEngine.Cursor.lockState = CursorLockMode.Confined;
             _cannonView.GetRotators(out _rotatorH, out _rotatorV);
+
+        }
+
+        public void Initialize()
+        {
+            _photonView = _cannonView.PhotonView;
         }
 
 
         public void Tick()
         {
             //return;
-            if (!_cannon.OwnPhotonView.IsMine)
+            if (!_cannon.CanDoAction)
                 return;
 
-            if (_cannon.IsDead)
+            if (!_photonView.IsMine)
                 return;
 
             if (Application.isFocused)
@@ -117,7 +126,6 @@ namespace CannonFightBase
             _rotatorH.transform.localRotation = Quaternion.Euler(_rotatorH.transform.localEulerAngles.x, _angleHor, _rotatorH.transform.localEulerAngles.z);
             _rotatorV.transform.localRotation = Quaternion.Euler(-_angleVer, _rotatorV.transform.localEulerAngles.y, _rotatorV.transform.localEulerAngles.z);
         }
-
 
         [Serializable]
         public class Settings

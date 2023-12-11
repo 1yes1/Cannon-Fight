@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Zenject;
 
@@ -8,7 +9,8 @@ namespace CannonFightBase
     {
         [Header("Prefabs")]
         [Space(1)]
-        public GameInstaller.Settings Prefabs;
+        public PrefabSettings Prefabs;
+        public UIPrefabSettings UIPrefabs;
         
         [Header("Controllers")]
         [Space(1)]
@@ -36,6 +38,25 @@ namespace CannonFightBase
             Container.BindInstance(ChestSettings);
             Container.BindInstance(RampSettings);
             Container.BindInstance(PotionSettings);
+            Container.BindInstance(UIPrefabs.PlayerItem);
+
+        }
+
+
+
+        [Serializable]
+        public class PrefabSettings
+        {
+            public Cannon CannonPrefab;
+            public PlayerManager PlayerManagerPrefab;
+            public CannonBall CannonBallPrefab;
+            public Potion Potion;
+        }
+
+        [Serializable]
+        public struct UIPrefabSettings
+        {
+            public PlayerItem PlayerItem;
         }
     }
 }

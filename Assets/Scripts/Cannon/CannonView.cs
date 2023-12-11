@@ -1,3 +1,4 @@
+using CannonFightUI;
 using Photon.Pun;
 using System;
 using System.Collections;
@@ -21,13 +22,13 @@ namespace CannonFightBase
 
         [SerializeField] private PhotonView _photonView;
 
-        [SerializeField] private CannonController.Settings _cannonControllerSettings;
+        [SerializeField] private MovementController.Settings _cannonControllerSettings;
 
         private Animation _animation;
 
         private Cannon _cannon;
 
-        public CannonController.Settings CannonControllerSettings => _cannonControllerSettings;
+        public MovementController.Settings CannonControllerSettings => _cannonControllerSettings;
 
         public Transform CannonBallSpawnPoint => _cannonBallSpawnPoint;
 
@@ -49,11 +50,13 @@ namespace CannonFightBase
         private void OnEnable()
         {
             GameEventReceiver.OnPlayerFiredEvent += OnFire;
+            GameEventReceiver.OnGameStartedEvent += OnGameStart;
         }
 
         private void OnDisable()
         {
             GameEventReceiver.OnPlayerFiredEvent -= OnFire;
+            GameEventReceiver.OnGameStartedEvent -= OnGameStart;
         }
 
         private void Awake()
@@ -80,5 +83,11 @@ namespace CannonFightBase
             _animation.Stop();
             _animation.Play();
         }
+
+        private void OnGameStart()
+        {
+            UIManager.GetView<CrosshairView>().Show();
+        }
+
     }
 }

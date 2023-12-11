@@ -21,5 +21,9 @@ namespace CannonFightBase
             _nameText.text = player.NickName;
         }
 
+        public void Initialize(string name)
+        {
+            _nameText.text = name;
+        }
     }
 }

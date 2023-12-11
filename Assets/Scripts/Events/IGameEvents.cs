@@ -40,13 +40,14 @@ namespace CannonFightBase
 
         public void OnBoostEnded(Cannon cannon);
 
-        public void OnPlayerEnteredRoom(Player player);
-
-        public void OnPlayerLeftRoom(Player player);
-
         public void OnLeftCannonsCountChanged(int leftCannonsCount);
 
         public void OnGameSceneLoaded();
+
+        public void OnGameReadyToStart();
+
+        public void OnGameStarted();
+
     }
 
 }

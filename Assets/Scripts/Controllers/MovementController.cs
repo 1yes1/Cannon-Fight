@@ -1,10 +1,11 @@
+using Photon.Pun;
 using System;
 using UnityEngine;
 using Zenject;
 
 namespace CannonFightBase
 {
-    public class CannonController : IFixedTickable,ITickable,IInitializable,ICannonBehaviour
+    public class MovementController : IFixedTickable,ITickable,IInitializable,ICannonBehaviour
     {
         private readonly Settings  _settings;
 
@@ -13,6 +14,8 @@ namespace CannonFightBase
         private readonly CannonView _cannonView;
 
         private readonly CannonTraits _cannonTraits;
+
+        private PhotonView _photonView;
 
         private Transform _transform;
 
@@ -28,7 +31,7 @@ namespace CannonFightBase
 
         private bool _isBoosting = false;
 
-        public CannonController(Cannon cannon,CannonTraits cannonTraits,CannonView view)
+        public MovementController(Cannon cannon,CannonTraits cannonTraits,CannonView view)
         {
             _cannon = cannon;
             _settings = view.CannonControllerSettings;
@@ -38,6 +41,7 @@ namespace CannonFightBase
 
         public void Initialize()
         {
+            _photonView = _cannonView.PhotonView;
             _rigidbody = _cannonView.Rigidbody;
             _transform = _cannon.transform;
             
@@ -59,10 +63,10 @@ namespace CannonFightBase
 
         public void FixedTick()
         {
-            if (!_cannon.OwnPhotonView.IsMine)
+            if (!_cannon.CanDoAction)
                 return;
 
-            if (_cannon.IsDead)
+            if (!_cannon.OwnPhotonView.IsMine)
                 return;
 
             GetInput();
@@ -77,7 +81,7 @@ namespace CannonFightBase
             if (!_cannon.OwnPhotonView.IsMine)
                 return;
 
-            if (_cannon.IsDead)
+            if (!_cannon.CanDoAction)
                 return;
 
             //print(_rigidbody.velocity.magnitude);

@@ -12,10 +12,6 @@ namespace CannonFightBase
     {
         public static event Action OnGameSceneLoadedEvent;
 
-        public static event Action<Player> OnPlayerEnteredRoomEvent;
-
-        public static event Action<Player> OnPlayerLeftRoomEvent;
-
         public static event Action OnBeforeOurPlayerSpawnedEvent;
 
         public static event Action OnOurPlayerSpawnedEvent;
@@ -48,99 +44,47 @@ namespace CannonFightBase
 
         public static event Action OnPlayerFiredEvent;
 
-        public void OnMobileFireButtonClicked()
-        {
-            OnMobileFireButtonClickedEvent?.Invoke();
-        }
+        public static event Action OnGameReadyToStartEvent;
 
-        public void OnSkillBarFilled(SkillType skill)
-        {
-            OnSkillBarFilledEvent?.Invoke(skill);
-        }
+        public static event Action OnGameStartedEvent;
 
-        public void OnPotionCollected(Potion potion)
-        {
-            OnPotionCollectedEvent?.Invoke(potion);
-        }
 
-        public void OnSkillEnded(Skill skill)
-        {
-            OnSkillEndedEvent?.Invoke(skill);
-        }
+        public void OnMobileFireButtonClicked() => OnMobileFireButtonClickedEvent?.Invoke();
 
-        public void OnChestOpened(Chest chest)
-        {
-            OnChestOpenedEvent?.Invoke(chest);
-        }
+        public void OnSkillBarFilled(SkillType skill) => OnSkillBarFilledEvent?.Invoke(skill);
 
-        public void OnBoostStarted(Cannon cannon)
-        {
-            OnBoostStartedEvent?.Invoke(cannon);
-        }
+        public void OnPotionCollected(Potion potion) => OnPotionCollectedEvent?.Invoke(potion);
 
-        public void OnBoostEnded(Cannon cannon)
-        {
-            OnBoostEndedEvent?.Invoke(cannon);
-        }
+        public void OnSkillEnded(Skill skill) => OnSkillEndedEvent?.Invoke(skill);
 
-        public void OnOurPlayerSpawned()
-        {
-            OnOurPlayerSpawnedEvent?.Invoke();
-        }
+        public void OnChestOpened(Chest chest) => OnChestOpenedEvent?.Invoke(chest);
 
-        public void OnOurPlayerHealthChanged(int health)
-        {
-            OnOurPlayerHealthChangedEvent?.Invoke(health);
-        }
+        public void OnBoostStarted(Cannon cannon) => OnBoostStartedEvent?.Invoke(cannon);
 
-        public void OnBeforeOurPlayerSpawned()
-        {
-            OnBeforeOurPlayerSpawnedEvent?.Invoke();
-        }
+        public void OnBoostEnded(Cannon cannon) => OnBoostEndedEvent?.Invoke(cannon);
 
-        public void OnPlayerEnteredRoom(Player player)
-        {
-            OnPlayerEnteredRoomEvent?.Invoke(player);
-        }
+        public void OnOurPlayerSpawned() => OnOurPlayerSpawnedEvent?.Invoke();
 
-        public void OnGameSceneLoaded()
-        {
-            OnGameSceneLoadedEvent?.Invoke();
-        }
+        public void OnOurPlayerHealthChanged(int health) => OnOurPlayerHealthChangedEvent?.Invoke(health);
 
-        public void OnPlayerLeftRoom(Player player)
-        {
-            OnPlayerLeftRoomEvent?.Invoke(player);
-        }
+        public void OnBeforeOurPlayerSpawned() => OnBeforeOurPlayerSpawnedEvent?.Invoke();
 
-        public void OnLeftCannonsCountChanged(int leftCannonsCount)
-        {
-            OnLeftCannonsCountChangedEvent?.Invoke(leftCannonsCount);
-        }
+        public void OnGameSceneLoaded() => OnGameSceneLoadedEvent?.Invoke();
 
-        public void OnOurPlayerDied(Player player)
-        {
-            OnOurPlayerDiedEvent?.Invoke(player);
-        }
+        public void OnLeftCannonsCountChanged(int leftCannonsCount) => OnLeftCannonsCountChangedEvent?.Invoke(leftCannonsCount);
 
-        public void OnPlayerDied(Player player)
-        {
-            OnPlayerDiedEvent?.Invoke(player);
-        }
+        public void OnOurPlayerDied(Player player) => OnOurPlayerDiedEvent?.Invoke(player);
 
-        public void OnKill(Player killer, Player dead)
-        {
-            OnKillEvent?.Invoke(killer,dead);
-        }
+        public void OnPlayerDied(Player player) => OnPlayerDiedEvent?.Invoke(player);
 
-        public void OnPlayerFired()
-        {
-            OnPlayerFiredEvent?.Invoke();
-        }
+        public void OnKill(Player killer, Player dead) => OnKillEvent?.Invoke(killer, dead);
 
-        public void OnBeforeSkillCountdownStarted(SkillType skill,float time)
-        {
-            OnBeforeSkillCountdownStartedEvent?.Invoke(skill,time);
-        }
+        public void OnPlayerFired() => OnPlayerFiredEvent?.Invoke();
+
+        public void OnBeforeSkillCountdownStarted(SkillType skill, float time) => OnBeforeSkillCountdownStartedEvent?.Invoke(skill, time);
+
+        public void OnGameReadyToStart() => OnGameReadyToStartEvent?.Invoke();
+
+        public void OnGameStarted() => OnGameStartedEvent?.Invoke();
     }
 }

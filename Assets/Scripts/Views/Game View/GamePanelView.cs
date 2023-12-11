@@ -31,7 +31,6 @@ namespace CannonFightBase
             GameEventReceiver.OnLeftCannonsCountChangedEvent += UpdateCannonsLeftText;
         }
 
-
         private void OnDisable()
         {
             GameEventReceiver.OnOurPlayerSpawnedEvent -= OnOurPlayerSpawned;
@@ -63,6 +62,8 @@ namespace CannonFightBase
         {
             //_fillImage.fillAmount = GameManager.CurrentCannon.KillCount * GameManager.Instance.MaxKillCountForPowers / 100;
         }
+
+
 
     }
 }
