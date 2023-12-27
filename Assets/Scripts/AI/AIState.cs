@@ -15,12 +15,12 @@ namespace CannonFightBase
             OnEnter(aiStateController);
 
         }
-        public void OnUpdateState() { }
-        public void OnExitState() { }
+        public void OnUpdateState() { OnUpdate(); }
+        public void OnExitState() { OnExit(); }
 
 
-        protected virtual void OnEnter(AIStateController aiStateController) { }
-        protected virtual void OnUpdate() { }
-        protected virtual void OnExit() { }
+        protected abstract void OnEnter(AIStateController aiStateController);
+        protected abstract void OnUpdate();
+        protected abstract void OnExit();
     }
 }

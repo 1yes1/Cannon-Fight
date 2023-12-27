@@ -48,6 +48,8 @@ namespace CannonFightBase
         public class PrefabSettings
         {
             public Cannon CannonPrefab;
+            public Agent AgentPrefab;
+            public AgentManager AgentManagerPrefab;
             public PlayerManager PlayerManagerPrefab;
             public CannonBall CannonBallPrefab;
             public Potion Potion;

@@ -20,15 +20,21 @@ namespace CannonFightBase
 
         private Player _ownerPlayer;
 
-        private Cannon _ownerCannon;
+        private CannonBase _ownerCannon;
 
         private Rigidbody _rigidbody;
 
-        public void Initialize(int damage,Cannon cannon,Player player)
+        public void Initialize(int damage, CannonBase cannon,Player player)
         {
             _damage = damage;
             _ownerCannon = cannon;
             _ownerPlayer = player;
+        }
+
+        public void Initialize(int damage, CannonBase cannon)
+        {
+            _damage = damage;
+            _ownerCannon = cannon;
         }
 
         public void OnDespawned()
@@ -47,10 +53,10 @@ namespace CannonFightBase
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (_ownerCannon == collision.gameObject.GetComponent<Cannon>() || _ownerCannon == null)
+            if (_ownerCannon.GetComponent<CannonBase>() == collision.gameObject.GetComponent<CannonBase>() || _ownerCannon == null)
                 return;
 
-            collision.gameObject.GetComponent<IDamageable>()?.TakeDamage(_damage, collision.contacts[0].point, _ownerPlayer);
+            collision.gameObject.GetComponent<IDamageable>()?.TakeDamage(_damage, collision.contacts[0].point, _ownerPlayer,_ownerCannon);
 
             collision.gameObject.GetComponent<IHittable>()?.OnHit(collision.contacts[0].point);
 
@@ -64,6 +70,11 @@ namespace CannonFightBase
         {
             _rigidbody.velocity = Vector3.zero;
             _rigidbody.angularVelocity = Vector3.zero;
+        }
+
+        public void SetLayer(int layer)
+        {
+            gameObject.layer = layer;
         }
 
         public class Factory : PlaceholderFactory<CannonBall>

@@ -127,9 +127,10 @@ namespace CannonFightBase
             }
         }
 
-        public void TakeDamage(int damage, Vector3 hitPoint, Player attackerPlayer)
+        public void TakeDamage(int damage, Vector3 hitPoint, Player attackerPlayer, CannonBase attackerCannon)
         {
-            ParticleSystem particleSystem = ParticleManager.CreateAndPlay(_particleSettings.TakeDamageParticle, transform, hitPoint, false);
+            ParticleManager.CreateParticle<TakeDamageParticle>(hitPoint, transform, false);
+            //ParticleSystem particleSystem = 
             if (_isOpened)
                 return;
 

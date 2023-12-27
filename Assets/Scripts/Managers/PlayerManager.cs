@@ -44,25 +44,6 @@ namespace CannonFightBase
         }
 
 
-        private void Update()
-        {
-            if(Input.GetKeyDown(KeyCode.G))
-            {
-                ShowHashes();
-            }
-        }
-
-        private void ShowHashes()
-        {
-            if (!_photonView.IsMine)
-                return;
-
-            foreach (Player item in PhotonNetwork.CurrentRoom.Players.Values)
-            {
-                print(item.NickName + ": hash: " + item.CustomProperties.Keys.Contains("isDead"));
-            }
-        }
-
         public void Initialize()
         {
             if(_photonView.IsMine)
@@ -76,7 +57,7 @@ namespace CannonFightBase
 
         private void SpawnCannon()
         {
-            print("----------------------Spawn Cannon---------------------");
+            //print("----------------------Spawn Cannon---------------------");
 
             _cannon = _cannonFactory.Create();
             PhotonView photonView = _cannon.GetComponent<PhotonView>();

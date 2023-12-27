@@ -59,9 +59,9 @@ namespace CannonFightBase
             _rpcMediator.AddToRPC(RPC_DAMAGE_PARTICLE, this);
         }
 
-        public void TakeDamage(int damage, Vector3 hitPoint, Player attackerPlayer)
+        public void TakeDamage(int damage, Vector3 hitPoint, Player attackerPlayer,CannonBase attackerCannon)
         {
-            TakeDamageParticle particleSystem = ParticleManager.CreateWithFactory<TakeDamageParticle>(_takeDamageParticleFactory, hitPoint, null, false);
+            TakeDamageParticle particleSystem = ParticleManager.CreateParticle<TakeDamageParticle>( hitPoint, null, false);
 
             //Take Damage i çalýþtýrmasý gereken bilgisayar bu bilgisayar deðilse devam etme. Particle oluþturmak yeterli
             if (!_cannon.OwnPhotonView.IsMine)
@@ -89,7 +89,8 @@ namespace CannonFightBase
 
         private void RunDamageParticle(Vector3 hitPoint)
         {
-            ParticleManager.CreateAndPlay(_particleSettings.TakeDamageParticle, null, hitPoint, false);
+            //ParticleManager.CreateAndPlay(null, hitPoint, false);
+            ParticleManager.Wait();
         }
 
 

@@ -10,7 +10,7 @@ using Zenject;
 
 namespace CannonFightBase
 {
-    public class Cannon : MonoBehaviour,ICannonBehaviour, IDamageable,IPotionCollector
+    public class Cannon : CannonBase, ICannonBehaviour, IDamageable,IPotionCollector
     {
         private PlayerManager _playerManager;
 
@@ -119,9 +119,9 @@ namespace CannonFightBase
             _cannonController.Boost(multiplier);
         }
 
-        public void TakeDamage(int damage, Vector3 hitPoint, Player attackerPlayer)
+        public void TakeDamage(int damage, Vector3 hitPoint, Player attackerPlayer,CannonBase attackerCannon)
         {
-            _cannonDamageHandler.TakeDamage(damage,hitPoint,attackerPlayer);
+            _cannonDamageHandler.TakeDamage(damage,hitPoint,attackerPlayer, attackerCannon);
         }
 
 

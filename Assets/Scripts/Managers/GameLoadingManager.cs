@@ -3,8 +3,10 @@ using DG.Tweening;
 using Photon.Pun;
 using Photon.Realtime;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
+using static UnityEditor.Progress;
 
 namespace CannonFightBase
 {
@@ -87,8 +89,9 @@ namespace CannonFightBase
             {
 
                 //Burada botlar doðacak
+                UIManager.GetView<GameLoadingView>().AddBotPlayerItem(_roomServerSettings.PlayersInGame - 1);
+                Invoke(nameof(StartCountdown), _gameServerSettings.WaitAfterAllPlayersEnteredToGame);
 
-                StartCountdown();
             }
         }
 
@@ -125,5 +128,7 @@ namespace CannonFightBase
         {
             public TweenSettings CameraRotating;
         }
+
+
     }
 }

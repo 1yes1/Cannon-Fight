@@ -2,24 +2,30 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 namespace CannonFightBase
 {
     public class TestManager : MonoBehaviour
     {
         [SerializeField] private bool _spawnForTest;
+        [SerializeField] private bool _spawnBotForTest;
 
         private ChestManager _chestManager;
 
         private void Start()
         {
-            if (!_spawnForTest)
-                return;
-
             _chestManager = FindObjectOfType<ChestManager>();
 
-            SpawnTestCannon();
-            StartFillingChests();
+            if(_spawnForTest)
+            {
+                SpawnTestCannon();
+                StartFillingChests();
+            }
+
+            if (_spawnBotForTest)
+                SpawnTestBot();
+
         }
 
         private void StartFillingChests()
@@ -31,6 +37,12 @@ namespace CannonFightBase
         {
             SpawnManager spawnManager = FindObjectOfType<SpawnManager>();
             spawnManager.SpawnPlayerManager();
+        }
+
+        private void SpawnTestBot()
+        {
+            SpawnManager spawnManager = FindObjectOfType<SpawnManager>();
+            spawnManager.TEST_SpawnBot();
         }
 
         private void Update()

@@ -17,25 +17,32 @@ namespace CannonFightBase
 
         private PlayerManager.Factory _playerManagerFactory;
 
+        private AgentManager.Factory _agentManagerFactory;
+
         private SpawnPoint[] _spawnPoints;
 
         private PlayerManager _playerManager;
 
+        private int _spawnedPlayersCount = -1;
+
         [Inject]
-        public void Construct(PlayerManager.Factory factory)
+        public void Construct(PlayerManager.Factory factory,AgentManager.Factory agentManagerFactory)
         {
             _playerManagerFactory = factory;
+            _agentManagerFactory = agentManagerFactory;
         }
 
         private void OnEnable()
         {
             GameEventReceiver.OnGameReadyToStartEvent += SpawnPlayerManager;
+            GameEventReceiver.OnGameReadyToStartEvent += SpawnBotsCheck;
             PhotonNetwork.NetworkingClient.EventReceived += EVENT_SpawnPlayerManager;
         }
 
         private void OnDisable()
         {
             GameEventReceiver.OnGameReadyToStartEvent -= SpawnPlayerManager;
+            GameEventReceiver.OnGameReadyToStartEvent -= SpawnBotsCheck;
             PhotonNetwork.NetworkingClient.EventReceived -= EVENT_SpawnPlayerManager;
         }
 
@@ -53,6 +60,22 @@ namespace CannonFightBase
 
         }
 
+        public static SpawnPoint GetSpawnPoint()
+        {
+            //print("PhotonNetwork.LocalPlayer.ActorNumber: " + PhotonNetwork.LocalPlayer.ActorNumber);
+            //print("PhotonNetwork.CurrentRoom.PlayerCount: " + PhotonNetwork.CurrentRoom.PlayerCount);
+            int index = 0;
+            if (PhotonNetwork.IsConnected)
+                index = (PhotonNetwork.LocalPlayer.ActorNumber > PhotonNetwork.CurrentRoom.PlayerCount) ? PhotonNetwork.LocalPlayer.ActorNumber - PhotonNetwork.CurrentRoom.PlayerCount : PhotonNetwork.LocalPlayer.ActorNumber - 1;
+
+            if (GameManager.PlayWithBots)
+            {
+                _instance._spawnedPlayersCount++;
+                index = _instance._spawnedPlayersCount;
+            }
+
+            return _instance._spawnPoints[index];
+        }
 
         public void SpawnPlayerManager()
         {
@@ -106,15 +129,30 @@ namespace CannonFightBase
             }
         }
 
-        public static SpawnPoint GetSpawnPoint()
+
+        private void SpawnBotsCheck()
         {
-            //print("PhotonNetwork.LocalPlayer.ActorNumber: " + PhotonNetwork.LocalPlayer.ActorNumber);
-            //print("PhotonNetwork.CurrentRoom.PlayerCount: " + PhotonNetwork.CurrentRoom.PlayerCount);
-            int index = 0;
-            if(PhotonNetwork.IsConnected)
-                index = (PhotonNetwork.LocalPlayer.ActorNumber > PhotonNetwork.CurrentRoom.PlayerCount) ? PhotonNetwork.LocalPlayer.ActorNumber - PhotonNetwork.CurrentRoom.PlayerCount: PhotonNetwork.LocalPlayer.ActorNumber - 1;
-            
-            return _instance._spawnPoints[index];
+            if (GameManager.PlayWithBots)
+                SpawnBots(3);
+        }
+
+
+        private void SpawnBots(int count)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                AgentManager agentManager = _agentManagerFactory.Create();
+                agentManager.Initialize();
+            }
+        }
+
+        public void TEST_SpawnBot()
+        {
+            AgentManager agentManager = _agentManagerFactory.Create();
+            agentManager.Initialize();
+
+            agentManager = _agentManagerFactory.Create();
+            agentManager.Initialize();
         }
 
     }

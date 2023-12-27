@@ -155,7 +155,8 @@ namespace CannonFightBase
             cannonBall.transform.position = ballPosition;
             cannonBall.transform.rotation = _ballSpawnPoint.rotation;
 
-            ParticleManager.CreateAndPlay(_particleSettings.FireCannonBallParticle, _ballSpawnPoint, ballPosition);
+            ParticleManager.CreateParticle<FireParticle>(ballPosition,_ballSpawnPoint, false);
+            //ParticleManager.CreateAndPlay(_particleSettings.FireCannonBallParticle, _ballSpawnPoint, ballPosition);
             //ParticleManager.Instance.CreateWithFactory<CannonDamageParticle>(_particleSettings.ParticleFactory, ballPosition, null, false);
 
             Rigidbody rigidbody = cannonBall.GetComponent<Rigidbody>();

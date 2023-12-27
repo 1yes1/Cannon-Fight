@@ -17,6 +17,6 @@ MonoBehaviour:
       GameStartCountdown: 3
       WaitAfterAllPlayersEnteredToGame: 2
     RoomServerSettings:
-      PlayersInGame: 2
-      WaitForPlayersUntilPlayWithBots: 50
-      WaitAfterAllPlayersEnteredToRoom: 25
+      PlayersInGame: 4
+      WaitForPlayersUntilPlayWithBots: 2
+      WaitAfterAllPlayersEnteredToRoom: 5

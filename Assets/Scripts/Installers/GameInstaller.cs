@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.AI.Navigation;
 using UnityEngine;
 using Zenject;
 using Zenject.SpaceFighter;
@@ -15,7 +16,7 @@ namespace CannonFightBase
         {
             //Container.Bind<Cannon>().FromComponentInHierarchy().AsSingle();
 
-            Container.Bind<ParticleManager>().FromComponentInHierarchy().AsSingle();
+            Container.BindInterfacesAndSelfTo<ParticleManager>().AsSingle();
 
             Container.Bind<Chest>().FromComponentsInHierarchy().AsSingle();
 
@@ -40,8 +41,23 @@ namespace CannonFightBase
             .FromComponentInNewPrefab(_prefabSettings.Potion)
             .UnderTransformGroup("PotionPool"));
 
+            Container.BindFactory<Agent, Agent.Factory>()
+            .FromSubContainerResolve()
+            .ByNewPrefabInstaller<AgentInstaller>(_prefabSettings.AgentPrefab)
+            .UnderTransformGroup("Agents");
+
+            Container.BindFactory<AgentManager, AgentManager.Factory>().FromComponentInNewPrefab(_prefabSettings.AgentManagerPrefab).UnderTransformGroup("Agents");
+
+            Container.Bind<NavMeshSurface>().FromComponentInHierarchy().AsSingle();
+
+            Container.Bind<TestTarget>().FromComponentInHierarchy().AsSingle();
+            InstallExecutionOrder();
         }
 
+        private void InstallExecutionOrder()
+        {
+            //Container.BindExecutionOrder<ParticleManager>(10);
+        }
 
     }
 }

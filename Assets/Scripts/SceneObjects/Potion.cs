@@ -118,10 +118,27 @@ namespace CannonFightBase
                 if(other.GetComponent<IPotionCollector>().CanCollectPotion(_skill))
                 {
                     other.GetComponent<IPotionCollector>().Collect(this);
-                    ParticleManager.CreateAndPlay(ParticleManager.GetParticleTupleValue(_particleSettings.ParticleTuplesByType, _skill),null,transform.position);
-                    //Destroy(gameObject);
+                    CreateParticle();
                     Dispose();
                 }
+            }
+        }
+
+        private void CreateParticle()
+        {
+            switch (_skill)
+            {
+                case SkillType.MultiBall:
+                    ParticleManager.CreateParticle<MultiballSkillParticle>(transform.position,null, false);
+                    break;
+                case SkillType.Damage:
+                    ParticleManager.CreateParticle<DamageSkillParticle>(transform.position,null, false);
+                    break;
+                case SkillType.Health:
+                    ParticleManager.CreateParticle<HealthSkillParticle>(transform.position,null, false);
+                    break;
+                default:
+                    break;
             }
         }
 

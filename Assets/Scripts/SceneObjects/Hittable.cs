@@ -19,7 +19,7 @@ namespace CannonFightBase
         public void OnHit(Vector3 hitPoint)
         {
             //ParticleManager.Instance.CreateAndPlay(_particleSettings.HitParticle, null, hitPoint, false);
-            ParticleManager.CreateWithFactory<HitParticle>(_particleFactory, hitPoint, null, false);
+            ParticleManager.CreateParticle<HitParticle>(hitPoint, null, false);
         }
 
         [Serializable]

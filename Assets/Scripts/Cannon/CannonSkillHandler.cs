@@ -109,15 +109,15 @@ namespace CannonFightBase
             switch (skill)
             {
                 case SkillType.MultiBall:
-                    _skillParticle = ParticleManager.CreateWithFactory<MultiballSkillParticle>(_multiballSkillFactory, _skillParticlePoint.position, _skillParticlePoint, true);
+                    _skillParticle = ParticleManager.CreateParticle<MultiballSkillParticle>( _skillParticlePoint.position, _skillParticlePoint, true);
                     GameEventCaller.Instance.OnBeforeSkillCountdownStarted(skill, _settings.MultiBallSkillSettings.MultiBallSkillTime);
                     break;
                 case SkillType.Damage:
-                    _skillParticle = ParticleManager.CreateWithFactory<DamageSkillParticle>(_damageSkillFactory, _skillParticlePoint.position, _skillParticlePoint, true);
+                    _skillParticle = ParticleManager.CreateParticle<DamageSkillParticle>(_skillParticlePoint.position, _skillParticlePoint, true);
                     GameEventCaller.Instance.OnBeforeSkillCountdownStarted(skill, _settings.DamageSkillSettings.DamageSkillTime);
                     break;
                 case SkillType.Health:
-                    _skillParticle = ParticleManager.CreateWithFactory<HealthSkillParticle>(_healthSkillFactory, _skillParticlePoint.position, _skillParticlePoint, false);
+                    _skillParticle = ParticleManager.CreateParticle<HealthSkillParticle>(_skillParticlePoint.position, _skillParticlePoint, false);
                     break;
                 default:
                     break;

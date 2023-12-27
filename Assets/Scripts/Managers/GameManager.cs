@@ -27,6 +27,8 @@ namespace CannonFightBase
 
         private int _leftCannonsCount = 0;
 
+        private bool _playWithBots = false;
+
         public static GameManager Instance => _instance;
 
         public static Cannon CurrentCannon => _instance._currentCannon;
@@ -41,6 +43,8 @@ namespace CannonFightBase
             get { return _leftCannonsCount;}
             set { _leftCannonsCount = value; GameEventCaller.OnLeftCannonsCountChanged(_leftCannonsCount); }
         }
+
+        public static bool PlayWithBots => _instance._playWithBots;
 
         [Inject]
         public void Construct(RoomManager.Settings settings)
@@ -77,7 +81,8 @@ namespace CannonFightBase
                 _instance = this;
 
             Initialize();
-            UnityEngine.Random.InitState(_randomSeed);
+            _playWithBots = (SaveManager.GetValue<int>("playWithBots") == 1) ? true : false;
+            //UnityEngine.Random.InitState(_randomSeed);
 
         }
 
