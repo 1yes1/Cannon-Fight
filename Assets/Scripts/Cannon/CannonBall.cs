@@ -20,21 +20,22 @@ namespace CannonFightBase
 
         private Player _ownerPlayer;
 
-        private CannonBase _ownerCannon;
+        private Character _ownerCannon;
 
         private Rigidbody _rigidbody;
 
-        public void Initialize(int damage, CannonBase cannon,Player player)
+        public void Initialize(int damage, Character cannon,Player player)
         {
             _damage = damage;
             _ownerCannon = cannon;
             _ownerPlayer = player;
         }
 
-        public void Initialize(int damage, CannonBase cannon)
+        public void Initialize(int damage, Character cannon)
         {
             _damage = damage;
             _ownerCannon = cannon;
+            _ownerPlayer = null;
         }
 
         public void OnDespawned()
@@ -53,7 +54,7 @@ namespace CannonFightBase
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (_ownerCannon.GetComponent<CannonBase>() == collision.gameObject.GetComponent<CannonBase>() || _ownerCannon == null)
+            if (collision.gameObject != null && _ownerCannon.GetComponent<Character>() == collision.gameObject.GetComponent<Character>() || _ownerCannon == null)
                 return;
 
             collision.gameObject.GetComponent<IDamageable>()?.TakeDamage(_damage, collision.contacts[0].point, _ownerPlayer,_ownerCannon);

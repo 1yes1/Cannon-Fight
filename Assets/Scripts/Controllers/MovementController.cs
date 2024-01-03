@@ -5,7 +5,7 @@ using Zenject;
 
 namespace CannonFightBase
 {
-    public class MovementController : IFixedTickable,ITickable,IInitializable,ICannonBehaviour
+    public class MovementController : IFixedTickable,ITickable,IInitializable,ICannonBehaviour, ICannonDataLoader
     {
         private readonly Settings  _settings;
 
@@ -49,7 +49,7 @@ namespace CannonFightBase
             _rigidbody.maxLinearVelocity = _maxSpeed;
         }
 
-        public void OnSpawn(PlayerManager playerManager)
+        public void OnSpawn(CannonManager playerManager)
         {
             if (!_cannon.OwnPhotonView.IsMine)
                 return;
@@ -63,10 +63,10 @@ namespace CannonFightBase
 
         public void FixedTick()
         {
-            if (!_cannon.CanDoAction)
+            if (!_cannon.CanDoAction && !TestManager.IsTesting)
                 return;
 
-            if (!_cannon.OwnPhotonView.IsMine)
+            if (!_cannon.OwnPhotonView.IsMine && !TestManager.IsTesting)
                 return;
 
             GetInput();
@@ -94,7 +94,7 @@ namespace CannonFightBase
             {
                 // Steering Input
                 _horizontalInput = CannonJoystick.Horizontal;
-                //print(horizontalInput);
+                //Debug.Log(_horizontalInput);
 
                 // Acceleration Input
                 _verticalInput = CannonJoystick.Vertical;
@@ -213,6 +213,10 @@ namespace CannonFightBase
 
         }
 
+        public void SetCannonData()
+        {
+            throw new NotImplementedException();
+        }
 
         [Serializable]
         public class Settings

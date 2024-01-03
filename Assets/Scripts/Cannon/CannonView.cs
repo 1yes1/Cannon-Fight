@@ -50,13 +50,11 @@ namespace CannonFightBase
         private void OnEnable()
         {
             GameEventReceiver.OnPlayerFiredEvent += OnFire;
-            GameEventReceiver.OnGameStartedEvent += OnGameStart;
         }
 
         private void OnDisable()
         {
             GameEventReceiver.OnPlayerFiredEvent -= OnFire;
-            GameEventReceiver.OnGameStartedEvent -= OnGameStart;
         }
 
         private void Awake()
@@ -82,11 +80,6 @@ namespace CannonFightBase
 
             _animation.Stop();
             _animation.Play();
-        }
-
-        private void OnGameStart()
-        {
-            UIManager.GetView<CrosshairView>().Show();
         }
 
     }

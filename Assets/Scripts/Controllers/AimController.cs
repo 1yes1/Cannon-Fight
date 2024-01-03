@@ -91,23 +91,17 @@ namespace CannonFightBase
 
         private void SetPcController()
         {
-            RotateCannon(Vector3.zero);
+            RotateCannon(new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y")));
         }
 
         private void RotateCannon(Vector3 delta,bool isMobile = false)
         {
-            float deltaX = Input.GetAxis("Mouse X");
-            float deltaY = Input.GetAxis("Mouse Y");
+            float deltaX = delta.x;
+            float deltaY = delta.y;
 
-            if(isMobile)
-            {
-                deltaX = delta.x; 
-                deltaY = delta.y;
-            }
-
-            float hor = deltaX * _settings.RotationSpeed * Time.deltaTime;
+            float hor = deltaX * ((isMobile) ? _settings.MobileRotationSpeed : _settings.RotationSpeed) * Time.deltaTime;
             //hor = (Mathf.Abs(delta.x) < 0.25f) ? 0 : hor;
-            float ver = deltaY * _settings.RotationSpeed * Time.deltaTime;
+            float ver = deltaY * ((isMobile) ? _settings.MobileRotationSpeed : _settings.RotationSpeed) * Time.deltaTime;
             //ver = (Mathf.Abs(delta.y) < 0.25f) ? 0 : ver;
 
             _angleHor += hor;

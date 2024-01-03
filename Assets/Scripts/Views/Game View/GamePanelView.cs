@@ -23,7 +23,6 @@ namespace CannonFightBase
         {
         }
 
-
         private void OnEnable()
         {
             GameEventReceiver.OnOurPlayerSpawnedEvent += OnOurPlayerSpawned;
@@ -45,7 +44,7 @@ namespace CannonFightBase
 
         private void UpdateCannonsLeftText(int leftCannonsCount)
         {
-            _cannonsLeftText.text = leftCannonsCount.ToString();
+            _cannonsLeftText.text = "Cannon Left: "+leftCannonsCount;
         }
 
         private void UpdateHealthText(int health)
@@ -62,8 +61,6 @@ namespace CannonFightBase
         {
             //_fillImage.fillAmount = GameManager.CurrentCannon.KillCount * GameManager.Instance.MaxKillCountForPowers / 100;
         }
-
-
 
     }
 }

@@ -1,13 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Zenject;
 
 namespace CannonFightBase
 {
     public class AIEnemyDetector
     {
         private Agent.ViewSettings _viewSettings;
+
+        private readonly FireState.Settings _settings;
 
         private AgentView _agentView;
 
@@ -17,6 +16,7 @@ namespace CannonFightBase
         {
             _viewSettings = viewSettings;
             _agentView = agentView;
+            _settings = _agentView.AimSettings;
         }
 
         public Transform FindClosestEnemy()
@@ -40,6 +40,30 @@ namespace CannonFightBase
             //}
 
             return null;
+        }
+
+        public bool HasFireAngle()
+        {
+            if (_targetEnemy == null)
+                return false;
+
+            Vector3 dir = _targetEnemy.position - _agentView.transform.position;
+
+            float dot = Vector3.Dot(_agentView.transform.forward, dir.normalized);
+
+            if (dot >= 0.85f)
+            {
+                //Debug.Log("Atýþ Açýsý Var: "+ dot);
+                return true;
+
+            }
+            else
+            {
+                //Debug.Log("Atýþ Açýsý YOk: "+ dot);
+                return false;
+
+            }
+            //NoViewAngle();
         }
 
     }

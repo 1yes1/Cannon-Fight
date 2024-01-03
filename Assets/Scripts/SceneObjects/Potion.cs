@@ -12,8 +12,6 @@ namespace CannonFightBase
     {
         [SerializeField] private MeshRenderer _meshRenderer;
 
-        private ParticleSettings _particleSettings;
-
         protected SkillType _skill;
         
         private IMemoryPool _pool;
@@ -27,13 +25,6 @@ namespace CannonFightBase
         private bool _isShowedUp = false;
 
         public SkillType Skill => _skill;
-
-        [Inject]
-        public void Construct(ParticleSettings particleSettings)
-        {
-            _particleSettings = particleSettings;
-            _particleSettings.Initialize();
-        }
 
         private void Awake()
         {
@@ -129,13 +120,13 @@ namespace CannonFightBase
             switch (_skill)
             {
                 case SkillType.MultiBall:
-                    ParticleManager.CreateParticle<MultiballSkillParticle>(transform.position,null, false);
+                    ParticleManager.CreateParticle<MultiballPotionParticle>(transform.position,null, false);
                     break;
                 case SkillType.Damage:
-                    ParticleManager.CreateParticle<DamageSkillParticle>(transform.position,null, false);
+                    ParticleManager.CreateParticle<DamagePotionParticle>(transform.position,null, false);
                     break;
                 case SkillType.Health:
-                    ParticleManager.CreateParticle<HealthSkillParticle>(transform.position,null, false);
+                    ParticleManager.CreateParticle<HealthPotionParticle>(transform.position,null, false);
                     break;
                 default:
                     break;
@@ -182,19 +173,11 @@ namespace CannonFightBase
         }
 
         [Serializable]
-        public class ParticleSettings
+        public struct ParticleSettings
         {
-            public List<ParticleTuple<SkillType>> SkillsParticleTuples;
-
-            public Dictionary<Type, IList> ParticleTuplesByType;
-
-            public void Initialize()
-            {
-                ParticleTuplesByType = new Dictionary<System.Type, IList>
-                {
-                    { typeof(SkillType), SkillsParticleTuples },
-                };
-            }
+            public DamagePotionParticle DamagePotionParticle;
+            public HealthPotionParticle HealthPotionParticle;
+            public MultiballPotionParticle MultiballPotionParticle;
         }
 
     }

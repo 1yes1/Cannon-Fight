@@ -21,6 +21,8 @@ namespace CannonFightBase
 
         [SerializeField] private int _randomSeed = 999;
 
+        private IEventSubscriber[] _eventSubscribers;
+
         private Cannon _currentCannon;
 
         private RoomManager.Settings _launcherSettings;
@@ -47,31 +49,31 @@ namespace CannonFightBase
         public static bool PlayWithBots => _instance._playWithBots;
 
         [Inject]
-        public void Construct(RoomManager.Settings settings)
+        public void Construct(RoomManager.Settings settings, IEventSubscriber[] eventSubscribers)
         {
             _launcherSettings = settings;
+            _eventSubscribers = eventSubscribers;
         }
 
         private void OnEnable()
         {
             GameEventReceiver.OnBeforeOurPlayerSpawnedEvent += OnBeforeOurPlayerSpawned;//Bu eventte GameManager ile Cannon a ulaşılmıyor çünkü atama yapılmadı
-            GameEventReceiver.OnOurPlayerSpawnedEvent += OnOurPlayerSpawned;
-            RoomManager.OnPlayerEnteredRoomEvent += OnPlayerEnteredRoom;
             RoomManager.OnPlayerLeftRoomEvent += OnPlayerLeftRoom;
             GameEventReceiver.OnOurPlayerDiedEvent += OnOurPlayerDied;
             GameEventReceiver.OnPlayerDiedEvent += OnPlayerDied;
+            GameEventReceiver.OnAgentDiedEvent += OnAgentDied; ;
+            GameEventReceiver.OnGameStartedEvent += OnGameStarted;
             //GameEventReceiver.OnOurPlayerSpawnedEvent += OnOurPlayerSpawned;//Bu eventte GameManager ile Cannon a ulaşılıyor
         }
-
 
         private void OnDisable()
         {
             GameEventReceiver.OnBeforeOurPlayerSpawnedEvent -= OnBeforeOurPlayerSpawned;
-            GameEventReceiver.OnOurPlayerSpawnedEvent -= OnOurPlayerSpawned;
-            RoomManager.OnPlayerEnteredRoomEvent -= OnPlayerEnteredRoom;
             RoomManager.OnPlayerLeftRoomEvent -= OnPlayerLeftRoom;
             GameEventReceiver.OnOurPlayerDiedEvent -= OnOurPlayerDied;
             GameEventReceiver.OnPlayerDiedEvent -= OnPlayerDied;
+            GameEventReceiver.OnAgentDiedEvent -= OnAgentDied; ;
+            GameEventReceiver.OnGameStartedEvent -= OnGameStarted;
             //GameEventReceiver.OnOurPlayerSpawnedEvent -= OnOurPlayerSpawned;
         }
 
@@ -81,6 +83,8 @@ namespace CannonFightBase
                 _instance = this;
 
             Initialize();
+            LeftCannonsCount = 0;
+            Application.targetFrameRate = 60;
             _playWithBots = (SaveManager.GetValue<int>("playWithBots") == 1) ? true : false;
             //UnityEngine.Random.InitState(_randomSeed);
 
@@ -92,9 +96,9 @@ namespace CannonFightBase
             this.GameEventReceiver = new GameEventReceiver();
             this.GameEventCaller = new GameEventCaller(GameEventReceiver);
 
-            foreach (var item in FindObjectsOfType<CFBehaviour>())
+            for (int i = 0; i < _eventSubscribers.Length; i++)
             {
-                item.RegisterCallerEvents();
+                _eventSubscribers[i].SubscribeEvent();
             }
         }
 
@@ -108,6 +112,20 @@ namespace CannonFightBase
             SetCannon();
         }
 
+        private void OnGameStarted()
+        {
+            LeftCannonsCount = 0;
+
+            if (PlayWithBots)
+            {
+                LeftCannonsCount += AIManager.Instance.AgentCount;
+                print("AIManager.Instance.AgentCount: " + AIManager.Instance.AgentCount);
+            }
+            //print("LeftCannonsCount: " + PhotonNetwork.CurrentRoom.Players.Values.Count);
+
+            if(PhotonNetwork.IsConnected)
+                LeftCannonsCount += PhotonNetwork.CurrentRoom.Players.Values.Count;
+        }
 
 
         private void SetCannon()
@@ -123,18 +141,9 @@ namespace CannonFightBase
             GameEventCaller.OnOurPlayerSpawned();
         }
 
-        private void IncreaseLeftCannonsCount()
-        {
-            LeftCannonsCount++;
-        }
         public void DecreaseLeftCannonsCount()
         {
             LeftCannonsCount--;
-        }
-
-        public void OnPlayerEnteredRoom(Player player)
-        {
-            IncreaseLeftCannonsCount();
         }
 
         private void OnPlayerLeftRoom(Player player)
@@ -147,7 +156,7 @@ namespace CannonFightBase
 
         private void OnOurPlayerDied(Player player)
         {
-            //DecreaseLeftCannonsCount();
+            DecreaseLeftCannonsCount();
             UIManager.ShowWithDelay<DefeatedPanelView>(1.25f);
             //PhotonNetwork.LeaveRoom();
             print("YOU DIED");
@@ -164,7 +173,7 @@ namespace CannonFightBase
             player.SetCustomProperties(hashtable);
 
             //Sadece biz kalmışız
-            print("-----------Kimler Kalmış-------" + LeftCannonsCount);
+            //print("-----------Kimler Kalmış-------" + LeftCannonsCount);
 
             if(LeftCannonsCount == 1)
             {
@@ -172,20 +181,16 @@ namespace CannonFightBase
             }
         }
 
-        private void OnOurPlayerSpawned()
+        private void OnAgentDied(Agent agent)
         {
-            if(PhotonNetwork.IsConnected)
-                CheckLeftCannonsCount();
-        }
+            DecreaseLeftCannonsCount();
 
-        private void CheckLeftCannonsCount()
-        {
-            foreach (Player item in PhotonNetwork.CurrentRoom.Players.Values)
+            if (LeftCannonsCount == 1 && !Cannon.Current.IsDead)
             {
-                if (!item.CustomProperties.ContainsKey("isDead"))
-                    LeftCannonsCount++;
+                UIManager.ShowWithDelay<VictoryPanelView>(1.25f);
             }
         }
+
 
     }
 }

@@ -1,3 +1,4 @@
+using CannonFightExtensions;
 using CannonFightUI;
 using DG.Tweening;
 using Photon.Pun;
@@ -6,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
-using static UnityEditor.Progress;
 
 namespace CannonFightBase
 {
@@ -81,23 +81,19 @@ namespace CannonFightBase
             if (!PhotonNetwork.IsMasterClient)
                 return;
 
-            if (PhotonNetwork.CurrentRoom.PlayerCount == _roomServerSettings.PlayersInGame)
+            if (SaveManager.GetValue<int>("playWithBots") == 1)
             {
-                Invoke(nameof(StartCountdown), _gameServerSettings.WaitAfterAllPlayersEnteredToGame);
-            }
-            else if(SaveManager.GetValue<int>("playWithBots") == 1)
-            {
-
-                //Burada botlar doðacak
                 UIManager.GetView<GameLoadingView>().AddBotPlayerItem(_roomServerSettings.PlayersInGame - 1);
                 Invoke(nameof(StartCountdown), _gameServerSettings.WaitAfterAllPlayersEnteredToGame);
-
+                return;
             }
+
+            Invoke(nameof(StartCountdown), _gameServerSettings.WaitAfterAllPlayersEnteredToGame);
+            
         }
 
         private void StartCountdown()
         {
-
             //Eðer Others yapýp OnGameReadyToStart eventini burada çalýþtýrýrsak her bilgisayarda önce master player manager ý oluþturuluyor ve bu da Raiseeventlerde sýkýntý çýkarýyor. Rakibin cannon unu oluþturmuyor
             //Ondan dolayý GameEventCaller.Instance.OnGameReadyToStart(); kýsmý herkese ayný anda gitmeli
             _photonView.RPC(nameof(RPC_StartCountdown), RpcTarget.All);
@@ -112,13 +108,6 @@ namespace CannonFightBase
         }
 
         private void StartGame()
-        {
-            GameEventCaller.Instance.OnGameStarted();
-            _photonView.RPC(nameof(RPC_StartGame), RpcTarget.Others);
-        }
-
-        [PunRPC]
-        private void RPC_StartGame()
         {
             GameEventCaller.Instance.OnGameStarted();
         }

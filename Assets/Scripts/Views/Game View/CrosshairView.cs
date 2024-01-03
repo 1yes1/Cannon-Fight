@@ -9,8 +9,8 @@ namespace CannonFightBase
     {
         private void Start()
         {
-            Hide();
         }
+
         public override void Initialize()
         {
         }

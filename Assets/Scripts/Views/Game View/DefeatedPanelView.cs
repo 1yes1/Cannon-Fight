@@ -1,9 +1,11 @@
+using CannonFightExtensions;
 using CannonFightUI;
 using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Zenject;
 
@@ -30,6 +32,8 @@ namespace CannonFightUI
             _killCountSubView.Initialize();
             _coinGainSubView.Initialize();
             _rankSubView.Initialize();
+            _exitButton.onClick.AddListener(ExitToMainMenu);
+
         }
 
         public override void Show()
@@ -45,6 +49,11 @@ namespace CannonFightUI
             _coinGainSubView.Show(_animationSettings.CoinGainSubViewDelay);
             _exitButton.transform.DOScale(_animationSettings.ExitButton.Value, _animationSettings.ExitButton.Duration).SetEase(_animationSettings.ExitButton.Ease).SetDelay(_animationSettings.ExitButton.Delay);
 
+        }
+
+        private void ExitToMainMenu()
+        {
+            SceneManager.LoadScene(0);
         }
 
         [Serializable]

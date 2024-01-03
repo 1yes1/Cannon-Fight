@@ -25,8 +25,6 @@ namespace CannonFightBase
 
         private Settings _settings;
 
-        private ParticleSettings _particleSettings;
-
         private AnimatorSettings _animatorSettings;
 
         private Animator _animator;
@@ -56,12 +54,11 @@ namespace CannonFightBase
         }
 
         [Inject]
-        public void Construct(Settings settings, Potion.Factory potionFactory, Potion.Settings potionSettings,ParticleSettings particleSettings, AnimatorSettings animatorSettings)
+        public void Construct(Settings settings, Potion.Factory potionFactory, Potion.Settings potionSettings, AnimatorSettings animatorSettings)
         {
             _settings = settings;
             _potionFactory = potionFactory;
             _potionSettings = potionSettings;
-            _particleSettings = particleSettings;
             _animatorSettings = animatorSettings;
         }
 
@@ -80,6 +77,7 @@ namespace CannonFightBase
 
         public void Refill(int potionIndex)
         {
+            print(_animatorSettings);
             ChooseSkillRandomly();
             _animator.SetTrigger(_animatorSettings.FillChest);
             _isRefilling = true;
@@ -127,7 +125,7 @@ namespace CannonFightBase
             }
         }
 
-        public void TakeDamage(int damage, Vector3 hitPoint, Player attackerPlayer, CannonBase attackerCannon)
+        public void TakeDamage(int damage, Vector3 hitPoint, Player attackerPlayer, Character attackerCannon)
         {
             ParticleManager.CreateParticle<TakeDamageParticle>(hitPoint, transform, false);
             //ParticleSystem particleSystem = 
@@ -181,9 +179,9 @@ namespace CannonFightBase
         }
 
         [Serializable]
-        public class ParticleSettings
+        public struct ParticleSettings
         {
-            public ParticleSystem TakeDamageParticle;
+            public ChestHitParticle HitParticle;
         }
 
         [Serializable]

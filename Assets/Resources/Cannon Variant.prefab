@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 77841380636054477}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0.2, z: 0.632}
-  m_LocalScale: {x: 0.13812798, y: 0.13812798, z: 0.13812798}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1236152781431207918}
@@ -578,7 +578,7 @@ MonoBehaviour:
   - m_Script
   m_LockStageInInspector: 
   m_StreamingVersion: 20170927
-  m_Priority: -1
+  m_Priority: 1
   m_StandbyUpdate: 2
   m_LookAt: {fileID: 8929998779785305733}
   m_Follow: {fileID: 6417135620197161191}

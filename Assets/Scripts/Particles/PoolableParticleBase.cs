@@ -13,6 +13,7 @@ namespace CannonFightBase
         CannonTakeDamage
     }
 
+    [RequireComponent(typeof(ParticleSystem))]
     public abstract class PoolableParticleBase : MonoBehaviour, IPoolable<IMemoryPool>,IDisposable
     {
         protected IMemoryPool _pool;
@@ -36,14 +37,6 @@ namespace CannonFightBase
 
             if(!_particleSystem.main.loop)
                 Invoke(nameof(Dispose), _particleSystem.main.duration);
-        }
-
-        public class Factory : PlaceholderFactory<FireParticle>
-        {
-        }
-
-        public class Pool : MonoPoolableMemoryPool<IMemoryPool, FireParticle>
-        {
         }
 
     }

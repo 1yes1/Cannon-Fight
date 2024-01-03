@@ -1,5 +1,6 @@
 using AYellowpaper.SerializedCollections;
 using CannonFightBase;
+using CannonFightExtensions;
 using DG.Tweening;
 using System;
 using System.Collections.Generic;
@@ -41,7 +42,7 @@ namespace CannonFightUI
 
             transform.localScale = Vector3.zero;
 
-            transform.DOScale(_animationSettings.Main.Value, _animationSettings.Main.Duration).SetEase(_animationSettings.Main.Ease).SetDelay(_animationSettings.Main.Delay); 
+            transform.DOScale(_animationSettings.Main.Value, _animationSettings.Main.Duration).SetEase(_animationSettings.Main.Ease).SetDelay(_animationSettings.Main.Delay);
         }
 
         public void SetUpgradeItemValues(UpgradeType upgradeType,CannonLevelSettings cannonLevelSettings)

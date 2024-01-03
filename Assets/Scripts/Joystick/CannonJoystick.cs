@@ -1,3 +1,4 @@
+using CannonFightUI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,7 +6,7 @@ using UnityEngine.UI;
 
 namespace CannonFightBase
 {
-    public class CannonJoystick : MonoBehaviour
+    public class CannonJoystick : UISubView
     {
         public static CannonJoystick Instance;
 
@@ -17,9 +18,9 @@ namespace CannonFightBase
 
         [Header("Joystick Controller")]
 
-        [SerializeField] private float _range = 50;
+        [SerializeField] private float _range = 195;
 
-        [SerializeField] private float _knobFrequency = 0.05f;
+        [SerializeField] private float _knobFrequency = 0.008f;
 
         private CanvasGroup _canvasGroup;
 
@@ -43,13 +44,17 @@ namespace CannonFightBase
 
         public static float Vertical => Instance._vertical;
 
-
-        protected void Start()
+        private void Awake()
         {
             if (Instance == null)
             {
                 Instance = this;
             }
+        }
+
+
+        public override void Initialize()
+        {
             _knobRectTransform = _knob.GetComponent<RectTransform>();
             _uiCreatorRectTransform = _joystickUICreator.GetComponent<RectTransform>();
             _canvasGroup = GetComponent<CanvasGroup>();
@@ -57,7 +62,6 @@ namespace CannonFightBase
             _uiCreatorStartPosition = _joystickUICreator.transform.position;
             _knobStartPosition = _knob.transform.position;
         }
-
 
         private void Update()
         {
@@ -116,19 +120,62 @@ namespace CannonFightBase
 
             }
 
-            //else if (Input.GetMouseButtonUp(0))
-            //{
 
-            //}
+            #region Unity Editor
+#if UNITY_EDITOR
 
-            //if (Input.GetMouseButton(0) && _joystickView.IsPointerOverUIElement(JoystickLayer.Drive))
-            //{
+            if (Input.GetMouseButtonDown(0))
+            {
+                Vector3 mousePos = Input.mousePosition;
 
-            //}
-            //else if(_joystickUICreator.Amplitude != 0)
-            //{
+                bool isLeftSide = mousePos.x <= Screen.width / 2;
 
-            //}
+                if (!isLeftSide)
+                    return;
+
+
+                _joystickUICreator.transform.position = mousePos;
+                _knob.transform.position = mousePos;
+
+                _knobClickAnchoredPosition = _knobRectTransform.anchoredPosition;
+                _startTouchPosition = mousePos;
+                _canvasGroup.alpha = 1;
+            }
+            else if(Input.GetMouseButton(0))
+            {
+                Vector3 mousePos = Input.mousePosition;
+
+                Vector3 touchPos = mousePos;
+                float distanceY = mousePos.y - _startTouchPosition.y;
+
+                Vector3 pos = _knobRectTransform.anchoredPosition;
+                pos.x = Mathf.Clamp((touchPos / _canvasRectTransform.localScale.x).x, _knobClickAnchoredPosition.x - _range, _knobClickAnchoredPosition.x + _range);
+                _knobRectTransform.anchoredPosition = pos;
+
+                float changePercent = Mathf.Clamp(distanceY, -_joystickUICreator.MaxAmplitude, _joystickUICreator.MaxAmplitude);
+
+                //print(distanceY);
+                float amplitude = _joystickUICreator.ChangeAmplitude(changePercent);
+                _vertical = amplitude / 100f;
+
+                ChangeKnobPosition();
+
+            }
+            else if (Input.GetMouseButtonUp(0))
+            {
+                _joystickUICreator.transform.position = _uiCreatorStartPosition;
+                _knob.transform.position = _knobStartPosition;
+
+                _joystickUICreator.ChangeAmplitude(0);
+                _horizontal = 0;
+                _vertical = 0;
+                _canvasGroup.alpha = 0;
+            }
+
+
+#endif
+            #endregion
+
 
         }
 
@@ -152,8 +199,5 @@ namespace CannonFightBase
             var w = (rt.anchorMax.x - rt.anchorMin.x) * Screen.width + rt.sizeDelta.x;
             return w;
         }
-
-
-
     }
 }

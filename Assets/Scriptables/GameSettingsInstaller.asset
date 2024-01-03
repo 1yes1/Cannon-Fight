@@ -15,7 +15,7 @@ MonoBehaviour:
   Prefabs:
     CannonPrefab: {fileID: 1532848633857551894, guid: 05cec7e0b912c804a98721e3b88cef50,
       type: 3}
-    AgentPrefab: {fileID: 5899290512866236578, guid: 9ca8bf2edbf9c0a43a4c5fe86994e260,
+    AgentPrefab: {fileID: 4945209807119594749, guid: 9ca8bf2edbf9c0a43a4c5fe86994e260,
       type: 3}
     AgentManagerPrefab: {fileID: 6913867466555733693, guid: fb3d9ae844dd8d34e91422dfc923e4f0,
       type: 3}
@@ -38,7 +38,7 @@ MonoBehaviour:
     MaxVerticalAngle: 23
     MaxHorizontalAngle: 75
     RotationSpeed: 50
-    MobileRotationSpeed: 25
+    MobileRotationSpeed: 7
   CannonSkillHandlerSettings:
     MultiBallSkillSettings:
       MultiBallCount: 3
@@ -50,7 +50,7 @@ MonoBehaviour:
   ChestSettings:
     Health: 1
     PotionFlightTime: 0.8
-    StartFillTime: 0.1
+    StartFillTime: 10
     StartFillFrequency: 0.2
     RefillTime: 1
   RampSettings:
@@ -67,3 +67,5 @@ MonoBehaviour:
     levelEndSettings:
       WinnerCoinMultiplier: 25
       LoserCoinMultiplier: 10
+  GameAgentSettings:
+    MaxAgentCount: 3

@@ -1,3 +1,4 @@
+using CannonFightUI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,7 +10,11 @@ namespace CannonFightBase
     public class TestManager : MonoBehaviour
     {
         [SerializeField] private bool _spawnForTest;
-        [SerializeField] private bool _spawnBotForTest;
+        [SerializeField] private bool _fillChests;
+        [SerializeField] private bool _spawnAgentForTest;
+        [SerializeField] private int _spawnAgentCount = 4;
+
+        public static bool IsTesting { get; private set; }
 
         private ChestManager _chestManager;
 
@@ -17,14 +22,14 @@ namespace CannonFightBase
         {
             _chestManager = FindObjectOfType<ChestManager>();
 
-            if(_spawnForTest)
-            {
-                SpawnTestCannon();
-                StartFillingChests();
-            }
+            if(_spawnForTest) SpawnTestCannon();
 
-            if (_spawnBotForTest)
-                SpawnTestBot();
+            if (_fillChests) StartFillingChests();
+
+            if (_spawnAgentForTest) SpawnTestBot();
+
+            if (_spawnForTest || _fillChests || _spawnAgentForTest)
+                IsTesting = true;
 
         }
 
@@ -37,12 +42,19 @@ namespace CannonFightBase
         {
             SpawnManager spawnManager = FindObjectOfType<SpawnManager>();
             spawnManager.SpawnPlayerManager();
+
+            if (GameManager.Instance.useAndroidControllers)
+                UIManager.Show<JoystickView>();
+
+            FindObjectOfType<Cannon>().CanDoAction = true;
         }
 
         private void SpawnTestBot()
         {
+            SaveManager.SetValue<int>("playWithBots", 1);
+
             SpawnManager spawnManager = FindObjectOfType<SpawnManager>();
-            spawnManager.TEST_SpawnBot();
+            spawnManager.TEST_SpawnBot(_spawnAgentCount);
         }
 
         private void Update()
@@ -50,7 +62,8 @@ namespace CannonFightBase
             if (!_spawnForTest)
                 return;
 
-            _chestManager.CheckRefillTimes();
+            if(_fillChests)
+                _chestManager.CheckRefillTimes();
 
         }
 

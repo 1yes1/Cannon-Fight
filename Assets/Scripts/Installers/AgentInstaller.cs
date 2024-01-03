@@ -1,4 +1,5 @@
 using CannonFightBase;
+using Cinemachine;
 using UnityEngine;
 using UnityEngine.AI;
 using Zenject;
@@ -18,9 +19,19 @@ public class AgentInstaller : Installer<AgentInstaller>
 
         Container.Bind<AgentView>().FromComponentOnRoot();
 
+        Container.Bind<AgentHealthView>().FromComponentOnRoot();
+
+        Container.Bind<Canvas>().FromComponentInChildren();
+
+        Container.Bind<CinemachineVirtualCamera>().FromComponentInChildren();
+
+
         Container.Bind<IdleMoveState>().FromNew().AsSingle();
         Container.Bind<FireState>().FromNew().AsSingle();
         Container.Bind<AIEnemyDetector>().FromNew().AsSingle();
 
+        Container.BindInterfacesAndSelfTo<AILogicManager>().FromNew().AsSingle();
+        Container.BindInterfacesAndSelfTo<RunLogic>().FromNew().AsSingle();
+        Container.BindInterfacesAndSelfTo<LookEnemyLogic>().FromNew().AsSingle();
     }
 }

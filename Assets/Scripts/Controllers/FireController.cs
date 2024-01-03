@@ -12,7 +12,7 @@ using static UnityEngine.Rendering.DebugUI;
 namespace CannonFightBase
 {
 
-    public class FireController : ITickable,IInitializable,IRpcMediator
+    public class FireController : ITickable,IInitializable,IRpcMediator,IDisposable, ICannonDataLoader
     {
         private readonly Settings _settings;
 
@@ -70,16 +70,23 @@ namespace CannonFightBase
             AddEvents();
         }
 
+        public void LoadCannonTraits()
+        {
+
+        }
+
         private void AddEvents()
+        {
+            GameEventReceiver.OnMobileFireButtonClickedEvent += StartFire;
+            GameEventReceiver.OnSkillBarFilledEvent += OnSkillBarFilled;
+            GameEventReceiver.OnSkillEndedEvent += OnSkillEnded;
+        }
+
+        public void Dispose()
         {
             GameEventReceiver.OnMobileFireButtonClickedEvent -= StartFire;
             GameEventReceiver.OnSkillBarFilledEvent -= OnSkillBarFilled;
             GameEventReceiver.OnSkillEndedEvent -= OnSkillEnded;
-
-            GameEventReceiver.OnMobileFireButtonClickedEvent += StartFire;
-            GameEventReceiver.OnSkillBarFilledEvent += OnSkillBarFilled;
-            GameEventReceiver.OnSkillEndedEvent += OnSkillEnded;
-
         }
 
         public void Tick()
@@ -204,6 +211,10 @@ namespace CannonFightBase
             //Debug.Log("Damage: "+_cannonTraits.Damage);
         }
 
+        public void SetCannonData()
+        {
+            throw new NotImplementedException();
+        }
 
         [Serializable]
         public class Settings
@@ -216,13 +227,9 @@ namespace CannonFightBase
         }
 
         [Serializable]
-        public class ParticleSettings
+        public struct ParticleSettings
         {
-            public ParticleSystem FireCannonBallParticle;
-
-            [Inject]
-            public CannonDamageParticle.Factory ParticleFactory;
-
+            public FireParticle FireParticle;
         }
 
 

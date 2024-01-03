@@ -37,14 +37,10 @@ namespace CannonFightUI
             for (int i = 0; i < _views.Length; i++)
             {
                 _views[i].Initialize();
-
-                if (!_views[i].isPopup)
-                    _views[i].Hide();
-                else
-                    _views[i].Show();
-
+                _views[i].Hide();
             }
             Show(_startingView, true);
+            Show<CoinView>(false, true);
         }
 
         public static T GetView<T>() where T : UIView
@@ -60,7 +56,7 @@ namespace CannonFightUI
             return null;
         }
 
-        public static T Show<T>(bool remember = true,bool isPopup = false) where T : UIView
+        public static T Show<T>(bool remember = true,bool isFixed = false) where T : UIView
         {
             for (int i = 0; i < _instance._views.Length; i++)
             {
@@ -73,13 +69,14 @@ namespace CannonFightUI
                             _instance._history.Push(_instance._currentView);
                         }
 
-                        if(!isPopup)
+                        if(!isFixed)
                             _instance._currentView.Hide();
                     }
 
                     _instance._views[i].Show();
 
-                    _instance._currentView = _instance._views[i];
+                    if (!isFixed)
+                        _instance._currentView = _instance._views[i];
 
                     return _instance._views[i] as T;
                 }
@@ -133,6 +130,8 @@ namespace CannonFightUI
         private void OnGameStarted()
         {
             Show<GamePanelView>(true,true);
+            Show<JoystickView>(false,true);
+            Show<CrosshairView>(false,true);
         }
 
     }

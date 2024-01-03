@@ -31,7 +31,11 @@ public class ParticleSettingsInstaller : ScriptableObjectInstaller<ParticleSetti
 
         Container.BindFactory<HitParticle, HitParticle.Factory>().ConfigurePool<HitParticle,HitParticle.Pool>(HittableParticles.HitParticle, 5);
         Container.BindFactory<TakeDamageParticle, TakeDamageParticle.Factory>().ConfigurePool<TakeDamageParticle, TakeDamageParticle.Pool>(CannonDamageHandlerParticles.TakeDamageParticle, 5);
-        Container.BindFactory<FireParticle, FireParticle.Factory>().ConfigurePool<FireParticle, FireParticle.Pool>(FireControllerParticles.FireCannonBallParticle, 5);
+        Container.BindFactory<FireParticle, FireParticle.Factory>().ConfigurePool<FireParticle, FireParticle.Pool>(FireControllerParticles.FireParticle, 5);
+        Container.BindFactory<DamagePotionParticle, DamagePotionParticle.Factory>().ConfigurePool<DamagePotionParticle, DamagePotionParticle.Pool>(PotionParticles.DamagePotionParticle, 5);
+        Container.BindFactory<HealthPotionParticle, HealthPotionParticle.Factory>().ConfigurePool<HealthPotionParticle, HealthPotionParticle.Pool>(PotionParticles.HealthPotionParticle, 5);
+        Container.BindFactory<MultiballPotionParticle, MultiballPotionParticle.Factory>().ConfigurePool<MultiballPotionParticle, MultiballPotionParticle.Pool>(PotionParticles.MultiballPotionParticle, 5);
+        Container.BindFactory<ChestHitParticle, ChestHitParticle.Factory>().ConfigurePool<ChestHitParticle, ChestHitParticle.Pool>(ChestParticles.HitParticle, 5);
 
         //Skill Particles
         Container.BindFactory<DamageSkillParticle, DamageSkillParticle.Factory>().ConfigurePool<DamageSkillParticle, DamageSkillParticle.Pool>(CannonParticleSettings.DamageSkillParticle, 2);

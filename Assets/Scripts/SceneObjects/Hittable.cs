@@ -23,9 +23,9 @@ namespace CannonFightBase
         }
 
         [Serializable]
-        public class ParticleSettings
+        public struct ParticleSettings
         {
-            public ParticleSystem HitParticle;
+            public HitParticle HitParticle;
 
         }
     }

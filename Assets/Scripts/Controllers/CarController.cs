@@ -13,11 +13,12 @@ namespace CannonFightBase
 
         protected MovementSettings _movementSettings;
 
+        private bool _isBreaking;
+
         private float _horizontalInput, _verticalInput;
 
         private float _currentSteerAngle, _currentbreakForce;
 
-        private bool _isBreaking;
 
         public CarController(AgentView agentView)
         {

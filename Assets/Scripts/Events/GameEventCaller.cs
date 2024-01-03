@@ -43,6 +43,8 @@ namespace CannonFightBase
 
         public void OnKill(Player killer, Player dead) => _gameEventReceiver.OnKill(killer, dead);
 
+        public void OnKill(Character killer, Character dead) => _gameEventReceiver.OnKill(killer, dead);
+
         public void OnPlayerFired() => _gameEventReceiver.OnPlayerFired();
 
         public void OnBeforeSkillCountdownStarted(SkillType skill, float time) => _gameEventReceiver.OnBeforeSkillCountdownStarted(skill, time);
@@ -50,6 +52,11 @@ namespace CannonFightBase
         public void OnGameReadyToStart() => _gameEventReceiver.OnGameReadyToStart();
 
         public void OnGameStarted() => _gameEventReceiver.OnGameStarted();
+
+        public void OnAgentSpawned(AgentManager agentManager) => _gameEventReceiver.OnAgentSpawned(agentManager);
+
+        public void OnAgentDied(Agent agent) => _gameEventReceiver.OnAgentDied(agent);
+
     }
 
 }

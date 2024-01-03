@@ -9,16 +9,18 @@ namespace CannonFightBase
 {
     public class CoinManager : MonoBehaviour
     {
-        public static CoinManager _instance;
+        private static CoinManager _instance;
 
         private SaveSettings _saveSettings;
         private CoinView _coinView;
+
+        public static CoinManager Instance => _instance;
 
         public static int CurrentCoin
         {
             get
             {
-                return SaveManager.GetValue<int>(_instance._saveSettings.CurrentCoin);
+                return SaveManager.GetValue<int>(_instance._saveSettings.CurrentCoin,0);
             }
             set
             {
@@ -44,9 +46,11 @@ namespace CannonFightBase
             _coinView = UIManager.GetView<CoinView>();
 
             _coinView.UpdateCoin(CurrentCoin);
+        }
 
-            CurrentCoin += 888;
-
+        public void SetDefaultValue()
+        {
+            CurrentCoin = 1000;
         }
 
 

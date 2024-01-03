@@ -20,7 +20,11 @@ namespace CannonFightBase
 
         public static event Action<Player> OnPlayerDiedEvent;
 
+        public static event Action<Agent> OnAgentDiedEvent;
+
         public static event Action<Player,Player> OnKillEvent;
+
+        public static event Action<Character, Character> OnKillAgentEvent;
 
         public static event Action<int> OnOurPlayerHealthChangedEvent;
 
@@ -47,6 +51,8 @@ namespace CannonFightBase
         public static event Action OnGameReadyToStartEvent;
 
         public static event Action OnGameStartedEvent;
+
+        public static event Action<AgentManager> OnAgentSpawnedEvent;
 
 
         public void OnMobileFireButtonClicked() => OnMobileFireButtonClickedEvent?.Invoke();
@@ -79,6 +85,8 @@ namespace CannonFightBase
 
         public void OnKill(Player killer, Player dead) => OnKillEvent?.Invoke(killer, dead);
 
+        public void OnKill(Character killer, Character dead) => OnKillAgentEvent?.Invoke(killer, dead);
+
         public void OnPlayerFired() => OnPlayerFiredEvent?.Invoke();
 
         public void OnBeforeSkillCountdownStarted(SkillType skill, float time) => OnBeforeSkillCountdownStartedEvent?.Invoke(skill, time);
@@ -86,5 +94,9 @@ namespace CannonFightBase
         public void OnGameReadyToStart() => OnGameReadyToStartEvent?.Invoke();
 
         public void OnGameStarted() => OnGameStartedEvent?.Invoke();
+
+        public void OnAgentSpawned(AgentManager agentManager) => OnAgentSpawnedEvent?.Invoke(agentManager);
+
+        public void OnAgentDied(Agent agent) => OnAgentDiedEvent?.Invoke(agent);
     }
 }

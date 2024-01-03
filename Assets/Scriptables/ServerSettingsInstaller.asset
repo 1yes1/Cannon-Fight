@@ -18,5 +18,6 @@ MonoBehaviour:
       WaitAfterAllPlayersEnteredToGame: 2
     RoomServerSettings:
       PlayersInGame: 4
-      WaitForPlayersUntilPlayWithBots: 2
-      WaitAfterAllPlayersEnteredToRoom: 5
+      WaitForPlayersUntilPlayWithBots: 1
+      WaitAfterAllPlayersEnteredToRoom: 25
+      WaitAfterSecondPlayerEnteredToRoom: 23

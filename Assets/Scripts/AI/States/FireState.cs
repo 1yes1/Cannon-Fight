@@ -1,13 +1,5 @@
-using Cinemachine.Utility;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Data;
-using TMPro;
-using Unity.Burst.CompilerServices;
 using UnityEngine;
-using UnityEngine.UI.Extensions;
-using Zenject;
 using Random = UnityEngine.Random;
 
 namespace CannonFightBase
@@ -35,13 +27,12 @@ namespace CannonFightBase
         private float _fireRate;
 
 
-        public FireState(AgentView agentView,Agent.RotateSettings rotateSettings, CannonBall.Factory cannonBallFactory, AIEnemyDetector enemyDetector, TestTarget testTarget,FireSettings fireSettings,
+        public FireState(AgentView agentView,Agent.RotateSettings rotateSettings, CannonBall.Factory cannonBallFactory, AIEnemyDetector enemyDetector,FireSettings fireSettings,
             FireController.ParticleSettings particleSettings)
         {
             _cannonBallFactory = cannonBallFactory;
             _settings = agentView.AimSettings;
             _agentView = agentView;
-            _targetEnemy = testTarget.transform;
             _rotateSettings = rotateSettings;
             _enemyDetector = enemyDetector;
             _fireSettings = fireSettings;
@@ -50,7 +41,7 @@ namespace CannonFightBase
 
         protected override void OnEnter(AIStateController aiStateController)
         {
-            _fireRate = Random.Range(0, _fireSettings.Rate + 5);
+            _fireRate = _fireSettings.Rate;
         }
 
         protected override void OnExit()
@@ -59,28 +50,32 @@ namespace CannonFightBase
 
         protected override void OnUpdate()
         {
-            CheckEnemy();
+            if (!CheckEnemy())
+                return;
             TurnHorizontal();
             TurnVertical();
             CheckFire();
         }
 
-        private void CheckEnemy()
+        private bool CheckEnemy()
         {
             _targetEnemy = _enemyDetector.FindClosestEnemy();
+            bool hasAngle = _enemyDetector.HasFireAngle();
 
-            if (_targetEnemy == null)
+            if (_targetEnemy == null || !hasAngle)
+            {
+                ChangeState();
+                //Debug.Log("No Target In Area");
                 StopFire();
 
-            Vector3 dir = _targetEnemy.position - _settings.RotatorH.position;
+                return false;
+            }
 
-            float dot = Vector3.Dot(_settings.RotatorH.forward, dir.normalized);
+            StartFire();
 
-            if (dot >= 0.991f)
-                StartFire();
-            else
-                StopFire();
+            //Debug.Log("Target Found");
 
+            return true;
         }
 
         private void TurnHorizontal()
@@ -114,12 +109,20 @@ namespace CannonFightBase
         }
         private void StartFire()
         {
+            //Debug.Log("Start Fire");
             _isFiring = true;
         }
 
         private void StopFire()
         {
+            //Debug.Log("Stop Fire");
+            _settings.RotatorH.forward = _agentView.transform.forward;
+            _settings.RotatorV.forward = _agentView.transform.forward;
             _isFiring = false;
+        }
+
+        private void ChangeState()
+        {
             _stateController.ChangeState<IdleMoveState>();
         }
 
@@ -128,14 +131,14 @@ namespace CannonFightBase
             if (!_isFiring)
                 return;
 
-            if(_fireRate > 0)
+            if (_fireRate > 0)
             {
                 _fireRate -= Time.deltaTime;
 
                 if(_fireRate <= 0)
                 {
                     Fire();
-                    _fireRate = Random.Range(0,_fireSettings.Rate + 5);
+                    _fireRate = _fireSettings.Rate;
                 }
             }
         }
@@ -153,7 +156,7 @@ namespace CannonFightBase
             target.y += 0.75f;
             Vector3 direction = target - _agentView.CannonBallSpawnTransform.position;
 
-            ParticleManager.CreateParticle<FireParticle>(_agentView.transform.position, null, false);
+            ParticleManager.CreateParticle<FireParticle>(_agentView.CannonBallSpawnTransform.position, null, false);
 
             //ParticleManager.CreateAndPlay(_particleSettings.FireCannonBallParticle, _agentView.CannonBallSpawnTransform, _agentView.CannonBallSpawnTransform.position);
             //ParticleManager.Instance.CreateWithFactory<CannonDamageParticle>(_particleSettings.ParticleFactory, ballPosition, null, false);

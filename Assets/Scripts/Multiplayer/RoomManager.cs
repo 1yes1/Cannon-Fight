@@ -65,10 +65,7 @@ namespace CannonFightBase
 
         public override void OnJoinedRoom()
         {
-            if(PhotonNetwork.IsMasterClient)
-            {
-                PhotonNetwork.CurrentRoom.MaxPlayers = _settings.PlayersInGame;
-            }
+
         }
 
         public override void OnPlayerLeftRoom(Player otherPlayer)
@@ -129,6 +126,8 @@ namespace CannonFightBase
             public float WaitForPlayersUntilPlayWithBots;
 
             public float WaitAfterAllPlayersEnteredToRoom;
+
+            public float WaitAfterSecondPlayerEnteredToRoom;
 
         }
 

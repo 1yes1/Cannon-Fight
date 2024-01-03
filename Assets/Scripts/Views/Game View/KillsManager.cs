@@ -1,5 +1,6 @@
 using EasyButtons;
 using Photon.Realtime;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -27,12 +28,14 @@ namespace CannonFightBase
 
         private void OnEnable()
         {
-            GameEventReceiver.OnKillEvent += CreateKillItem;
+            GameEventReceiver.OnKillEvent += SetKillItem;
+            GameEventReceiver.OnKillAgentEvent += SetKillAgentItem;
         }
 
         private void OnDisable()
         {
-            GameEventReceiver.OnKillEvent -= CreateKillItem;
+            GameEventReceiver.OnKillEvent -= SetKillItem;
+            GameEventReceiver.OnKillAgentEvent -= SetKillAgentItem;
         }
 
         private void Awake()
@@ -41,20 +44,29 @@ namespace CannonFightBase
         }
 
         
-        private void CreateKillItem(Player killer, Player dead)
+        private void SetKillItem(Player killer, Player dead)
         {
-            if(_killItems == null)
+            CreateKillItem(killer.NickName, dead.NickName);
+        }
+
+        private void SetKillAgentItem(Character killer, Character dead)
+        {
+            CreateKillItem(killer.NickName, dead.NickName);
+        }
+
+        private void CreateKillItem(string killer,string dead)
+        {
+            if (_killItems == null)
                 _killItems = new List<KillItem>();
 
             KillItem killItem = Instantiate(_killItem, transform);
-            killItem.Initialize(killer.NickName, dead.NickName, _waitTime,_hideTime,PlaceKillItems);
+            killItem.Initialize(killer, dead, _waitTime, _hideTime, PlaceKillItems);
             //killItem.Initialize("Öldüren", "Ölen", _waitTime, _hideTime,PlaceKillItems);
 
             RectTransform rectTransform = killItem.GetComponent<RectTransform>();
             rectTransform.anchoredPosition = new Vector2(0, _startPositionY + _killItems.Count * _offsetY);
             _killItems.Add(killItem);
         }
-
 
         private void PlaceKillItems(KillItem killItem)
         {

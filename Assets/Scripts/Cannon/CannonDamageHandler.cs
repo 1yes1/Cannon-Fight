@@ -7,7 +7,7 @@ using Zenject;
 
 namespace CannonFightBase
 {
-    public class CannonDamageHandler: IDamageable, IRpcMediator,IInitializable
+    public class CannonDamageHandler: IDamageable, IRpcMediator,IInitializable, ICannonDataLoader
     {
         private readonly ParticleSettings _particleSettings;
 
@@ -59,7 +59,7 @@ namespace CannonFightBase
             _rpcMediator.AddToRPC(RPC_DAMAGE_PARTICLE, this);
         }
 
-        public void TakeDamage(int damage, Vector3 hitPoint, Player attackerPlayer,CannonBase attackerCannon)
+        public void TakeDamage(int damage, Vector3 hitPoint, Player attackerPlayer,Character attackerCannon)
         {
             TakeDamageParticle particleSystem = ParticleManager.CreateParticle<TakeDamageParticle>( hitPoint, null, false);
 
@@ -74,7 +74,15 @@ namespace CannonFightBase
 
             if (Health <= 0)
             {
-                Die(attackerPlayer);
+                if (_isDead)
+                    return;
+
+                if (attackerPlayer == null)
+                    _cannon.Die(attackerCannon);
+                else
+                    _cannon.Die(attackerPlayer);
+
+                _isDead = true;
             }
 
             _cannon.OwnPhotonView.RPC(nameof(_rpcMediator.RpcForwarder), RpcTarget.Others, RPC_DAMAGE_PARTICLE, new object[] { hitPoint });
@@ -93,24 +101,15 @@ namespace CannonFightBase
             ParticleManager.Wait();
         }
 
-
-        private void Die(Player attackerPlayer)
+        public void SetCannonData()
         {
-            //if (!_photonView.IsMine)
-            //    return;
-            if (_isDead)
-                return;
-
-            _cannon.Die(attackerPlayer);
-
-            _isDead = true;
+            throw new NotImplementedException();
         }
 
-
         [Serializable]
-        public class ParticleSettings
+        public struct ParticleSettings
         {
-            public ParticleSystem TakeDamageParticle;
+            public TakeDamageParticle TakeDamageParticle;
         }
 
     }

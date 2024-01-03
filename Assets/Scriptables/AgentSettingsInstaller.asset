@@ -26,20 +26,20 @@ MonoBehaviour:
     - {fileID: 21300000, guid: 27f5dc5374f09d040832275fb7de164e, type: 3}
     - {fileID: 21300000, guid: ffd672da9ff10c541a3d690585101811, type: 3}
   AgentRotationSettings:
-    TurnSpeed: 60
+    TurnSpeed: 90
     MaxHorizontalAngle: 45
     MaxVerticalAngle: 30
   ViewSettings:
     EnemyLayer:
       serializedVersion: 2
       m_Bits: 16448
-    ViewRadius: 10
+    ViewRadius: 25
   AgentTraits:
     MovementSettings:
-      Speed: 5
+      Speed: 4
     FireSettings:
       Damage: 10
       Rate: 0.5
-      Range: 10
+      Range: 20
     HealthSettings:
       Health: 100

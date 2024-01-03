@@ -14,9 +14,9 @@ namespace CannonFightBase
             Aim
         }
 
-        [SerializeField] private GameObject _driveJoystick;
+        [SerializeField] private UISubView _driveJoystick;
 
-        [SerializeField] private GameObject _aimJoystick;
+        [SerializeField] private UISubView _aimJoystick;
 
         private int _driveLayer;
 
@@ -24,7 +24,8 @@ namespace CannonFightBase
 
         public override void Initialize()
         {
-
+            _driveJoystick.Initialize();
+            _aimJoystick.Initialize();
         }
 
         // Start is called before the first frame update

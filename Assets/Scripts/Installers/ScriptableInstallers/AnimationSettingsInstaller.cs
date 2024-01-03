@@ -15,6 +15,7 @@ namespace CannonFightBase
         public UpgradeMenuView.AnimationSettings UpgradeMenuView;
         public WarningView.AnimationSettings WarningView;
         public CountdownView.AnimationSettings CountdownView;
+        public MenuLoadingView.AnimationSettings MenuLoadingView;
 
         public override void InstallBindings()
         {
@@ -34,6 +35,8 @@ namespace CannonFightBase
             Container.BindInstance(WarningView.WarningView);
 
             Container.BindInstance(CountdownView);
+
+            Container.BindInstance(MenuLoadingView);
         }
 
 

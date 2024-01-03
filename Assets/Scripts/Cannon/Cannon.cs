@@ -10,9 +10,9 @@ using Zenject;
 
 namespace CannonFightBase
 {
-    public class Cannon : CannonBase, ICannonBehaviour, IDamageable,IPotionCollector
+    public class Cannon : Character, ICannonBehaviour, IDamageable,IPotionCollector
     {
-        private PlayerManager _playerManager;
+        private CannonManager _playerManager;
 
         private CannonView _cannonView;
 
@@ -25,10 +25,6 @@ namespace CannonFightBase
         private CannonDamageHandler _cannonDamageHandler;
 
         private PhotonView _photonView;
-
-        private bool _isDead = false;
-
-        private bool _canDoAction = false;
 
         private int _killCount;
 
@@ -49,13 +45,10 @@ namespace CannonFightBase
             }
         }
 
-        public PlayerManager PlayerManager => _playerManager;
+        public CannonManager PlayerManager => _playerManager;
 
         public PhotonView OwnPhotonView => _photonView;
 
-        public bool IsDead => _isDead;
-
-        public bool CanDoAction => (_canDoAction && !_isDead);
 
         public int KillCount => _killCount;
 
@@ -80,9 +73,14 @@ namespace CannonFightBase
             _cannonView = cannonView;
         }
 
-        public void OnSpawn(PlayerManager playerManager)
+        public void OnSpawn(CannonManager playerManager)
         {
             _playerManager = playerManager;
+        }
+
+        private void Awake()
+        {
+            _photonView = GetComponent<PhotonView>();
         }
 
         public void Start()
@@ -91,8 +89,7 @@ namespace CannonFightBase
             //IInitializable olan class larýn Initialize() Metodu
             //Normalde Startta çaðrýlmasý gerekirken Awake den önce çaðrýlýyor o yüzden hata alabiliyoruz
 
-            _photonView = GetComponent<PhotonView>();
-            _canDoAction = false;
+            CanDoAction = false;
 
             if (!_photonView.IsMine)
                 return;
@@ -100,26 +97,15 @@ namespace CannonFightBase
             LayerMask layerMask = LayerMask.NameToLayer("Player");
             gameObject.layer = layerMask;
 
-            AddEvents();
         }
 
-        private void AddEvents()
-        {
-            GameEventReceiver.OnGameStartedEvent -= OnGameStarted;
-            GameEventReceiver.OnGameStartedEvent += OnGameStarted;
-        }
-
-        private void OnGameStarted()
-        {
-            _canDoAction = true;
-        }
 
         public void Boost(float multiplier)
         {
             _cannonController.Boost(multiplier);
         }
 
-        public void TakeDamage(int damage, Vector3 hitPoint, Player attackerPlayer,CannonBase attackerCannon)
+        public void TakeDamage(int damage, Vector3 hitPoint, Player attackerPlayer,Character attackerCannon)
         {
             _cannonDamageHandler.TakeDamage(damage,hitPoint,attackerPlayer, attackerCannon);
         }
@@ -132,15 +118,23 @@ namespace CannonFightBase
 
         public void Die(Player attackerPlayer)
         {
-            PlayerManager playerManager = PlayerManager.Find(attackerPlayer);
+            CannonManager playerManager = CannonManager.Find(attackerPlayer);
             playerManager.GetKill();
 
             _playerManager.OnDie(attackerPlayer);
 
             _cannonController.OnDie();
 
-            _isDead = true;
+            IsDead = true;
+        }
 
+        public void Die(Character attackerCharacter)
+        {
+            _playerManager.OnDie(attackerCharacter);
+
+            _cannonController.OnDie();
+
+            IsDead = true;
         }
 
         public bool CanCollectPotion(SkillType skill)
@@ -156,9 +150,9 @@ namespace CannonFightBase
         [Serializable]
         public struct ParticleSettings
         {
-            public ParticleSystem DamageSkillParticle;
-            public ParticleSystem MultiBallSkillParticle;
-            public ParticleSystem HealthSkillParticle;
+            public DamageSkillParticle DamageSkillParticle;
+            public MultiballSkillParticle MultiBallSkillParticle;
+            public HealthSkillParticle HealthSkillParticle;
         }
 
         //Sahneden sürüklenecek bir þey varsa diye GameInstaller içinde Bind edilebilir

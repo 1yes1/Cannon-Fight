@@ -18,9 +18,13 @@ namespace CannonFightBase
 
         public void OnPlayerDied(Player player);
 
+        public void OnAgentDied(Agent agent);
+
         public void OnPlayerFired();
 
         public void OnKill(Player killer, Player dead);
+
+        public void OnKill(Character killer, Character dead);
 
         public void OnOurPlayerHealthChanged(int health);
 
@@ -48,6 +52,7 @@ namespace CannonFightBase
 
         public void OnGameStarted();
 
+        public void OnAgentSpawned(AgentManager agentManager);
     }
 
 }

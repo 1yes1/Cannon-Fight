@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.AI.Navigation;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using Zenject;
@@ -11,6 +12,8 @@ namespace CannonFightBase
 {
     public class IdleMoveState : AIState
     {
+        public event Action OnArrivedEvent;
+
         private readonly AICarDriver _carDriver;
 
         private readonly NavMeshAgent _navMeshAgent;
@@ -19,40 +22,49 @@ namespace CannonFightBase
 
         private readonly AIEnemyDetector _enemyDetector;
 
+        private readonly MovementSettings _movementSettings;
+
         private Vector3 _moveTarget;
 
         private Agent _agent;
 
-        public IdleMoveState(AICarDriver carDriver,Agent agent,NavMeshAgent navMeshAgent,NavMeshSurface navMeshSurface,AIEnemyDetector aiEnemyDetector)
+        private TestTarget _testTarget;
+
+        private bool _goCertainPosition;
+
+        public IdleMoveState(AICarDriver carDriver,Agent agent,NavMeshAgent navMeshAgent,NavMeshSurface navMeshSurface,AIEnemyDetector aiEnemyDetector,MovementSettings movementSettings)
         {
             _carDriver = carDriver;
             _agent = agent;
             _navMeshAgent = navMeshAgent;
             _navMeshSurface = navMeshSurface;
             _enemyDetector = aiEnemyDetector;
+            _movementSettings = movementSettings;
+            //_testTarget = testTarget;
         }
-
 
         protected override void OnEnter(AIStateController aiStateController)
         {
-            _carDriver.StartMoving();
+            if(!_navMeshAgent.enabled)
+                _navMeshAgent.enabled = true;
 
+            if (!_navMeshAgent.isOnNavMesh)
+                return;
+
+            GoNewPosition();
+
+            _navMeshAgent.speed = _movementSettings.Speed;
+
+            //Debug.Log("On Enter Idle Moving");
         }
 
         protected override void OnUpdate()
         {
-            if (Input.GetKeyDown(KeyCode.F))
-            {
-                _navMeshAgent.SetDestination(_moveTarget = GetRandomPosition());
-            }
-
             if (_navMeshAgent.remainingDistance > 2f && _moveTarget != Vector3.zero)
             {
-
-                Vector3 dirToTarget = _moveTarget - _agent.transform.position;
+                Vector3 dirToTarget = _navMeshAgent.path.corners[1] - _agent.transform.position;
 
                 float angle = Vector3.SignedAngle(_agent.transform.forward, dirToTarget, Vector3.up);
-
 
                 _carDriver.SetForward(1);
                 _carDriver.SetBreaking(false);
@@ -75,20 +87,29 @@ namespace CannonFightBase
                         _carDriver.SetSteeringAmount(0);
                     }
                 }
-
-
-
                 //print(_navMeshAgent.remainingDistance);
             }
             else
             {
                 _carDriver.SetBreaking(true);
                 _carDriver.SetForward(0);
+                _goCertainPosition = false;
+                OnArrivedEvent?.Invoke();
+                if (_navMeshAgent.remainingDistance <= 0.75f)
+                    GoNewPosition();
             }
 
-            if (_enemyDetector.FindClosestEnemy() != null)
+            //Debug.Log("IDLE MOVE STATE");
+
+            if (_enemyDetector.FindClosestEnemy() != null && _enemyDetector.HasFireAngle())
                 _stateController.ChangeState<FireState>();
 
+        }
+
+        private void GoNewPosition()
+        {
+            _navMeshAgent.SetDestination(_moveTarget = GetRandomPosition());
+            _navMeshAgent.isStopped = false;
         }
 
         private Vector3 GetRandomPosition()
@@ -96,10 +117,24 @@ namespace CannonFightBase
             return new Vector3(Random.Range(-_navMeshSurface.size.x / 2f, _navMeshSurface.size.x / 2f), 0, Random.Range(-_navMeshSurface.size.z / 2f, _navMeshSurface.size.z / 2f));
         }
 
+        public void GoCertainPosition(Vector3 position)
+        {
+            //Eðer çok hasar almýþsa yani kaçýyorsa belirli pozisyona gitmesin
+            if (!_stateController.GetState<FireState>().IsAppropriate)
+                return;
+
+            _navMeshAgent.SetDestination(_moveTarget = position);
+            _navMeshAgent.isStopped = false;
+            _goCertainPosition = true;
+        }
+
         protected override void OnExit()
         {
-            _carDriver.StopMoving();
+            _carDriver.SetBreaking(true);
+            if(_navMeshAgent.isActiveAndEnabled)
+                _navMeshAgent.isStopped = true;
         }
+
 
 
     }

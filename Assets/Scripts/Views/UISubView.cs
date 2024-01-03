@@ -16,15 +16,4 @@ namespace CannonFightUI
 
         public abstract void Initialize();
     }
-
-    [Serializable]
-    public partial struct TweenSettings
-    {
-        public Ease Ease;
-        public float Delay;
-        public float Duration;
-        public float Value;
-        public Vector3 Vector;
-    }
-
 }

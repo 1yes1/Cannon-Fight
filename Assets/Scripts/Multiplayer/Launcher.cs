@@ -22,8 +22,6 @@ namespace CannonFightBase
 
         private RoomManager.RoomServerSettings _settings;
 
-
-
         [SerializeField] private TMP_InputField _nameText;
 
         [SerializeField] private SceneContext _sceneContext;
@@ -93,14 +91,18 @@ namespace CannonFightBase
 
             UIManager.Show(UIManager.GetView<MatchingMenuView>());
 
+            SaveManager.SetValue<int>("playWithBots", 0);//Ýlk baþta eðer playerprefs varsa diye sýfýrlayalým duruma göre 1 yapýalcak
+
             OnJoinedRoomEvent?.Invoke();
 
             UpdatePlayersCount();
 
             CheckPlayersToStart();
 
+            CheckPlayWithBots();
+
             if (PhotonNetwork.IsMasterClient)
-                Invoke(nameof(PlayWithBots), _settings.WaitForPlayersUntilPlayWithBots);
+                PhotonNetwork.CurrentRoom.MaxPlayers = _settings.PlayersInGame;
         }
 
         private void PlayWithBots()
@@ -146,6 +148,11 @@ namespace CannonFightBase
         {
             OnPlayerLeftRoomEvent?.Invoke(otherPlayer);
             UpdatePlayersCount();
+
+            CancelInvoke();
+
+            CheckPlayWithBots();
+            CheckPlayersToStart();
         }
 
 
@@ -159,6 +166,12 @@ namespace CannonFightBase
 
         }
 
+        private void CheckPlayWithBots()
+        {
+            if (PhotonNetwork.IsMasterClient)
+                Invoke(nameof(PlayWithBots), _settings.WaitForPlayersUntilPlayWithBots);
+        }
+
         private void CheckPlayersToStart()
         {
             //Sadece master isek oyunun baþlayýp baþlamayacaðýný ayarlayabilriz
@@ -169,6 +182,13 @@ namespace CannonFightBase
             {
                 _canPlayWithBots = false;
                 Invoke(nameof(PlayWithPlayers),_settings.WaitAfterAllPlayersEnteredToRoom);
+            }
+            else if (PhotonNetwork.CurrentRoom.PlayerCount > 1 && PhotonNetwork.CurrentRoom.PlayerCount < _settings.PlayersInGame)
+            {
+                //Herkesin girmesini beklemek yerine 2 kiþi veya fazla ise onun için de süre sayalým. Botlarla oynamaktan iyidir
+                _canPlayWithBots = false;
+                Invoke(nameof(PlayWithPlayers), _settings.WaitAfterSecondPlayerEnteredToRoom);
+                Debug.Log("Play with players but not all");
             }
         }
 

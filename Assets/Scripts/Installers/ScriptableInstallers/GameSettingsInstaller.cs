@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using Zenject;
+using static CannonFightBase.AIManager;
 
 namespace CannonFightBase
 {
@@ -28,6 +29,10 @@ namespace CannonFightBase
         [Space(1)]
         public AchievementManager.Settings AchievementManagerSettings;
 
+        [Header("GameAgentSettings")]
+        [Space(1)]
+        public GameAgentSettings GameAgentSettings;
+
 
         public override void InstallBindings()
         {
@@ -39,6 +44,7 @@ namespace CannonFightBase
             Container.BindInstance(RampSettings);
             Container.BindInstance(PotionSettings);
             Container.BindInstance(UIPrefabs.PlayerItem);
+            Container.BindInstance(GameAgentSettings);
 
         }
 
@@ -50,7 +56,7 @@ namespace CannonFightBase
             public Cannon CannonPrefab;
             public Agent AgentPrefab;
             public AgentManager AgentManagerPrefab;
-            public PlayerManager PlayerManagerPrefab;
+            public CannonManager PlayerManagerPrefab;
             public CannonBall CannonBallPrefab;
             public Potion Potion;
         }

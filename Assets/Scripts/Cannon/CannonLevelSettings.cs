@@ -39,6 +39,15 @@ namespace CannonFightBase
             SaveManager.SetValue<int>(_upgradeType.ToString(), Level + 1);
         }
 
+        public void SetDefaultValue()
+        {
+            SaveManager.SetValue<int>(_upgradeType.ToString(), 1);
+        }
+
+        public void SetLevel(int level)
+        {
+            SaveManager.SetValue<int>(_upgradeType.ToString(), level);
+        }
 
         [Serializable]
         public class DamageLevelSettings : CannonLevelSettings

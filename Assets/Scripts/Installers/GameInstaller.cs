@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.AI.Navigation;
 using UnityEngine;
 using Zenject;
@@ -22,7 +23,7 @@ namespace CannonFightBase
 
             Container.Bind<MainCamera>().FromComponentInHierarchy().AsSingle();
 
-            Container.BindFactory<PlayerManager, PlayerManager.Factory>().FromComponentInNewPrefab(_prefabSettings.PlayerManagerPrefab).UnderTransformGroup("Cannons");
+            Container.BindFactory<CannonManager, CannonManager.Factory>().FromComponentInNewPrefab(_prefabSettings.PlayerManagerPrefab).UnderTransformGroup("Cannons");
 
             Container.BindFactory<Cannon, Cannon.Factory>()
                 .FromSubContainerResolve()
@@ -51,6 +52,9 @@ namespace CannonFightBase
             Container.Bind<NavMeshSurface>().FromComponentInHierarchy().AsSingle();
 
             Container.Bind<TestTarget>().FromComponentInHierarchy().AsSingle();
+
+            Container.Bind<IEventSubscriber>().To<AimFireJoystick>().FromComponentInHierarchy().AsSingle();
+
             InstallExecutionOrder();
         }
 
@@ -60,4 +64,5 @@ namespace CannonFightBase
         }
 
     }
+
 }

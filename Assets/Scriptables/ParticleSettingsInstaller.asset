@@ -13,32 +13,28 @@ MonoBehaviour:
   m_Name: ParticleSettingsInstaller
   m_EditorClassIdentifier: 
   FireControllerParticles:
-    FireCannonBallParticle: {fileID: 2172878749975733139, guid: e86376c67279c544f8411751f296566a,
+    FireParticle: {fileID: 8369840173128936717, guid: e86376c67279c544f8411751f296566a,
       type: 3}
   CannonDamageHandlerParticles:
-    TakeDamageParticle: {fileID: 3924044575421212719, guid: 936f524092573c4418c4d36b19799853,
+    TakeDamageParticle: {fileID: -1875812815929258457, guid: 936f524092573c4418c4d36b19799853,
       type: 3}
   CannonParticleSettings:
-    DamageSkillParticle: {fileID: 3830818977505446444, guid: 76de7f610ea9ba148ba6661f6ea95598,
+    DamageSkillParticle: {fileID: -6456794180740661885, guid: 76de7f610ea9ba148ba6661f6ea95598,
       type: 3}
-    MultiBallSkillParticle: {fileID: 3257790659356053967, guid: c7168b2b3fb450343befae48c54e71b0,
+    MultiBallSkillParticle: {fileID: 5313935996102323023, guid: c7168b2b3fb450343befae48c54e71b0,
       type: 3}
-    HealthSkillParticle: {fileID: 2250147972323024225, guid: 8a086ef952955c6458045496a1999a52,
+    HealthSkillParticle: {fileID: 5547625183663069617, guid: 8a086ef952955c6458045496a1999a52,
       type: 3}
   HittableParticles:
-    HitParticle: {fileID: 3924044575421212719, guid: 264f8ffd402305946811ca815350f6fc,
+    HitParticle: {fileID: 6384395316132233913, guid: 264f8ffd402305946811ca815350f6fc,
       type: 3}
   ChestParticles:
-    TakeDamageParticle: {fileID: 3924044575421212719, guid: 264f8ffd402305946811ca815350f6fc,
+    HitParticle: {fileID: 885132715041016308, guid: fe9a511719426e84ebccf7c1b866e00b,
       type: 3}
   PotionParticles:
-    SkillsParticleTuples:
-    - data: 1
-      particleSystem: {fileID: 4086523736989336049, guid: d43a8e5c022cb204899a8f58219cb1df,
-        type: 3}
-    - data: 2
-      particleSystem: {fileID: 2375222171000324182, guid: 2d8bd1335deefbd43bb1a1ad0b0bdaea,
-        type: 3}
-    - data: 0
-      particleSystem: {fileID: 6316794903448131621, guid: 154fb881f3b9ee349ba551a8dff135c1,
-        type: 3}
+    DamagePotionParticle: {fileID: -829554512687014207, guid: d43a8e5c022cb204899a8f58219cb1df,
+      type: 3}
+    HealthPotionParticle: {fileID: -1354362893971172761, guid: 2d8bd1335deefbd43bb1a1ad0b0bdaea,
+      type: 3}
+    MultiballPotionParticle: {fileID: -2058650732702150134, guid: 154fb881f3b9ee349ba551a8dff135c1,
+      type: 3}
