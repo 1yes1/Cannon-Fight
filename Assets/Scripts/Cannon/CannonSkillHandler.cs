@@ -23,12 +23,15 @@ namespace CannonFightBase
 
         private readonly Transform _skillParticlePoint;
 
+        private readonly CannonTraits _cannonTraits;
+
         private PoolableParticleBase _skillParticle;
 
         private List<Skill> _usingSkills;
 
         public CannonSkillHandler(Cannon cannon,
                                   CannonView cannonView,
+                                  CannonTraits cannonTraits,
                                   Settings settings,
                                   DamageSkillParticle.Factory damageSkillFactory,
                                   HealthSkillParticle.Factory healthSkillFactory,
@@ -40,7 +43,7 @@ namespace CannonFightBase
             _damageSkillFactory = damageSkillFactory;
             _healthSkillFactory = healthSkillFactory;
             _multiballSkillFactory = multiballSkillFactory;
-
+            _cannonTraits = cannonTraits;
             _skillParticlePoint = _cannonView.SkillParticlePoint;
 
         }
@@ -58,10 +61,11 @@ namespace CannonFightBase
         public void SetSkillProperty(SkillType skill)
         {
             OnSkillBarFilled(skill);
+            AudioManager.PlaySound(GameSound.SkillStarted);
 
             if (skill == SkillType.Health)
             {
-                _cannon.SetSkillHealth(150);
+                _cannon.SetSkillHealth(_cannonTraits.Health);
             }
             else if (skill == SkillType.Damage)
             {
@@ -79,7 +83,7 @@ namespace CannonFightBase
 
         public void OnSkillTimeElapsed(Skill skill)
         {
-            Debug.Log("Heyy: OnSkillTimeElapsed");
+            Debug.Log("OnSkillTimeElapsed: "+skill.SkillType.ToString());
             
             _skillParticle.Dispose();
 
@@ -128,7 +132,10 @@ namespace CannonFightBase
         public void Collect(Potion potion)
         {
             if (_cannon.OwnPhotonView.IsMine)
+            {
                 GameEventCaller.Instance.OnPotionCollected(potion);
+                AudioManager.PlaySound(GameSound.CollectPoison);
+            }
 
         }
 
@@ -138,6 +145,15 @@ namespace CannonFightBase
             //Eðer burada unsubscribe etmezsek, derlendikten sonra bir kere çalýþýyor tüm bu GameEvent ile çalýþanlar,
             //daha sonra oyunu tekrar baþlatýnca çalýþmýyor
             GameEventReceiver.OnSkillBarFilledEvent -= SetSkillProperty;
+        }
+
+        public void FinishAllSkills()
+        {
+            for (int i = 0; i < _usingSkills.Count; i++)
+            {
+                OnSkillTimeElapsed(_usingSkills[i]);
+            }
+            _usingSkills.Clear();
         }
 
         public void Tick()

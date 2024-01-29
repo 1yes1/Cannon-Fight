@@ -39,15 +39,32 @@ namespace CannonFightBase
             _items = new List<PlayerItem>();
         }
 
+        public override void AddSubViews()
+        {
+        }
+
         public override void Show()
         {
             base.Show();
         }
 
-        public void AddPlayerItem(Player player)
+        public void AddOfflinePlayerItem()
         {
+            Debug.Log("Add OFFLINE Player Item");
+
+            PlayerItem playerItem = Instantiate(_itemPrefab,_itemsParent);
+            Sprite sprite;
+            string name;
+            playerItem.Initialize(UserManager.Instance.Nickname, null);
+        }
+
+        public void AddPlayerItem(Player player,Sprite sprite = null)
+        {
+            Debug.Log("Add Player Item");
             PlayerItem playerItem = Instantiate(_itemPrefab,_itemsParent) as PlayerItem;
-            playerItem.Initialize(player);
+
+            playerItem.Initialize(player,sprite);
+
             _items.Add(playerItem);
         }
 
@@ -91,7 +108,6 @@ namespace CannonFightBase
             _items.Remove(playerItem);
             Destroy(playerItem.gameObject);
         }
-
 
         [Serializable]
         public struct BotPlayerItemSettings

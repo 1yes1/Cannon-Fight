@@ -29,15 +29,20 @@ namespace CannonFightUI
         {
 
         }
+        public override void AddSubViews()
+        {
+        }
+
 
         public override void Show()
         {
             base.Show();
 
             transform.localScale = Vector3.zero;
-            _warningText.DOFade(1,0);
+            _warningText.alpha = 1;
 
             _warningSequence = DOTween.Sequence();
+            _warningSequence.SetId(0);
 
             Tweener main = transform.DOScale(_animationSettings.WarningView.Value, _animationSettings.WarningView.Duration).SetEase(_animationSettings.WarningView.Ease).SetDelay(_animationSettings.WarningView.Delay);
             Tweener text = _warningText.DOFade(_animationSettings.WarningText.Value, _animationSettings.WarningText.Duration).SetEase(_animationSettings.WarningText.Ease).SetDelay(_animationSettings.WarningText.Delay);
@@ -49,7 +54,10 @@ namespace CannonFightUI
 
         public void CreateWarning(string text)
         {
-            _warningSequence.Complete();
+            if(_warningSequence != null && _warningSequence.IsPlaying())
+            {
+                DOTween.Kill(0);
+            }
             _warningText.text = text;
 
             Show();

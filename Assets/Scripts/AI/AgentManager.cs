@@ -13,8 +13,10 @@ namespace CannonFightBase
         private Agent.Factory _agentFactory;
 
         private Agent _agent;  
+        
+        public Agent Agent => _agent;
 
-        public bool SetStaticAgent { get; set; }
+        public bool IsStaticAgent { get; set; }
 
         [Inject]
         public void Construct(Agent.Factory factory)
@@ -35,7 +37,7 @@ namespace CannonFightBase
 
             SpawnPoint spawnPoint = SpawnManager.GetSpawnPoint();
 
-            _agent.IsStaticAgent = SetStaticAgent;
+            _agent.IsStaticAgent = IsStaticAgent;
             _agent.transform.position = spawnPoint.Position;
             _agent.transform.rotation = spawnPoint.Rotation;
 
@@ -44,9 +46,19 @@ namespace CannonFightBase
 
         public void OnDie(Character attackerAgent)
         {
-            GameEventCaller.Instance.OnAgentDied(_agent);
             GameEventCaller.Instance.OnKill(attackerAgent, _agent);
+            GameEventCaller.Instance.OnAgentDied(_agent);
             Destroy(gameObject);
+        }
+
+        public void StopAction()
+        {
+            IsStaticAgent = true;
+            if (_agent == null)
+                return;
+
+            _agent.IsStaticAgent = IsStaticAgent;
+            _agent.StopAction();
         }
 
         public class Factory : PlaceholderFactory<AgentManager>

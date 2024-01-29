@@ -38,7 +38,7 @@ namespace CannonFightBase
 
         public static event Action<SkillType,float> OnBeforeSkillCountdownStartedEvent;
 
-        public static event Action<Chest> OnChestOpenedEvent;
+        public static event Action<Chest,Potion> OnChestOpenedEvent;
 
         public static event Action<Cannon> OnBoostStartedEvent;
 
@@ -54,6 +54,13 @@ namespace CannonFightBase
 
         public static event Action<AgentManager> OnAgentSpawnedEvent;
 
+        public static event Action OnWinTheGameEvent;
+
+        public static event Action OnLoseTheGameEvent;
+        
+        public static event Action OnGameFinishedEvent;
+
+
 
         public void OnMobileFireButtonClicked() => OnMobileFireButtonClickedEvent?.Invoke();
 
@@ -63,7 +70,7 @@ namespace CannonFightBase
 
         public void OnSkillEnded(Skill skill) => OnSkillEndedEvent?.Invoke(skill);
 
-        public void OnChestOpened(Chest chest) => OnChestOpenedEvent?.Invoke(chest);
+        public void OnChestOpened(Chest chest, Potion potion) => OnChestOpenedEvent?.Invoke(chest,potion);
 
         public void OnBoostStarted(Cannon cannon) => OnBoostStartedEvent?.Invoke(cannon);
 
@@ -98,5 +105,11 @@ namespace CannonFightBase
         public void OnAgentSpawned(AgentManager agentManager) => OnAgentSpawnedEvent?.Invoke(agentManager);
 
         public void OnAgentDied(Agent agent) => OnAgentDiedEvent?.Invoke(agent);
+
+        public void OnWinTheGame() => OnWinTheGameEvent?.Invoke();
+
+        public void OnLoseTheGame() => OnLoseTheGameEvent?.Invoke();
+
+        public void OnGameFinished() => OnGameFinishedEvent?.Invoke();
     }
 }

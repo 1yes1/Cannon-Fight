@@ -1,5 +1,6 @@
 using ExitGames.Client.Photon;
 using Photon.Pun;
+using Photon.Pun.Demo.PunBasics;
 using Photon.Realtime;
 using System;
 using System.Collections.Generic;
@@ -18,9 +19,9 @@ namespace CannonFightBase
 
         private Cannon _cannon;
 
-        private float _killCount;
-
         public Cannon Cannon => _cannon;
+
+        public static CannonManager Current => GameManager.CurrentCannonManager;
 
         [Inject]
         public void Construct(Cannon.Factory factory)
@@ -46,7 +47,7 @@ namespace CannonFightBase
 
         public void Initialize()
         {
-            if(_photonView.IsMine)
+            if(_photonView.IsMine || CloudSaveManager.GetValue<int>("isTutorial") == 1)
                 SpawnCannon();
         }
 
@@ -118,28 +119,12 @@ namespace CannonFightBase
             }
         }
 
-        public void GetKill()
-        {
-            _photonView.RPC(nameof(RPC_GetKill), _photonView.Owner);
-        }
-
-        [PunRPC]
-        private void RPC_GetKill()
-        {
-            _killCount++;
-
-            Hashtable hashtable = new Hashtable();
-            hashtable.Add("killCount", _killCount);
-            PhotonNetwork.LocalPlayer.SetCustomProperties(hashtable);
-        }
-
         public void OnDie(Character attackerCharacter)
         {
             GameEventCaller.Instance.OnOurPlayerDied(PhotonNetwork.LocalPlayer);
             GameEventCaller.Instance.OnKill(attackerCharacter, _cannon);
 
             PhotonNetwork.Destroy(_cannon.gameObject);
-            Invoke(nameof(LeftRoom), 2);
         }
 
 
@@ -155,8 +140,6 @@ namespace CannonFightBase
             //print("Biz Öldük: Dead:" + PhotonNetwork.LocalPlayer.NickName);
 
             PhotonNetwork.Destroy(_cannon.gameObject);
-
-            Invoke(nameof(LeftRoom), 2);
         }
 
         [PunRPC]
@@ -165,6 +148,9 @@ namespace CannonFightBase
             //Birisi ölmüþ onun haberini alýyoruz. Yazýk olmuþ
             Player attacker = PhotonNetwork.CurrentRoom.GetPlayer(attackerPlayer);
             Player dead = PhotonNetwork.CurrentRoom.GetPlayer(deadPlayer);
+            CannonManager cannonManager = CannonManager.Find(attacker);
+
+            cannonManager.GetKill();
 
             SetPlayerHashtables(dead);
 
@@ -184,12 +170,17 @@ namespace CannonFightBase
             player.SetCustomProperties(hashtable);
         }
 
-
-        private void LeftRoom()
+        public override void SetAsWinner()
         {
-            PhotonNetwork.Disconnect();
+            base.SetAsWinner();
+            _cannon.CanDoAction = false;
         }
-        
+
+        public override void SetAsLoser()
+        {
+            base.SetAsLoser();
+            _cannon.CanDoAction = false;
+        }
 
         public class Factory : PlaceholderFactory<CannonManager>
         {

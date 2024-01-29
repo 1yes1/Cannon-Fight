@@ -10,15 +10,21 @@ namespace CannonFightUI
 {
     public class UIManager : MonoBehaviour
     {
-        public static UIManager _instance;
+        private static UIManager _instance;
 
         [SerializeField] private UIView _startingView;
 
         [SerializeField] private UIView[] _views;
 
+        private List<Tuple<UIView, UISubView>> _subViewTuples;
+
+        private List<UISubView> _subViews;
+
         private UIView _currentView;
 
         private readonly Stack<UIView> _history = new Stack<UIView>();
+
+        public static UIManager Instance => _instance;
 
         private void OnEnable()
         {
@@ -34,13 +40,16 @@ namespace CannonFightUI
         {
             if(_instance == null) _instance = this;
 
+            _subViewTuples = new List<Tuple<UIView, UISubView>>();
+            _subViews = new List<UISubView>();
+
             for (int i = 0; i < _views.Length; i++)
             {
                 _views[i].Initialize();
-                _views[i].Hide();
+                _views[i].AddSubViews();
+                _views[i].HideImmediately();
             }
             Show(_startingView, true);
-            Show<CoinView>(false, true);
         }
 
         public static T GetView<T>() where T : UIView
@@ -101,7 +110,7 @@ namespace CannonFightUI
             view.Show();
         }
 
-        public static void Show(UIView view, bool remember = true)
+        private static void Show(UIView view, bool remember = true)
         {
             if(_instance._currentView != null)
             {
@@ -125,6 +134,54 @@ namespace CannonFightUI
                 Show(_instance._history.Pop(),false);
             }
         }
+
+        public static void HideAllViews()
+        {
+            for (int i = 0; i < _instance._views.Length; i++)
+            {
+                _instance._views[i].Hide();
+            }
+        }
+
+        public static void AddSubView(UIView uiView,UISubView subView)
+        {
+            _instance._subViewTuples.Add(Tuple.Create(uiView, subView));
+            _instance._subViews.Add(subView);
+        }
+
+        public static TUISubView GetSubView<TUIView, TUISubView>() where TUIView : UIView where TUISubView : UISubView
+        {
+            for (int i = 0; i < _instance._subViewTuples.Count; i++)
+            {
+                foreach (Tuple<UIView, UISubView> item in _instance._subViewTuples)
+                {
+                    if(item.Item1 is TUIView && item.Item2 is TUISubView)
+                    {
+                        return (TUISubView)item.Item2;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// If there are multiple UIView that use same UISubViews, use other overload
+        /// </summary>
+        /// <typeparam name="TUISubView"></typeparam>
+        /// <returns></returns>
+        public static TUISubView GetSubView<TUISubView>() where TUISubView : UISubView
+        {
+            for (int i = 0; i < _instance._subViews.Count; i++)
+            {
+                if (_instance._subViews[i] is TUISubView)
+                {
+                    return (TUISubView)_instance._subViews[i];
+                }
+            }
+            return null;
+        }
+
 
 
         private void OnGameStarted()

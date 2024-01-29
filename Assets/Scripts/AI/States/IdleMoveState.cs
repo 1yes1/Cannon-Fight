@@ -14,7 +14,7 @@ namespace CannonFightBase
     {
         public event Action OnArrivedEvent;
 
-        private readonly AICarDriver _carDriver;
+        private readonly AgentCarDriver _carDriver;
 
         private readonly NavMeshAgent _navMeshAgent;
 
@@ -32,7 +32,7 @@ namespace CannonFightBase
 
         private bool _goCertainPosition;
 
-        public IdleMoveState(AICarDriver carDriver,Agent agent,NavMeshAgent navMeshAgent,NavMeshSurface navMeshSurface,AIEnemyDetector aiEnemyDetector,MovementSettings movementSettings)
+        public IdleMoveState(AgentCarDriver carDriver,Agent agent,NavMeshAgent navMeshAgent,NavMeshSurface navMeshSurface,AIEnemyDetector aiEnemyDetector,MovementSettings movementSettings)
         {
             _carDriver = carDriver;
             _agent = agent;

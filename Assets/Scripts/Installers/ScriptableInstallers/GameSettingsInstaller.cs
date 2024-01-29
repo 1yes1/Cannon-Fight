@@ -25,9 +25,6 @@ namespace CannonFightBase
         public Ramp.Settings RampSettings;
         public Potion.Settings PotionSettings;
 
-        [Header("Achievement Settings")]
-        [Space(1)]
-        public AchievementManager.Settings AchievementManagerSettings;
 
         [Header("GameAgentSettings")]
         [Space(1)]
@@ -45,7 +42,6 @@ namespace CannonFightBase
             Container.BindInstance(PotionSettings);
             Container.BindInstance(UIPrefabs.PlayerItem);
             Container.BindInstance(GameAgentSettings);
-
         }
 
 

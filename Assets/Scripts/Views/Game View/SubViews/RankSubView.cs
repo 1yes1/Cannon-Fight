@@ -30,6 +30,9 @@ namespace CannonFightUI
         {
         }
 
+        public override void SetParameters(params object[] objects)
+        {
+        }
 
         public override void Show(float subViewDelay)
         {
@@ -57,7 +60,6 @@ namespace CannonFightUI
         {
         
         }
-
 
         [Serializable]
         public struct AnimationSettings

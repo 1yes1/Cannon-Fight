@@ -1,3 +1,4 @@
+using CannonFightBase;
 using CannonFightExtensions;
 using DG.Tweening;
 using System;
@@ -23,12 +24,18 @@ namespace CannonFightUI
         {
             _animationSettings = animationSettings;
         }
+        public override void Initialize()
+        {
+        }
+
+        public override void SetParameters(params object[] objects)
+        {
+            _killCount = (int)objects[0];
+        }
 
         public override void Show(float subViewDelay)
         {
             _delay = subViewDelay;
-
-            _killCount = 5;
             
             _skull.transform.localScale = Vector3.zero;
             _background.transform.localScale = Vector3.zero;
@@ -46,10 +53,6 @@ namespace CannonFightUI
             sequence.Play().SetDelay(_delay);
         }
 
-        public override void Initialize()
-        {
-        }
-
         private IEnumerator SetKillCount()
         {
             yield return new WaitForSeconds(_animationSettings.KillTextSettings.Delay);
@@ -62,7 +65,6 @@ namespace CannonFightUI
                 yield return new WaitForSeconds(_animationSettings.KillTextSettings.Value);
             }
         }
-
 
 
         [Serializable]

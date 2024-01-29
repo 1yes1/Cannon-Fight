@@ -31,7 +31,6 @@ namespace CannonFightBase
         {
             Vector3 target = _agent.transform.position + (attackerTransform.position - _agent.transform.position).normalized * 4;
             _controller.ChangeState<IdleMoveState>().GoCertainPosition(target);
-            //Debug.Log("Look Enemy");
         }
 
         private void OnArrived()

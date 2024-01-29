@@ -37,13 +37,17 @@ namespace CannonFightBase
         {
         }
 
+        public override void AddSubViews()
+        {
+        }
+
         public void StartCountdown(int time)
         {
             _countdown = time;
             StartCoroutine(IECountdown());
 
             Sequence sequence = DOTween.Sequence();
-            sequence.Append(_countdownText.transform.DOScale(_animationSettings.CountdownFadeIn,true));
+            sequence.Append(_countdownText.transform.DOScale(_animationSettings.CountdownFadeIn, true));
             sequence.Append(_countdownText.DOFade(_animationSettings.CountdownFadeOut.Value, _animationSettings.CountdownFadeOut.Duration).SetDelayAndEase(_animationSettings.CountdownFadeOut));
             sequence.SetLoops(time + 1);
 
@@ -51,14 +55,27 @@ namespace CannonFightBase
 
         private IEnumerator IECountdown()
         {
+            int countdown = 4;
             while (_countdown > 0)
             {
                 _countdown -= Time.deltaTime;
 
-                _countdownText.text = (Mathf.CeilToInt(_countdown)).ToString();
 
                 if ((Mathf.CeilToInt(_countdown)) == 0)
+                {
                     _countdownText.text = "FIGHT";
+                    AudioManager.PlaySound(GameSound.CountdownFinished);
+                }
+                else
+                {
+                    _countdownText.text = (Mathf.CeilToInt(_countdown)).ToString();
+                }
+
+                if(Mathf.CeilToInt(_countdown) != countdown)
+                {
+                    countdown = Mathf.CeilToInt(_countdown);
+                    AudioManager.PlaySound(GameSound.Countdown);
+                }
 
                 yield return null;
             }

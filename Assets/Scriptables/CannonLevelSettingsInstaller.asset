@@ -32,7 +32,7 @@ MonoBehaviour:
     _priceMultiplierPerLevel: 175
   SpeedLevelSettings:
     _upgradeType: 1
-    _startValue: 8
+    _startValue: 4
     _valueMultiplierPerLevel: 0.5
     _startPrice: 200
     _priceMultiplierPerLevel: 150

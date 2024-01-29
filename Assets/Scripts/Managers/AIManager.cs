@@ -11,22 +11,22 @@ namespace CannonFightBase
     {
         public static AIManager _instance;
 
-
         private List<AgentManager> _agents;
 
         public static AIManager Instance => _instance;
 
         public int AgentCount { get => _agents.Count;}
 
-
         private void OnEnable()
         {
             GameEventReceiver.OnAgentSpawnedEvent += OnAgentSpawned;
+            GameEventReceiver.OnGameFinishedEvent += OnGameFinished; ;
         }
 
         private void OnDisable()
         {
             GameEventReceiver.OnAgentSpawnedEvent -= OnAgentSpawned;
+            GameEventReceiver.OnGameFinishedEvent -= OnGameFinished; ;
         }
 
         private void Awake()
@@ -42,11 +42,22 @@ namespace CannonFightBase
             _agents.Add(agentManager);
         }
 
+        private void OnGameFinished()
+        {
+            for (int i = 0; i < _agents.Count; i++)
+            {
+                if(_agents[i] != null)
+                {
+                    _agents[i].StopAction();
+                }
+            }
+        }
+
+
         [Serializable]
         public struct GameAgentSettings
         {
             public int MaxAgentCount;
         }
-
     }
 }

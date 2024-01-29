@@ -34,8 +34,9 @@ namespace CannonFightBase
         {
             _pool = p1;
             _particleSystem = GetComponent<ParticleSystem>();
+            _particleSystem.transform.localScale = Vector3.one;
 
-            if(!_particleSystem.main.loop)
+            if (!_particleSystem.main.loop)
                 Invoke(nameof(Dispose), _particleSystem.main.duration);
         }
 

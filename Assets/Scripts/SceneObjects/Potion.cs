@@ -24,7 +24,17 @@ namespace CannonFightBase
 
         private bool _isShowedUp = false;
 
+        private int _fillCount = 1;
+
         public SkillType Skill => _skill;
+
+        public Transform Target => _target;
+
+        public int FillCount
+        {
+            get => _fillCount;
+            set => _fillCount = value;
+        } 
 
         private void Awake()
         {
@@ -57,6 +67,11 @@ namespace CannonFightBase
         {
             _meshRenderer.sharedMaterial = potionType.Material;
             _skill = potionType.Skill;
+        }
+
+        public void SetSkillType(SkillType skillType)
+        {
+            _skill = skillType;
         }
 
         //private void OnDrawGizmos()
@@ -101,6 +116,12 @@ namespace CannonFightBase
 
         }
 
+        public void GoTargetPosition(Transform target)
+        {
+            _target = target;
+            transform.position = _target.transform.position;
+        }
+
 
         private void OnTriggerEnter(Collider other)
         {
@@ -108,11 +129,19 @@ namespace CannonFightBase
             {
                 if(other.GetComponent<IPotionCollector>().CanCollectPotion(_skill))
                 {
-                    other.GetComponent<IPotionCollector>().Collect(this);
                     CreateParticle();
+                    other.GetComponent<IPotionCollector>()?.Collect(this);
                     Dispose();
                 }
             }
+        }
+
+        public void TriggerCollect(IPotionCollector potionCollector)
+        {
+            CreateParticle();
+            potionCollector.Collect(this);
+            Dispose();
+            Debug.Log("tRÝGGERERR");
         }
 
         private void CreateParticle()
@@ -145,7 +174,8 @@ namespace CannonFightBase
 
         public void Dispose()
         {
-            _pool.Despawn(this);
+            if(_pool != null)
+                _pool.Despawn(this);
         }
 
         public class Factory : PlaceholderFactory<Potion>

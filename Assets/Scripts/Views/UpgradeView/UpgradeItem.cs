@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 namespace CannonFightBase
 {
@@ -16,16 +17,26 @@ namespace CannonFightBase
         [SerializeField] private TextMeshProUGUI _levelText;
         [SerializeField] private TextMeshProUGUI _priceText;
 
-        private CannonLevelSettings _cannonLevelSettings;
-
         public event Action<CannonLevelSettings,Image> OnUpgradeClickEvent;
 
         public UpgradeType UpgradeType => _upgradeType;
 
+        private CannonLevelSettings _cannonLevelSettings;
+        private SignalBus _signalBus;
+
+        [Inject]
+        private void Construct(SignalBus signalBus)
+        {
+            _signalBus = signalBus;
+        }
 
         private void Awake()
         {
-            _upgradeButton.onClick.AddListener(() => { OnUpgradeClickEvent?.Invoke(_cannonLevelSettings, _image); });
+            _upgradeButton.onClick.AddListener(() =>
+            {
+                OnUpgradeClickEvent?.Invoke(_cannonLevelSettings, _image);
+                _signalBus.Fire<OnButtonClickSignal>();
+            });
         }
 
         public void SetValues(CannonLevelSettings cannonLevelSettings)

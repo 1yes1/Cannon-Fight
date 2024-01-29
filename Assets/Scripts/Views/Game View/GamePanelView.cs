@@ -22,6 +22,9 @@ namespace CannonFightBase
         public override void Initialize()
         {
         }
+        public override void AddSubViews()
+        {
+        }
 
         private void OnEnable()
         {
@@ -61,6 +64,7 @@ namespace CannonFightBase
         {
             //_fillImage.fillAmount = GameManager.CurrentCannon.KillCount * GameManager.Instance.MaxKillCountForPowers / 100;
         }
+
 
     }
 }

@@ -50,11 +50,11 @@ namespace CannonFightBase
         private void GetInput()
         {
 
-            if (Input.GetKey(KeyCode.B))
-            {
-                SetForward(1);
-                SetSteeringAmount(1);
-            }
+            //if (Input.GetKey(KeyCode.B))
+            //{
+            //    SetForward(1);
+            //    SetSteeringAmount(1);
+            //}
 
             // Breaking Input
             //_isBreaking = Input.GetKey(KeyCode.Space);

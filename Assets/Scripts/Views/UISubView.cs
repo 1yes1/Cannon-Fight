@@ -15,5 +15,7 @@ namespace CannonFightUI
         public virtual void Hide() => gameObject.SetActive(false);
 
         public abstract void Initialize();
+
+        public abstract void SetParameters(params object[] objects);
     }
 }

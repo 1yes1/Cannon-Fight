@@ -18,6 +18,8 @@ namespace CannonFightBase
 
         private SkillType _skill;
 
+        public SkillType SkillType => _skill;
+
         public Skill(float time, Action<Skill> onTimeElapsed,SkillType skill)
         {
             _onTimeElapsed = onTimeElapsed;
@@ -32,7 +34,7 @@ namespace CannonFightBase
 
         public void Reset()
         {
-            Debug.Log("Skill reset");
+            //Debug.Log("Skill reset");
         }
 
         public bool IsEqualToSkill(SkillType skill)

@@ -38,7 +38,7 @@ namespace CannonFightBase
 
         public void OnSkillEnded(Skill skill);
 
-        public void OnChestOpened(Chest chest);
+        public void OnChestOpened(Chest chest,Potion potion);
 
         public void OnBoostStarted(Cannon cannon);
 
@@ -53,6 +53,13 @@ namespace CannonFightBase
         public void OnGameStarted();
 
         public void OnAgentSpawned(AgentManager agentManager);
+
+        public void OnWinTheGame();
+
+        public void OnLoseTheGame();
+
+        public void OnGameFinished();
+
     }
 
 }

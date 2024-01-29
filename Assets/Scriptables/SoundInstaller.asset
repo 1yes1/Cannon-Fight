@@ -1,0 +1,82 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f295d32300e39614781dba9900f13f4d, type: 3}
+  m_Name: SoundInstaller
+  m_EditorClassIdentifier: 
+  Sounds:
+    GameSounds:
+    - AudioClip: {fileID: 8300000, guid: 85ee3501bce782f4d93b2cc8b5bef64b, type: 3}
+      IsLoop: 1
+      Volume: 0.35
+      Spatial3D: 0
+      GameSound: 0
+    - AudioClip: {fileID: 8300000, guid: 2131c9be60cfa4a4e91bdc4afc79c940, type: 3}
+      IsLoop: 0
+      Volume: 1
+      Spatial3D: 1
+      GameSound: 1
+    - AudioClip: {fileID: 8300000, guid: a834e8a03a700d949bd005da1459ee83, type: 3}
+      IsLoop: 0
+      Volume: 1
+      Spatial3D: 1
+      GameSound: 2
+    - AudioClip: {fileID: 8300000, guid: ef9ba2f6becff2d42b6e4e215cfddcc8, type: 3}
+      IsLoop: 0
+      Volume: 1
+      Spatial3D: 1
+      GameSound: 3
+    - AudioClip: {fileID: 8300000, guid: 986ae8876429b81419a8dc71dcfc5b41, type: 3}
+      IsLoop: 0
+      Volume: 1
+      Spatial3D: 1
+      GameSound: 4
+    - AudioClip: {fileID: 8300000, guid: 95c6b2341aa85ed4f9165df524b14db0, type: 3}
+      IsLoop: 0
+      Volume: 1
+      Spatial3D: 1
+      GameSound: 5
+    - AudioClip: {fileID: 8300000, guid: ecb1af9a2b3bebb4d8a366929ac19a72, type: 3}
+      IsLoop: 0
+      Volume: 1
+      Spatial3D: 0
+      GameSound: 6
+    - AudioClip: {fileID: 8300000, guid: 2f62024975d2d314ab796d3057a6570f, type: 3}
+      IsLoop: 0
+      Volume: 7
+      Spatial3D: 0
+      GameSound: 7
+    - AudioClip: {fileID: 8300000, guid: 9efbbea8c41bc1b4ea32cdc73a652526, type: 3}
+      IsLoop: 0
+      Volume: 1
+      Spatial3D: 0
+      GameSound: 8
+    - AudioClip: {fileID: 8300000, guid: 73bd816ee53e479419fbc22d45b8acd4, type: 3}
+      IsLoop: 0
+      Volume: 1
+      Spatial3D: 0
+      GameSound: 9
+    MenuSounds:
+    - AudioClip: {fileID: 8300000, guid: 0e2412251737be74a9a86465784a0cf3, type: 3}
+      IsLoop: 1
+      Volume: 0.35
+      Spatial3D: 0
+      MenuSound: 0
+    - AudioClip: {fileID: 8300000, guid: 40628fb696d33f545a52b3341ee1578d, type: 3}
+      IsLoop: 0
+      Volume: 1.25
+      Spatial3D: 0
+      MenuSound: 1
+    - AudioClip: {fileID: 8300000, guid: 8426e48f9c582a54cb5d9c369ce68f7d, type: 3}
+      IsLoop: 0
+      Volume: 5
+      Spatial3D: 0
+      MenuSound: 2

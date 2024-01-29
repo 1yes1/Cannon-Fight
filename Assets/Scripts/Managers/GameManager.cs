@@ -10,6 +10,7 @@ using UnityEngine;
 using Zenject;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 namespace CannonFightBase
 {
@@ -17,23 +18,28 @@ namespace CannonFightBase
     {
         private static GameManager _instance;
 
-        public bool useAndroidControllers = false;
-
         [SerializeField] private int _randomSeed = 999;
 
         private IEventSubscriber[] _eventSubscribers;
 
         private Cannon _currentCannon;
 
-        private RoomManager.Settings _launcherSettings;
+        private CannonManager _currentCannonManager;
 
         private int _leftCannonsCount = 0;
 
         private bool _playWithBots = false;
 
+        private bool _isTutorialScene = false;
+
+        private int _startPlayersCount;
+
         public static GameManager Instance => _instance;
 
         public static Cannon CurrentCannon => _instance._currentCannon;
+
+        public static CannonManager CurrentCannonManager => _instance._currentCannonManager;
+
 
         public GameEventCaller GameEventCaller { get; private set; }
 
@@ -48,10 +54,11 @@ namespace CannonFightBase
 
         public static bool PlayWithBots => _instance._playWithBots;
 
+        public static bool IsTutorialScene => _instance._isTutorialScene;
+
         [Inject]
-        public void Construct(RoomManager.Settings settings, IEventSubscriber[] eventSubscribers)
+        public void Construct(IEventSubscriber[] eventSubscribers)
         {
-            _launcherSettings = settings;
             _eventSubscribers = eventSubscribers;
         }
 
@@ -85,8 +92,9 @@ namespace CannonFightBase
             Initialize();
             LeftCannonsCount = 0;
             Application.targetFrameRate = 60;
-            _playWithBots = (SaveManager.GetValue<int>("playWithBots") == 1) ? true : false;
+            _playWithBots = (CloudSaveManager.GetValue<int>("playWithBots") == 1) ? true : false;
             //UnityEngine.Random.InitState(_randomSeed);
+            AudioManager.PlaySound(GameSound.GameMusic);
 
         }
 
@@ -100,6 +108,7 @@ namespace CannonFightBase
             {
                 _eventSubscribers[i].SubscribeEvent();
             }
+
         }
 
         private void OnBeforeOurPlayerSpawned()
@@ -119,12 +128,17 @@ namespace CannonFightBase
             if (PlayWithBots)
             {
                 LeftCannonsCount += AIManager.Instance.AgentCount;
-                print("AIManager.Instance.AgentCount: " + AIManager.Instance.AgentCount);
             }
             //print("LeftCannonsCount: " + PhotonNetwork.CurrentRoom.Players.Values.Count);
 
             if(PhotonNetwork.IsConnected)
                 LeftCannonsCount += PhotonNetwork.CurrentRoom.Players.Values.Count;
+            else//Eğer photon bağlanmadıysa ve first fight ise kendimizi de ekleyelim
+            {
+                LeftCannonsCount++;
+            }
+
+            _startPlayersCount = LeftCannonsCount;
         }
 
 
@@ -135,8 +149,13 @@ namespace CannonFightBase
 
             GameObject[] cannons = GameObject.FindGameObjectsWithTag("Cannon");
             for (int i = 0; i < cannons.Length; i++)
-                if (cannons[i].GetComponent<PhotonView>().IsMine)
+                if (cannons[i].GetComponent<PhotonView>().IsMine || !PhotonNetwork.IsConnectedAndReady)
                     _currentCannon = cannons[i].GetComponent<Cannon>();
+
+            GameObject[] cannonManagers = GameObject.FindGameObjectsWithTag("CannonManager");
+            for (int i = 0; i < cannonManagers.Length; i++)
+                if (cannonManagers[i].GetComponent<PhotonView>().IsMine || !PhotonNetwork.IsConnectedAndReady)
+                    _currentCannonManager = cannonManagers[i].GetComponent<CannonManager>();
 
             GameEventCaller.OnOurPlayerSpawned();
         }
@@ -151,13 +170,24 @@ namespace CannonFightBase
             if (!player.CustomProperties.Keys.Contains("isDead"))
             {
                 DecreaseLeftCannonsCount();
+
+                if (LeftCannonsCount == 1 && _startPlayersCount == 2)
+                {
+                    RoomManager.Instance.InGameDisconnect("Other Player's Internet Connection Lost!");
+                }
+                else if(LeftCannonsCount == 1)
+                {
+                    UIManager.Show<WarningView>().CreateWarning("Other Player's Internet Connection Lost!");
+                    Winner();
+                }
             }
         }
 
         private void OnOurPlayerDied(Player player)
         {
             DecreaseLeftCannonsCount();
-            UIManager.ShowWithDelay<DefeatedPanelView>(1.25f);
+            Loser();
+
             //PhotonNetwork.LeaveRoom();
             print("YOU DIED");
         }
@@ -172,25 +202,51 @@ namespace CannonFightBase
             };
             player.SetCustomProperties(hashtable);
 
-            //Sadece biz kalmışız
-            //print("-----------Kimler Kalmış-------" + LeftCannonsCount);
-
-            if(LeftCannonsCount == 1)
+            if(LeftCannonsCount == 1 && !CurrentCannon.IsDead)
             {
-                UIManager.ShowWithDelay<VictoryPanelView>(1.25f);
+                Winner();
             }
         }
 
         private void OnAgentDied(Agent agent)
         {
+            if (IsTutorialScene)
+                return;
+
             DecreaseLeftCannonsCount();
 
             if (LeftCannonsCount == 1 && !Cannon.Current.IsDead)
             {
-                UIManager.ShowWithDelay<VictoryPanelView>(1.25f);
+                Winner();
             }
         }
 
+        private void Winner()
+        {
+            CurrentCannon.CannonManager.SetAsWinner();
+            UIManager.ShowWithDelay<VictoryPanelView>(1.25f);
+            AudioManager.PlaySound(GameSound.Victory,default,1.25f);
+            AudioManager.PlaySound(MenuSound.MenuMusic);
+            GameEventCaller.OnWinTheGame();
+            GameEventCaller.OnGameFinished();
+
+        }
+
+        private void Loser()
+        {
+            UIManager.ShowWithDelay<DefeatedPanelView>(1.25f);
+            CurrentCannon.CannonManager.SetAsLoser();
+            AudioManager.PlaySound(GameSound.Defeated,default,1.25f);
+            AudioManager.PlaySound(MenuSound.MenuMusic);
+            GameEventCaller.OnLoseTheGame();
+            GameEventCaller.OnGameFinished();
+        }
+
+        public static void SetTutorialScene()
+        {
+            _instance._isTutorialScene = true;
+            _instance.LeftCannonsCount = 1;
+        }
 
     }
 }

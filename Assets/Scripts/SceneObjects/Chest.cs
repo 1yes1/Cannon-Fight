@@ -47,7 +47,6 @@ namespace CannonFightBase
 
         public bool IsFilled => _isFilled;
 
-
         private void Awake()
         {
             _animator = GetComponent<Animator>();
@@ -72,12 +71,11 @@ namespace CannonFightBase
                 _potion.ShowUp(_settings.PotionFlightTime, _potionTarget);
 
             _animator.SetTrigger(_animatorSettings.OpenChest);
-            GameEventCaller.Instance.OnChestOpened(this);
+            GameEventCaller.Instance.OnChestOpened(this,_potion);
         }
 
         public void Refill(int potionIndex)
         {
-            print(_animatorSettings);
             ChooseSkillRandomly();
             _animator.SetTrigger(_animatorSettings.FillChest);
             _isRefilling = true;
@@ -103,7 +101,6 @@ namespace CannonFightBase
             OnChestFilled?.Invoke(this);
         }
 
-        [Button]
         public void SetOpenState(bool isOpened)
         {
             if(isOpened)

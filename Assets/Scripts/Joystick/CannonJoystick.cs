@@ -63,12 +63,17 @@ namespace CannonFightBase
             _knobStartPosition = _knob.transform.position;
         }
 
+        public override void SetParameters(params object[] objects)
+        {
+        }
+
         private void Update()
         {
             //print(IsPointerOverUIElement() ? "Over UI" : "Not over UI");
 
-            if (!GameManager.Instance.useAndroidControllers)
-                return;
+            #if !UNITY_ANDROID
+                        return;
+            #endif
 
             if (Input.touchCount == 0)
                 return;
@@ -199,5 +204,7 @@ namespace CannonFightBase
             var w = (rt.anchorMax.x - rt.anchorMin.x) * Screen.width + rt.sizeDelta.x;
             return w;
         }
+
+
     }
 }

@@ -29,6 +29,9 @@ MonoBehaviour:
     PlayerItem: {fileID: -2229278124077992145, guid: 267991cecb3db0d43bd1e75d83f7007e,
       type: 3}
   FireControllerSettings:
+    EnemyLayers:
+      serializedVersion: 2
+      m_Bits: 81920
     FireIgnoreLayers:
       serializedVersion: 2
       m_Bits: 68
@@ -38,21 +41,21 @@ MonoBehaviour:
     MaxVerticalAngle: 23
     MaxHorizontalAngle: 75
     RotationSpeed: 50
-    MobileRotationSpeed: 7
+    MobileRotationSpeed: 3
   CannonSkillHandlerSettings:
     MultiBallSkillSettings:
       MultiBallCount: 3
       MultiBallFrequency: 0.1
-      MultiBallSkillTime: 10
+      MultiBallSkillTime: 15
     DamageSkillSettings:
       DamageMultiplier: 2
-      DamageSkillTime: 2
+      DamageSkillTime: 15
   ChestSettings:
-    Health: 1
+    Health: 30
     PotionFlightTime: 0.8
-    StartFillTime: 10
+    StartFillTime: 3
     StartFillFrequency: 0.2
-    RefillTime: 1
+    RefillTime: 15
   RampSettings:
     BoostMultiplier: 25
   PotionSettings:
@@ -63,9 +66,5 @@ MonoBehaviour:
       Material: {fileID: 2100000, guid: 7e35e673f741780409c87b75ecb7b084, type: 2}
     - Skill: 2
       Material: {fileID: 2100000, guid: 9b3398f90e3925e42a743d28c0f57c27, type: 2}
-  AchievementManagerSettings:
-    levelEndSettings:
-      WinnerCoinMultiplier: 25
-      LoserCoinMultiplier: 10
   GameAgentSettings:
     MaxAgentCount: 3

@@ -8,6 +8,7 @@ namespace CannonFightBase
     [Serializable]
     public class PlayerSaveData
     {
+        public string Nickname;
         public int CurrentCoin = 0;
         public CannonSaveData CannonSaveData;
     }
@@ -19,11 +20,6 @@ namespace CannonFightBase
         public int SpeedLevel = 1;
         public int FireRateLevel = 1;
         public int HealthLevel = 1;
-    }
-
-    public interface ICannonDataLoader
-    {
-        public void SetCannonData();
     }
 
 }

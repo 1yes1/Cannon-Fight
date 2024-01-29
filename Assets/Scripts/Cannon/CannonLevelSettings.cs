@@ -26,7 +26,7 @@ namespace CannonFightBase
 
         public string UpgradeTypeTextFormat => string.Concat(_upgradeType.ToString().Select(x => Char.IsUpper(x) ? " " + x : x.ToString())).TrimStart(' ');
 
-        public int Level => SaveManager.GetValue<int>(_upgradeType.ToString(), 1);
+        public int Level => CloudSaveManager.GetValue<int>(_upgradeType.ToString(), 1);
 
         public int Price => _startPrice + Mathf.FloorToInt((Level - 1) * _priceMultiplierPerLevel);
 
@@ -36,17 +36,17 @@ namespace CannonFightBase
 
         public void Upgrade()
         {
-            SaveManager.SetValue<int>(_upgradeType.ToString(), Level + 1);
+            CloudSaveManager.SetValue<int>(_upgradeType.ToString(), Level + 1);
         }
 
         public void SetDefaultValue()
         {
-            SaveManager.SetValue<int>(_upgradeType.ToString(), 1);
+            CloudSaveManager.SetValue<int>(_upgradeType.ToString(), 1);
         }
 
         public void SetLevel(int level)
         {
-            SaveManager.SetValue<int>(_upgradeType.ToString(), level);
+            CloudSaveManager.SetValue<int>(_upgradeType.ToString(), level);
         }
 
         [Serializable]

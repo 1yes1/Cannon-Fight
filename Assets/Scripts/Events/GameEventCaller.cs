@@ -21,7 +21,7 @@ namespace CannonFightBase
 
         public void OnSkillEnded(Skill skill) => _gameEventReceiver.OnSkillEnded(skill);
 
-        public void OnChestOpened(Chest chest) => _gameEventReceiver.OnChestOpened(chest);
+        public void OnChestOpened(Chest chest, Potion potion) => _gameEventReceiver.OnChestOpened(chest,potion);
 
         public void OnBoostStarted(Cannon cannon) => _gameEventReceiver.OnBoostStarted(cannon);
 
@@ -57,6 +57,11 @@ namespace CannonFightBase
 
         public void OnAgentDied(Agent agent) => _gameEventReceiver.OnAgentDied(agent);
 
+        public void OnWinTheGame() => _gameEventReceiver.OnWinTheGame();
+
+        public void OnLoseTheGame() => _gameEventReceiver?.OnLoseTheGame();
+
+        public void OnGameFinished() => _gameEventReceiver?.OnGameFinished();
     }
 
 }

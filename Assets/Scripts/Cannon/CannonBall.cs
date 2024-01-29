@@ -1,10 +1,12 @@
 ﻿using Photon.Pun;
 using Photon.Realtime;
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEditor;
 using UnityEngine;
 using Zenject;
 using Zenject.SpaceFighter;
@@ -12,7 +14,7 @@ using Player = Photon.Realtime.Player;
 
 namespace CannonFightBase
 {
-    public class CannonBall:MonoBehaviour, IPoolable<IMemoryPool>
+    public class CannonBall:MonoBehaviour, IPoolable<IMemoryPool>,IDisposable
     {
         private int _damage;
 
@@ -38,6 +40,12 @@ namespace CannonFightBase
             _ownerPlayer = null;
         }
 
+        public void Dispose()
+        {
+            if (_pool != null)
+                _pool.Despawn(this);
+        }
+
         public void OnDespawned()
         {
             //print("Despawn");
@@ -54,16 +62,29 @@ namespace CannonFightBase
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (collision.gameObject != null && _ownerCannon.GetComponent<Character>() == collision.gameObject.GetComponent<Character>() || _ownerCannon == null)
+            if (collision.gameObject == null || _ownerCannon == null || _ownerCannon.GetComponent<Character>() == collision.gameObject.GetComponent<Character>())
                 return;
 
-            collision.gameObject.GetComponent<IDamageable>()?.TakeDamage(_damage, collision.contacts[0].point, _ownerPlayer,_ownerCannon);
+            //Vector3 position = collision.contacts[0].point;
+            Vector3 position = transform.position;
 
-            collision.gameObject.GetComponent<IHittable>()?.OnHit(collision.contacts[0].point);
 
+            if(collision.gameObject.TryGetComponent<IHittable>(out IHittable hittable))
+            {
+                hittable.OnHit(position);
+                AudioManager.PlaySound(GameSound.WallHit, position);
+            }
+            else
+            {
+                collision.gameObject.GetComponent<IDamageable>()?.TakeDamage(_damage, position, _ownerPlayer, _ownerCannon);
+            }
+
+
+            //Debug.Log("Değdi: " + collision.gameObject.name);
+            //Debug.Log("Nokta: " + position);
+            Dispose();
             //print(collision.gameObject.name);
             //gameObject.SetActive(false);
-            _pool.Despawn(this);
             //Destroy(gameObject);
         }
 
@@ -77,6 +98,7 @@ namespace CannonFightBase
         {
             gameObject.layer = layer;
         }
+
 
         public class Factory : PlaceholderFactory<CannonBall>
         {

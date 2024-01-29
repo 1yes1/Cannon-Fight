@@ -42,15 +42,17 @@ namespace CannonFightBase
         public void TakeDamage(int damage, Vector3 hitPoint, Player attackerPlayer, Character attackerCannon = null)
         {
             Health -= damage;
-            Debug.Log("Health: " + _health);
-
 
             if (Health <= 0)
                 _agent.Die(attackerCannon);
+            
+            ParticleManager.CreateParticle<TakeDamageParticle>(hitPoint);
+
+            if (_agent.IsStaticAgent)
+                return;
 
             OnTakeDamageEvent?.Invoke(attackerCannon,damage, _health);
 
-            ParticleManager.CreateParticle<TakeDamageParticle>(hitPoint);
         }
     }
 }

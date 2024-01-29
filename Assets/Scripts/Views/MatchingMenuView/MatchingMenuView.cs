@@ -21,6 +21,10 @@ namespace CannonFightBase
 
         }
 
+        public override void AddSubViews()
+        {
+        }
+
         public void UpdatePlayersCount(int playerCount)
         {
             _playersFoundText.text = "Players Found "+playerCount+"/4";

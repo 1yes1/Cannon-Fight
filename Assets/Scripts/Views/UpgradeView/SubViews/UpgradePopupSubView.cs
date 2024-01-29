@@ -29,20 +29,36 @@ namespace CannonFightUI
         [SerializeField] private TextMeshProUGUI _currentValueText;
         [SerializeField] private TextMeshProUGUI _plusValueText;
         [SerializeField] private TextMeshProUGUI _priceText;
-        
+
+        private SignalBus _signalBus;
+
         private AnimationSettings _animationSettings;
+
         private CannonLevelSettings _cannonLevelSettings;
 
         [Inject]
-        private void Construct(AnimationSettings animationSettings)
+        private void Construct(AnimationSettings animationSettings,SignalBus signalBus)
         {
             _animationSettings = animationSettings;
+            _signalBus = signalBus;
         }
 
         public override void Initialize()
         {
-            _closeButton.onClick.AddListener(Hide);
-            _upgradeButton.onClick.AddListener(Upgrade);
+            _closeButton.onClick.AddListener(() =>
+            {
+                Hide();
+                _signalBus.Fire<OnButtonClickSignal>();
+            });
+            _upgradeButton.onClick.AddListener(() =>
+            {
+                Upgrade();
+                _signalBus.Fire<OnButtonClickSignal>();
+            });
+        }
+
+        public override void SetParameters(params object[] objects)
+        {
         }
 
         public override void Show(float subViewDelay)
@@ -70,6 +86,7 @@ namespace CannonFightUI
         {
             OnClickUpgradeEvent.Invoke(_cannonLevelSettings,_image);
         }
+
 
         [Serializable]
         public struct AnimationSettings

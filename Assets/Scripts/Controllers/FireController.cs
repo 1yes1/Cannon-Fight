@@ -4,15 +4,16 @@ using Photon.Realtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Burst.CompilerServices;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 using Zenject;
-using static UnityEngine.Rendering.DebugUI;
 
 namespace CannonFightBase
 {
 
-    public class FireController : ITickable,IInitializable,IRpcMediator,IDisposable, ICannonDataLoader
+    public class FireController : IFixedTickable,IInitializable,IRpcMediator,IDisposable
     {
         private readonly Settings _settings;
 
@@ -29,6 +30,10 @@ namespace CannonFightBase
         private readonly CannonBall.Factory _cannonBallFactory;
 
         private readonly CannonTraits _cannonTraits;
+
+        private GameObject _rotatorH;
+
+        private GameObject _rotatorV;
 
         private Transform _ballSpawnPoint;
 
@@ -66,6 +71,8 @@ namespace CannonFightBase
             _rpcMediator.AddToRPC(RPC_FIRE, this);
             _crosshair = UIManager.GetView<CrosshairView>().transform;
 
+            _cannonView.GetRotators(out _rotatorV, out _rotatorV);
+
             ResetDamageSkill();
             AddEvents();
         }
@@ -77,19 +84,19 @@ namespace CannonFightBase
 
         private void AddEvents()
         {
-            GameEventReceiver.OnMobileFireButtonClickedEvent += StartFire;
+            GameEventReceiver.OnMobileFireButtonClickedEvent += ReadyToFire;
             GameEventReceiver.OnSkillBarFilledEvent += OnSkillBarFilled;
             GameEventReceiver.OnSkillEndedEvent += OnSkillEnded;
         }
 
         public void Dispose()
         {
-            GameEventReceiver.OnMobileFireButtonClickedEvent -= StartFire;
+            GameEventReceiver.OnMobileFireButtonClickedEvent -= ReadyToFire;
             GameEventReceiver.OnSkillBarFilledEvent -= OnSkillBarFilled;
             GameEventReceiver.OnSkillEndedEvent -= OnSkillEnded;
         }
 
-        public void Tick()
+        public void FixedTick()
         {
             if (!_photonView.IsMine)
                 return;
@@ -97,18 +104,27 @@ namespace CannonFightBase
             if (!_cannon.CanDoAction)
                 return;
 
-            if (!GameManager.Instance.useAndroidControllers)
+
+            if(_fireRateStatus <= 0)
             {
-                if (InputManager.IsFiring && _fireRateStatus <= 0)
+                Ray ray = Camera.main.ScreenPointToRay(_crosshair.position);
+                //Debug.DrawRay(ray.origin, ray.direction * _settings.FireRange, Color.black);
+                RaycastHit hit;
+                if (Physics.Raycast(ray.origin,ray.direction,out hit, _settings.FireRange))
                 {
-                    if (_useMultiBallSkill)
-                    {
-                        _cannon.StartCoroutine(MultiBallFire());
-                    }
-                    else
-                        StartFire();
+                    int layer = hit.transform.gameObject.layer;
+                    if ((_settings.EnemyLayers.value & 1 << layer) > 0)
+                        ReadyToFire(ray.direction);
                 }
+
+            #if UNITY_EDITOR
+                if(InputManager.IsFiring)
+                {
+                    ReadyToFire();
+                }
+            #endif
             }
+
 
             if (_fireRateStatus > 0)
             {
@@ -127,31 +143,57 @@ namespace CannonFightBase
             }
         }
 
-        public void StartFire()
+
+        private void ReadyToFire()
+        {
+            if (_fireRateStatus <= 0)
+                ReadyToFire(Vector3.zero);
+        }
+
+        private void ReadyToFire(Vector3 direction = default)
+        {
+            if (_useMultiBallSkill)
+            {
+                _cannon.StartCoroutine(MultiBallFire());
+            }
+            else
+                StartFire(direction);
+        }
+
+        private void StartFire(Vector3 direction = default)
+        {
+            if(direction == Vector3.zero)
+                GetRayDirection(out direction);
+
+            Fire(_cannon.OwnPhotonView.Owner, _ballSpawnPoint.position, direction, _settings.FireRange, _fireDamage);
+            AudioManager.PlaySound(GameSound.CannonFire, _ballSpawnPoint.position);
+
+            _fireRateStatus = _cannonTraits.FireRate;
+
+            GameEventCaller.Instance.OnPlayerFired();
+
+            //_cannon.OwnPhotonView.RPC(nameof(_rpcMediator.RPC_StartFire), RpcTarget.Others, new object[] { _ballSpawnPoint.position, direction, _settings.FireRange, _settings.FireDamage });
+
+            _cannon.OwnPhotonView.RPC(nameof(_rpcMediator.RpcForwarder), RpcTarget.Others, RPC_FIRE, new object[] {_ballSpawnPoint.position, direction, _settings.FireRange, _fireDamage });
+        }
+
+        private void GetRayDirection(out Vector3 direction)
         {
             Ray ray = Camera.main.ScreenPointToRay(_crosshair.position);
             RaycastHit hit;
+            direction = Vector3.negativeInfinity;
 
-            if (Physics.Raycast(ray, out hit,300, ~_settings.FireIgnoreLayers))
+            if (Physics.Raycast(ray, out hit, 300, ~_settings.FireIgnoreLayers))
             {
-                Vector3 direction = hit.point - _ballSpawnPoint.position;
+                direction = hit.point - _ballSpawnPoint.position;
                 direction.Normalize();
-
-                Fire(_cannon.OwnPhotonView.Owner, _ballSpawnPoint.position, direction, _settings.FireRange, _fireDamage);
-
-                _fireRateStatus = _cannonTraits.FireRate;
-
-                GameEventCaller.Instance.OnPlayerFired();
-
-                //_cannon.OwnPhotonView.RPC(nameof(_rpcMediator.RPC_StartFire), RpcTarget.Others, new object[] { _ballSpawnPoint.position, direction, _settings.FireRange, _settings.FireDamage });
-
-                _cannon.OwnPhotonView.RPC(nameof(_rpcMediator.RpcForwarder), RpcTarget.Others, RPC_FIRE, new object[] {_ballSpawnPoint.position, direction, _settings.FireRange, _fireDamage });
             }
         }
 
         public void RpcForwarder(object[] objects, PhotonMessageInfo info)
         {
             Fire(info.Sender, (Vector3)objects[0], (Vector3)objects[1], (float)objects[2], (int)objects[3]);
+            AudioManager.PlaySound(GameSound.CannonFire, (Vector3)objects[0]);
         }
 
         public void Fire(Player owner,Vector3 ballPosition, Vector3 ballDirection, float fireRange, int fireDamage)
@@ -211,14 +253,11 @@ namespace CannonFightBase
             //Debug.Log("Damage: "+_cannonTraits.Damage);
         }
 
-        public void SetCannonData()
-        {
-            throw new NotImplementedException();
-        }
-
         [Serializable]
         public class Settings
         {
+            public LayerMask EnemyLayers;
+
             public LayerMask FireIgnoreLayers;
 
             public float FireRange = 50;

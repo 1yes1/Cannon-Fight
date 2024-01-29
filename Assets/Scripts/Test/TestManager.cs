@@ -13,6 +13,7 @@ namespace CannonFightBase
         [SerializeField] private bool _fillChests;
         [SerializeField] private bool _spawnAgentForTest;
         [SerializeField] private int _spawnAgentCount = 4;
+        [SerializeField] private int _coin;
 
         public static bool IsTesting { get; private set; }
 
@@ -41,17 +42,18 @@ namespace CannonFightBase
         private void SpawnTestCannon()
         {
             SpawnManager spawnManager = FindObjectOfType<SpawnManager>();
-            spawnManager.SpawnPlayerManager();
+            CannonManager cannonManager = spawnManager.SpawnCannonManager();
 
-            if (GameManager.Instance.useAndroidControllers)
-                UIManager.Show<JoystickView>();
+            #if UNITY_ANDROID
+                        UIManager.Show<JoystickView>();
+            #endif
 
-            FindObjectOfType<Cannon>().CanDoAction = true;
+            cannonManager.Cannon.CanDoAction = true;
         }
 
         private void SpawnTestBot()
         {
-            SaveManager.SetValue<int>("playWithBots", 1);
+            CloudSaveManager.SetValue<int>("playWithBots", 1);
 
             SpawnManager spawnManager = FindObjectOfType<SpawnManager>();
             spawnManager.TEST_SpawnBot(_spawnAgentCount);

@@ -4,14 +4,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 using System;
+using UnityEngine.SceneManagement;
 
 namespace CannonFightBase
 {
-    public class CoinManager : MonoBehaviour
+    public class CoinManager : IInitializable,IDisposable
     {
         private static CoinManager _instance;
 
+        private AchievementManager.GameEndSettings _levelEndSettings;
+
         private SaveSettings _saveSettings;
+
         private CoinView _coinView;
 
         public static CoinManager Instance => _instance;
@@ -20,37 +24,63 @@ namespace CannonFightBase
         {
             get
             {
-                return SaveManager.GetValue<int>(_instance._saveSettings.CurrentCoin,0);
+                return CloudSaveManager.GetValue<int>(_instance._saveSettings.CurrentCoin,0);
             }
             set
             {
-                SaveManager.SetValue<int>(_instance._saveSettings.CurrentCoin, value);
+                CloudSaveManager.SetValue<int>(_instance._saveSettings.CurrentCoin, value);
                 _instance._coinView.UpdateCoin(CurrentCoin);
             }
         }
 
         [Inject]
-        public void Construct(SaveSettings saveSettings)
+        public void Construct(SaveSettings saveSettings, AchievementManager.GameEndSettings levelEndSettings)
         {
             _saveSettings = saveSettings;
+            _levelEndSettings = levelEndSettings;
         }
 
-        private void Awake()
+        public void Initialize()
         {
-            if(_instance == null)
+            if (_instance == null)
                 _instance = this;
+
+            SceneManager.sceneLoaded += OnSceneLoaded;
+            UpdateCoinView();
         }
 
-        private void Start()
+        public void Dispose()
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+            _instance = null;
+        }
+
+        private void OnSceneLoaded(Scene arg0, LoadSceneMode arg1)
+        {
+            if(arg0.buildIndex == 0)
+                UpdateCoinView();
+        }
+
+        public void UpdateCoinView()
         {
             _coinView = UIManager.GetView<CoinView>();
+            if(_coinView != null)
+                _coinView.UpdateCoin(CurrentCoin);
+        }
 
-            _coinView.UpdateCoin(CurrentCoin);
+        public void OnLoseTheGame()
+        {
+            CurrentCoin += Cannon.Current.KillCount * _levelEndSettings.LoserCoinMultiplier + _levelEndSettings.LoserCoinPrize;
+        }
+
+        public void OnWinTheGame()
+        {
+            CurrentCoin += Cannon.Current.KillCount * _levelEndSettings.WinnerCoinMultiplier + _levelEndSettings.WinnerCoinPrize;
         }
 
         public void SetDefaultValue()
         {
-            CurrentCoin = 1000;
+            CurrentCoin = 0;
         }
 
 

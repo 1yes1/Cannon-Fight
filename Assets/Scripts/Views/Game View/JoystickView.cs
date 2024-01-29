@@ -28,14 +28,17 @@ namespace CannonFightBase
             _aimJoystick.Initialize();
         }
 
+        public override void AddSubViews()
+        {
+            UIManager.AddSubView(this, _driveJoystick);
+            UIManager.AddSubView(this, _aimJoystick);
+        }
+
         // Start is called before the first frame update
         void Start()
         {
             _driveLayer = LayerMask.NameToLayer("DriveJoystickUI");
             _aimLayer = LayerMask.NameToLayer("AimJoystickUI");
-
-            if (!GameManager.Instance.useAndroidControllers)
-                Hide();
         }
 
         //private void Update()
@@ -80,7 +83,6 @@ namespace CannonFightBase
             EventSystem.current.RaycastAll(eventData, raysastResults);
             return raysastResults;
         }
-
 
     }
 }

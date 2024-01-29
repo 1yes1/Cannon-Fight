@@ -22,6 +22,7 @@ namespace CannonFightBase
 
         public SkillType Skill => _skill;
 
+        private Coroutine _coroutine;
 
         private void OnEnable()
         {
@@ -36,7 +37,7 @@ namespace CannonFightBase
         private void OnBeforeSkillCountdownStarted(SkillType skill, float time)
         {
             if(Skill == skill)
-                StartCoroutine(SkillCountdown(time));
+                _coroutine = StartCoroutine(SkillCountdown(time));
         }
 
         private void Start()
@@ -52,16 +53,22 @@ namespace CannonFightBase
         //}
         public void ResetFilling()
         {
+            if (_coroutine != null)
+                StopCoroutine(_coroutine);
+
             _fillImage.fillAmount = 0;
             _fillImage.SetNativeSize();
         }
 
-        public void FillOne()
+        public void FillBar(int count)
         {
-            _fillImage.fillAmount += 1f/_partCount;
+            for (int i = 0; i < count; i++)
+            {
+                _fillImage.fillAmount += 1f / _partCount;
 
-            if (_fillImage.fillAmount >= 1)
-                OnSkillBarFilled();
+                if (_fillImage.fillAmount >= 1)
+                    OnSkillBarFilled();
+            }
         }
 
         public virtual void OnSkillBarFilled()

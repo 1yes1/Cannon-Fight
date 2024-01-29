@@ -548,7 +548,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
-  m_IsKinematic: 1
+  m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 2
@@ -1407,8 +1407,8 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8c67a178bcd9c7645baee0034e0e7793, type: 2}
-  - {fileID: 2100000, guid: 1160f5d636891724f9464ef28d2887c4, type: 2}
+  - {fileID: 2100000, guid: 59821f3d1121982448cab37a19b98d9e, type: 2}
+  - {fileID: 2100000, guid: c3e4c0a0f7ab36b4baf8dcc29e61d628, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1579,7 +1579,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 1160f5d636891724f9464ef28d2887c4, type: 2}
+  - {fileID: 2100000, guid: c3e4c0a0f7ab36b4baf8dcc29e61d628, type: 2}
   - {fileID: 2100000, guid: d31e9a10b80a35b4c8a84ade365771f9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0

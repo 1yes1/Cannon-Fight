@@ -20,17 +20,28 @@ namespace CannonFightBase
         [SerializeField] private TextMeshProUGUI _nameText;
         [SerializeField] private Button _continueButton;
 
+        private SignalBus _signalBus;
+
         private AnimationSettings _animationSettings;
 
         [Inject]
-        private void Construct(AnimationSettings animationSettings)
+        private void Construct(SignalBus signalBus,AnimationSettings animationSettings)
         {
             _animationSettings = animationSettings;
+            _signalBus = signalBus;
         }
 
         public override void Initialize()
         {
-            _continueButton.onClick.AddListener(Hide);
+            _continueButton.onClick.AddListener(() =>
+            {
+                Hide();
+                _signalBus.Fire<OnButtonClickSignal>();
+            });
+        }
+
+        public override void SetParameters(params object[] objects)
+        {
         }
 
         public override void Show(float subViewDelay)
@@ -64,6 +75,8 @@ namespace CannonFightBase
             _valueText.text = cannonLevelSettings.CurrentValue.ToString();
             _nameText.text = cannonLevelSettings.UpgradeTypeTextFormat;
         }
+
+
 
         [Serializable]
         public struct AnimationSettings

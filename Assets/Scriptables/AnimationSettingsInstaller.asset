@@ -191,8 +191,8 @@ MonoBehaviour:
         Value: 1
         Vector: {x: 0, y: 0, z: 0}
       WarningText:
-        Ease: 0
-        Delay: 2
+        Ease: 18
+        Delay: 2.5
         Duration: 0.5
         Value: 0
         Vector: {x: 0, y: 0, z: 0}
@@ -205,6 +205,26 @@ MonoBehaviour:
       Vector: {x: 0, y: 0, z: 0}
     CountdownFadeOut:
       Ease: 1
+      Delay: 0
+      Duration: 0.5
+      Value: 0
+      Vector: {x: 0, y: 0, z: 0}
+  MenuLoadingView:
+    FadeOut:
+      Ease: 12
+      Delay: 0
+      Duration: 1
+      Value: 0
+      Vector: {x: 0, y: 0, z: 0}
+  NicknameView:
+    Show:
+      Ease: 18
+      Delay: 0.5
+      Duration: 0.5
+      Value: 1
+      Vector: {x: 0, y: 0, z: 0}
+    Hide:
+      Ease: 18
       Delay: 0
       Duration: 0.5
       Value: 0

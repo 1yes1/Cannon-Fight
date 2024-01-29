@@ -8,6 +8,7 @@ using DG.Tweening;
 using UnityEngine.UI;
 using CannonFightExtensions;
 using UnityEngine.SceneManagement;
+using CannonFightBase;
 
 namespace CannonFightUI
 {
@@ -21,10 +22,13 @@ namespace CannonFightUI
         [SerializeField] private ShineSubView _shineSubView;
         [SerializeField] private Button _exitButton;
 
+        private SignalBus _signalBus;
+
         [Inject]
-        private void Construct(BaseViewAnimationSettings animationSettings)
+        private void Construct(SignalBus signalBus,BaseViewAnimationSettings animationSettings)
         {
             _animationSettings = animationSettings;
+            _signalBus = signalBus;
         }
 
         public override void Initialize()
@@ -33,7 +37,19 @@ namespace CannonFightUI
             _coinGainSubView.Initialize();
             _rankSubView.Initialize();
             _shineSubView.Initialize();
-            _exitButton.onClick.AddListener(ExitToMainMenu);
+            _exitButton.onClick.AddListener(() =>
+            {
+                ExitToMainMenu();
+                _signalBus.Fire<OnButtonClickSignal>();
+            });
+        }
+
+        public override void AddSubViews()
+        {
+            UIManager.AddSubView(this, _killCountSubView);
+            UIManager.AddSubView(this, _coinGainSubView);
+            UIManager.AddSubView(this, _rankSubView);
+            UIManager.AddSubView(this, _shineSubView);
         }
 
         public override void Show()

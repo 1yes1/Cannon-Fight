@@ -11,6 +11,13 @@ namespace CannonFightBase
         {
             Container.DeclareSignal<OnLevelUpgradedSignal>();
             Container.DeclareSignal<OnCloudSavesLoadedSignal>();
+            Container.DeclareSignal<OnPlayGamesAuthanticated>();
+            Container.DeclareSignal<OnFailedToLoadCloudSavesSignal>();
+            Container.DeclareSignal<OnMainMenuOpenedSignal>();
+            Container.DeclareSignal<OnGameMatchingStartedSignal>();
+            Container.DeclareSignal<OnFirstOpeningSignal>();
+            Container.DeclareSignal<OnButtonClickSignal>();
+            Container.DeclareSignal<OnNicknameEnteredSignal>();
         }
     }
 }

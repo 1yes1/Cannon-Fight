@@ -26,7 +26,14 @@ namespace CannonFightUI
         {
             _animationSettings = animationSettings;
         }
+        public override void Initialize()
+        {
+        }
 
+        public override void SetParameters(params object[] objects)
+        {
+            _coinCount = (int)objects[0];
+        }
 
         public override void Show(float subViewDelay)
         {
@@ -48,9 +55,7 @@ namespace CannonFightUI
         }
 
 
-        public override void Initialize()
-        {
-        }
+
 
 
         private void SetCoin()
@@ -91,6 +96,7 @@ namespace CannonFightUI
             //    _tweener.Complete();
             //}
         }
+
 
         [Serializable]
         public struct AnimationSettings

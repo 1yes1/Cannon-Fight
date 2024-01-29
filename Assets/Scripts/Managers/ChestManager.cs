@@ -59,9 +59,8 @@ namespace CannonFightBase
 
         private void Start()
         {
-            if (PhotonNetwork.IsMasterClient)
+            if (PhotonNetwork.IsMasterClient || !PhotonNetwork.IsConnectedAndReady)
                 Invoke(nameof(StartFillChests), ChestSettings.StartFillTime);
-
         }
 
         private void Update()
@@ -88,7 +87,7 @@ namespace CannonFightBase
             }
         }
 
-        private void OnChestOpened(Chest obj)
+        private void OnChestOpened(Chest obj, Potion potion)
         {
             _openedChestCount++;
         }

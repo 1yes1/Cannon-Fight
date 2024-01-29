@@ -7,7 +7,7 @@ using Zenject;
 
 namespace CannonFightBase
 {
-    public class CannonDamageHandler: IDamageable, IRpcMediator,IInitializable, ICannonDataLoader
+    public class CannonDamageHandler: IDamageable, IRpcMediator,IInitializable,IDisposable
     {
         private readonly ParticleSettings _particleSettings;
 
@@ -52,11 +52,17 @@ namespace CannonFightBase
 
         public void Initialize()
         {
-            _health = _cannonTraits.Health;
-            GameEventCaller.Instance.OnOurPlayerHealthChanged(_health);
-
-
             _rpcMediator.AddToRPC(RPC_DAMAGE_PARTICLE, this);
+            GameEventReceiver.OnGameStartedEvent += OnGameReadyToStart;
+        }
+        public void Dispose()
+        {
+            GameEventReceiver.OnGameStartedEvent -= OnGameReadyToStart;
+        }
+
+        private void OnGameReadyToStart()
+        {
+            Health = _cannonTraits.Health;
         }
 
         public void TakeDamage(int damage, Vector3 hitPoint, Player attackerPlayer,Character attackerCannon)
@@ -67,10 +73,15 @@ namespace CannonFightBase
             if (!_cannon.OwnPhotonView.IsMine)
                 return;
 
-            Health -= damage;
+            //Tutorialda ölmeyelim bari
+            if (Health <= 20 && GameManager.IsTutorialScene)
+                return;
 
             particleSystem.GetComponent<CFXR_Effect>().enabled = true;
             particleSystem.GetComponent<CFXR_Effect>().cameraShake.enabled = true;
+            AudioManager.PlaySound(GameSound.CannonHit, hitPoint);
+
+            Health -= damage;
 
             if (Health <= 0)
             {
@@ -101,10 +112,6 @@ namespace CannonFightBase
             ParticleManager.Wait();
         }
 
-        public void SetCannonData()
-        {
-            throw new NotImplementedException();
-        }
 
         [Serializable]
         public struct ParticleSettings

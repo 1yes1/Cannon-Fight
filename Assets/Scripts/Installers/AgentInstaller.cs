@@ -12,7 +12,7 @@ public class AgentInstaller : Installer<AgentInstaller>
         
         Container.BindInterfacesAndSelfTo<NavMeshAgent>().FromComponentOnRoot();
 
-        Container.BindInterfacesAndSelfTo<AICarDriver>().AsSingle();
+        Container.BindInterfacesAndSelfTo<AgentCarDriver>().AsSingle();
 
         Container.BindInterfacesAndSelfTo<AIStateController>().AsSingle();
         Container.BindInterfacesAndSelfTo<AgentDamageHandler>().AsSingle();

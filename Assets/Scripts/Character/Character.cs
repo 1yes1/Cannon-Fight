@@ -47,6 +47,11 @@ namespace CannonFightBase
             _characterManager = characterManager;
         }
 
+        public void GetKill()
+        {
+            _characterManager.GetKill();
+        }
+
         private void OnGameStarted()
         {
             _canDoAction = true;

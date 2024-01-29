@@ -12,7 +12,7 @@ namespace CannonFightBase
 {
     public class Cannon : Character, ICannonBehaviour, IDamageable,IPotionCollector
     {
-        private CannonManager _playerManager;
+        private CannonManager _cannonManager;
 
         private CannonView _cannonView;
 
@@ -23,8 +23,6 @@ namespace CannonFightBase
         private IPotionCollector _potionCollector;
 
         private CannonDamageHandler _cannonDamageHandler;
-
-        private PhotonView _photonView;
 
         private int _killCount;
 
@@ -45,12 +43,16 @@ namespace CannonFightBase
             }
         }
 
-        public CannonManager PlayerManager => _playerManager;
+        public CannonView CannonView => _cannonView;
 
-        public PhotonView OwnPhotonView => _photonView;
+        public CannonManager CannonManager => _cannonManager;
+
+        public PhotonView OwnPhotonView => _cannonView.PhotonView;
 
 
-        public int KillCount => _killCount;
+        public int KillCount => _cannonManager.KillCount;
+
+        public bool IsWinner => _cannonManager.IsWinner;
 
         public int Health => _cannonDamageHandler.Health;
 
@@ -75,12 +77,11 @@ namespace CannonFightBase
 
         public void OnSpawn(CannonManager playerManager)
         {
-            _playerManager = playerManager;
+            _cannonManager = playerManager;
         }
 
         private void Awake()
         {
-            _photonView = GetComponent<PhotonView>();
         }
 
         public void Start()
@@ -89,9 +90,10 @@ namespace CannonFightBase
             //IInitializable olan class larýn Initialize() Metodu
             //Normalde Startta çaðrýlmasý gerekirken Awake den önce çaðrýlýyor o yüzden hata alabiliyoruz
 
-            CanDoAction = false;
+            if(!GameManager.IsTutorialScene)
+                CanDoAction = false;
 
-            if (!_photonView.IsMine)
+            if (!_cannonView.PhotonView.IsMine)
                 return;
 
             LayerMask layerMask = LayerMask.NameToLayer("Player");
@@ -119,9 +121,8 @@ namespace CannonFightBase
         public void Die(Player attackerPlayer)
         {
             CannonManager playerManager = CannonManager.Find(attackerPlayer);
-            playerManager.GetKill();
 
-            _playerManager.OnDie(attackerPlayer);
+            _cannonManager.OnDie(attackerPlayer);
 
             _cannonController.OnDie();
 
@@ -130,7 +131,7 @@ namespace CannonFightBase
 
         public void Die(Character attackerCharacter)
         {
-            _playerManager.OnDie(attackerCharacter);
+            _cannonManager.OnDie(attackerCharacter);
 
             _cannonController.OnDie();
 

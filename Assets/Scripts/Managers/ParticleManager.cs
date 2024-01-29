@@ -22,12 +22,15 @@ public class ParticleManager:IDisposable
                            FireParticle.Factory factory2,
                            DamageSkillParticle.Factory factory3,
                            HealthSkillParticle.Factory factory4,
-                           MultiballSkillParticle.Factory factory5)
+                           MultiballSkillParticle.Factory factory5,
+                           DamagePotionParticle.Factory factory6,
+                           MultiballPotionParticle.Factory factory7,
+                           HealthPotionParticle.Factory factory8)
     {
         if (Instance == null)
             Instance = this;
 
-        _particleFactories = new IFactory<PoolableParticleBase>[] { factory, factory1, factory2,factory3,factory4,factory5 };
+        _particleFactories = new IFactory<PoolableParticleBase>[] { factory, factory1, factory2,factory3,factory4,factory5,factory6,factory7,factory8 };
     }
 
     public static T CreateParticle<T>(Vector3 worldPosition, Transform parent = null, bool isLoop = false) where T : PoolableParticleBase
@@ -116,22 +119,22 @@ public class ParticleManager:IDisposable
 
 
 
-    public static ParticleSystem GetParticleTupleValue<T>(Dictionary<Type, IList> tuples,T value) where T : System.Enum
-    {
-        if (tuples.TryGetValue(typeof(T), out IList particleTuples))
-        {
-            foreach (ParticleTuple<T> tuple in particleTuples)
-            {
-                if (tuple.data.Equals(value))
-                {
-                    return tuple.particleSystem;
-                }
-            }
-        }
+    //public static ParticleSystem GetParticleTupleValue<T>(Dictionary<Type, IList> tuples,T value) where T : System.Enum
+    //{
+    //    if (tuples.TryGetValue(typeof(T), out IList particleTuples))
+    //    {
+    //        foreach (ParticleTuple<T> tuple in particleTuples)
+    //        {
+    //            if (tuple.data.Equals(value))
+    //            {
+    //                return tuple.particleSystem;
+    //            }
+    //        }
+    //    }
 
-        Debug.LogWarning($"No particle system found for type: {value}");
-        return null;
-    }
+    //    Debug.LogWarning($"No particle system found for type: {value}");
+    //    return null;
+    //}
 
     public void Dispose()
     {

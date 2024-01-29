@@ -22,6 +22,9 @@ namespace CannonFightBase
             Launcher.OnPlayerLeftRoomEvent += OnPlayerLeftRoom;
             Launcher.OnLeftRoomEvent += OnLeftRoom;
         }
+        public override void AddSubViews()
+        {
+        }
 
         private void OnDisable()
         {
@@ -62,6 +65,7 @@ namespace CannonFightBase
             if(PhotonNetwork.CurrentRoom != null)
                 _txtPlayersCount.text = PhotonNetwork.CurrentRoom.PlayerCount.ToString();
         }
+
 
     }
 }

@@ -1,11 +1,15 @@
 using CannonFightExtensions;
 using CannonFightUI;
 using DG.Tweening;
+using GooglePlayGames;
 using Photon.Pun;
 using Photon.Realtime;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Networking;
 using Zenject;
 
 namespace CannonFightBase
@@ -63,33 +67,74 @@ namespace CannonFightBase
             UIManager.Show<GameLoadingView>();
 
             //print("Custom Properties:" + SaveManager.GetValue<int>("playWithBots"));
-            AddPlayerItems();
+            AddPlayerItem();
             CheckForStartingGame();
 
         }
 
-        private void AddPlayerItems()
+        private void AddPlayerItem()
         {
+            if (!PhotonNetwork.IsConnectedAndReady)
+            {
+                UIManager.GetView<GameLoadingView>().AddOfflinePlayerItem();
+                return;
+            }
+
             foreach (Player item in PhotonNetwork.CurrentRoom.Players.Values)
             {
-                UIManager.GetView<GameLoadingView>().AddPlayerItem(item);
+                if (item.IsLocal)
+                {
+                    AddPlayerItemWithPhotos(item);
+                }
+                else
+                    UIManager.GetView<GameLoadingView>().AddPlayerItem(item);
+            }
+
+        }
+
+        private void AddPlayerItemWithPhotos(Player player)
+        {
+            StartCoroutine(DownloadImage(player,PlayGamesPlatform.Instance.GetUserImageUrl()));
+        }
+
+        private IEnumerator DownloadImage(Player player,string MediaUrl)
+        {
+            UnityWebRequest request = UnityWebRequestTexture.GetTexture(MediaUrl);
+            yield return request.SendWebRequest();
+            if (request.isNetworkError || request.isHttpError)
+            {
+                Debug.Log(request.error);
+                UIManager.GetView<GameLoadingView>().AddPlayerItem(player);//Fotoyu çekemedik normal ekle
+            }
+            else
+            {
+                Texture2D texture = ((DownloadHandlerTexture)request.downloadHandler).texture;
+                Sprite sprite = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), 100.0f);
+                UIManager.GetView<GameLoadingView>().AddPlayerItem(player, sprite);
             }
         }
 
         private void CheckForStartingGame()
         {
-            if (!PhotonNetwork.IsMasterClient)
-                return;
-
-            if (SaveManager.GetValue<int>("playWithBots") == 1)
+            if (CloudSaveManager.GetValue<int>("playWithBots") == 1)
             {
                 UIManager.GetView<GameLoadingView>().AddBotPlayerItem(_roomServerSettings.PlayersInGame - 1);
-                Invoke(nameof(StartCountdown), _gameServerSettings.WaitAfterAllPlayersEnteredToGame);
+                Invoke(nameof(StartOfflineCountdown), _gameServerSettings.WaitAfterAllPlayersEnteredToGame);
                 return;
             }
 
+            if (!PhotonNetwork.IsMasterClient)
+                return;
+
             Invoke(nameof(StartCountdown), _gameServerSettings.WaitAfterAllPlayersEnteredToGame);
             
+        }
+
+        private void StartOfflineCountdown()
+        {
+            GameEventCaller.Instance.OnGameReadyToStart();
+            Invoke(nameof(StartGame), (int)_gameServerSettings.GameStartCountdown);
+            UIManager.Show<CountdownView>().StartCountdown((int)_gameServerSettings.GameStartCountdown);
         }
 
         private void StartCountdown()

@@ -29,7 +29,7 @@ namespace CannonFightBase
             else
             {
                 FillableBar fillableBar = GetFillableBar(potion.Skill);
-                fillableBar.FillOne();
+                fillableBar.FillBar(potion.FillCount);
             }
         }
 

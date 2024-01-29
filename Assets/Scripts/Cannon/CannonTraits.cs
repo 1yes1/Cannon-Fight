@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace CannonFightBase
 {
-    public class CannonTraits:MonoBehaviour
+    public class CannonTraits
     {
         private readonly CannonLevelSettings.DamageLevelSettings _damageLevelSettings;
         private readonly CannonLevelSettings.FireRateLevelSettings _fireRateLevelSettings;

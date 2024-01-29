@@ -12,11 +12,11 @@ namespace CannonFightBase
 {
     public class AimController : ITickable,IInitializable
     {
-        private Settings _settings;
+        private readonly Settings _settings;
 
-        private Cannon _cannon;
+        private readonly Cannon _cannon;
 
-        private CannonView _cannonView;
+        private readonly CannonView _cannonView;
 
         private PhotonView _photonView;
 
@@ -40,7 +40,6 @@ namespace CannonFightBase
             //    return;
             UnityEngine.Cursor.lockState = CursorLockMode.Confined;
             _cannonView.GetRotators(out _rotatorH, out _rotatorV);
-
         }
 
         public void Initialize()
@@ -63,10 +62,11 @@ namespace CannonFightBase
             else
                 return;
 
-            if (GameManager.Instance.useAndroidControllers)
+#if !UNITY_EDITOR
                 SetMobileController();
-            else
+#else
                 SetPcController();
+#endif
 
             //RotateHorizontal();
             //RotateVertical();
@@ -85,7 +85,8 @@ namespace CannonFightBase
                 if (!isRightSide)
                     continue;
 
-                RotateCannon(touch.deltaPosition,true);
+                if(touch.phase == TouchPhase.Moved)
+                    RotateCannon(touch.deltaPosition,true);
             }
         }
 
@@ -96,6 +97,8 @@ namespace CannonFightBase
 
         private void RotateCannon(Vector3 delta,bool isMobile = false)
         {
+            //Debug.Log("Rotate: "+delta.normalized);
+
             float deltaX = delta.x;
             float deltaY = delta.y;
 
@@ -109,13 +112,13 @@ namespace CannonFightBase
             _angleVer += ver;
             _angleVer = Mathf.Clamp(_angleVer, -_settings.MaxVerticalAngle + 10, _settings.MaxVerticalAngle);
 
-            float angle = 0;
-            RaycastHit hit;
+            //float angle = 0;
+            //RaycastHit hit;
             //Açýlacakkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
-            if (Physics.Raycast(_transform.position, Vector3.down, out hit))
-            {
-                angle = Vector3.ProjectOnPlane(_transform.position - Vector3.down, hit.normal).y;
-            }
+            //if (Physics.Raycast(_transform.position, Vector3.down, out hit))
+            //{
+            //    angle = Vector3.ProjectOnPlane(_transform.position - Vector3.down, hit.normal).y;
+            //}
 
             _rotatorH.transform.localRotation = Quaternion.Euler(_rotatorH.transform.localEulerAngles.x, _angleHor, _rotatorH.transform.localEulerAngles.z);
             _rotatorV.transform.localRotation = Quaternion.Euler(-_angleVer, _rotatorV.transform.localEulerAngles.y, _rotatorV.transform.localEulerAngles.z);

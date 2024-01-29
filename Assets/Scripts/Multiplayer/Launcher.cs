@@ -3,6 +3,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using System;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using Zenject;
 
@@ -20,17 +21,21 @@ namespace CannonFightBase
 
         public static event Action<Player> OnPlayerLeftRoomEvent;
 
+        public static event Action<bool> OnPhotonConnectResultEvent;
+
         private RoomManager.RoomServerSettings _settings;
 
-        [SerializeField] private TMP_InputField _nameText;
-
-        [SerializeField] private SceneContext _sceneContext;
+        private SignalBus _signalBus;
 
         private bool _canPlayWithBots = true;
 
+        private bool _isFirstFight = false;
+
         private string _gameVersion = "1";
 
+
         public static Launcher Instance => _instance;
+
 
         void Awake()
         {
@@ -43,16 +48,46 @@ namespace CannonFightBase
         }
 
         [Inject]
-        public void Construct(RoomManager.RoomServerSettings settings)
+        public void Construct(RoomManager.RoomServerSettings settings,SignalBus signalBus)
         {
             _settings = settings;
+            _signalBus = signalBus;
+        }
+
+        private void OnEnable()
+        {
+            base.OnEnable();
+            _signalBus.Subscribe<OnCloudSavesLoadedSignal>(OnCloudSavesResult);
+            _signalBus.Subscribe<OnFailedToLoadCloudSavesSignal>(OnCloudSavesResult);
+
+        }
+
+        private void OnDisable()
+        {
+            base.OnDisable();
+
+            _signalBus.Unsubscribe<OnCloudSavesLoadedSignal>(OnCloudSavesResult);
+            _signalBus.Unsubscribe<OnFailedToLoadCloudSavesSignal>(OnCloudSavesResult);
+
         }
 
         void Start()
         {
-            Connect();
-
         }
+
+        private void OnCloudSavesResult()
+        {
+            Debug.Log("Photon Try Connect");
+            if (PhotonNetwork.IsConnectedAndReady)
+            {
+                OnConnectedToMaster();
+                return;
+            }
+
+            Connect();
+            Invoke(nameof(NoConnection),_settings.PhotonConnectTimeout);
+        }
+
 
         public void Connect()
         {
@@ -60,9 +95,40 @@ namespace CannonFightBase
             PhotonNetwork.GameVersion = _gameVersion;
         }
 
-        public void JoinRoom()
+        private void NoConnection()
         {
-            PhotonNetwork.LocalPlayer.NickName = _nameText.text;
+            if (PhotonNetwork.IsConnected)
+                return;
+
+            Debug.Log("No Connection");
+            PhotonNetwork.Disconnect();
+            OnPhotonConnectResultEvent?.Invoke(false);
+        }
+
+        public void StartFight()
+        {
+            if(PhotonNetwork.IsConnectedAndReady)
+            {
+                JoinRoom();
+            }
+            else
+            {
+                if (RoomManager.IsFirstFight)
+                {
+                    PlayWithBotsFirstFight();
+                    return;
+                }
+                else
+                {
+                    PlayWithBots();
+                }
+
+            }
+        }
+
+        private void JoinRoom()
+        {
+            PhotonNetwork.LocalPlayer.NickName = UserManager.Instance.Nickname;
 
             PhotonNetwork.JoinRandomRoom();
         }
@@ -79,41 +145,51 @@ namespace CannonFightBase
             PhotonNetwork.CreateRoom(roomName, roomOptions);
         }
 
-        public override void OnConnected()
+        public override void OnConnectedToMaster()
         {
-            print("Connected Lobby");
+            Debug.Log("Connected");
+            OnPhotonConnectResultEvent?.Invoke(true);
         }
+
 
         //Local Player joined
         public override void OnJoinedRoom()
         {
-            PhotonNetwork.LocalPlayer.NickName = _nameText.text;
+            _signalBus.Fire<OnGameMatchingStartedSignal>();
 
-            UIManager.Show(UIManager.GetView<MatchingMenuView>());
-
-            SaveManager.SetValue<int>("playWithBots", 0);//Ýlk baþta eðer playerprefs varsa diye sýfýrlayalým duruma göre 1 yapýalcak
+            CloudSaveManager.SetValue<int>("playWithBots", 0);//Ýlk baþta eðer playerprefs varsa diye sýfýrlayalým duruma göre 1 yapýalcak
 
             OnJoinedRoomEvent?.Invoke();
 
             UpdatePlayersCount();
 
+            if (PhotonNetwork.IsMasterClient)
+                PhotonNetwork.CurrentRoom.MaxPlayers = _settings.PlayersInGame;
+
+            if (RoomManager.IsFirstFight)
+            {
+                PlayWithBotsFirstFight();
+                return;
+            }
+
             CheckPlayersToStart();
 
             CheckPlayWithBots();
-
-            if (PhotonNetwork.IsMasterClient)
-                PhotonNetwork.CurrentRoom.MaxPlayers = _settings.PlayersInGame;
         }
 
         private void PlayWithBots()
         {
-            if (PhotonNetwork.IsMasterClient && _canPlayWithBots)
+            if ((PhotonNetwork.IsMasterClient || !PhotonNetwork.IsConnectedAndReady) && _canPlayWithBots)
             {
-                SaveManager.SetValue<int>("playWithBots",1);
-                print("PlayWithBots");
-
-                PhotonNetwork.LoadLevel(1);
+                CloudSaveManager.SetValue<int>("playWithBots",1);
+                LoadSceneManager.PhotonLoadScene(GameScene.Game);
             }
+        }
+
+        public void PlayWithBotsFirstFight()
+        {
+            CloudSaveManager.SetValue<int>("playWithBots", 1);
+            LoadSceneManager.PhotonLoadScene(GameScene.Game);
         }
 
 
@@ -121,10 +197,10 @@ namespace CannonFightBase
         {
             if (PhotonNetwork.IsMasterClient && !_canPlayWithBots)
             {
-                SaveManager.SetValue<int>("playWithBots", 0);
+                CloudSaveManager.SetValue<int>("playWithBots", 0);
                 print("PlayWithPlayers");
 
-                PhotonNetwork.LoadLevel(1);
+                LoadSceneManager.PhotonLoadScene(GameScene.Game);
             }
         }
 
@@ -161,10 +237,6 @@ namespace CannonFightBase
             CreateRoom();
         }
 
-        public override void OnMasterClientSwitched(Player newMasterClient)
-        {
-
-        }
 
         private void CheckPlayWithBots()
         {

@@ -18,14 +18,16 @@ namespace CannonFightUI
 
         [SerializedDictionary("Upgrade Type","Upgrade Item")] [SerializeField] private SerializedDictionary<UpgradeType, UpgradeItem> _upgradeItems;
 
+        private SignalBus _signalBus;
         private BaseViewAnimationSettings _animationSettings;
         private UpgradeManager _upgradeManager;
 
         [Inject]
-        private void Construct(UpgradeManager upgradeManager, BaseViewAnimationSettings animationSettings)
+        private void Construct(UpgradeManager upgradeManager, BaseViewAnimationSettings animationSettings,SignalBus signalBus)
         {
             _upgradeManager = upgradeManager;
             _animationSettings = animationSettings;
+            _signalBus = signalBus;
         }
 
         public override void Initialize()
@@ -33,7 +35,15 @@ namespace CannonFightUI
             _upgradePopupSubView.Initialize();
             _upgradedSubView.Initialize();
             _upgradePopupSubView.OnClickUpgradeEvent += OnClickUpgrade;
-            _backButton.onClick.AddListener(() =>{ UIManager.ShowLast(); });
+            _backButton.onClick.AddListener(() =>
+            {
+                UIManager.ShowLast();
+                _signalBus.Fire<OnButtonClickSignal>();
+            });
+        }
+
+        public override void AddSubViews()
+        {
         }
 
         public override void Show()
@@ -80,6 +90,7 @@ namespace CannonFightUI
             _upgradePopupSubView.Hide();
             SetUpgradeItemValues(cannonLevelSettings.UpgradeType, cannonLevelSettings);
         }
+
 
         [Serializable]
         public struct BaseViewAnimationSettings

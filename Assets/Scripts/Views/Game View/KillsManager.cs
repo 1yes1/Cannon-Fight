@@ -46,11 +46,17 @@ namespace CannonFightBase
         
         private void SetKillItem(Player killer, Player dead)
         {
+            if (GameManager.IsTutorialScene)
+                return;
+
             CreateKillItem(killer.NickName, dead.NickName);
         }
 
         private void SetKillAgentItem(Character killer, Character dead)
         {
+            if (GameManager.IsTutorialScene)
+                return;
+
             CreateKillItem(killer.NickName, dead.NickName);
         }
 

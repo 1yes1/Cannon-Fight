@@ -34,6 +34,7 @@ namespace CannonFightBase
             .FromPoolableMemoryPool<CannonBall, CannonBall.Pool>(poolBinder => poolBinder
             .WithInitialSize(5)
             .FromComponentInNewPrefab(_prefabSettings.CannonBallPrefab)
+
             .UnderTransformGroup("CannonBallPool"));
 
             Container.BindFactory<Potion, Potion.Factory>()
@@ -54,6 +55,10 @@ namespace CannonFightBase
             Container.Bind<TestTarget>().FromComponentInHierarchy().AsSingle();
 
             Container.Bind<IEventSubscriber>().To<AimFireJoystick>().FromComponentInHierarchy().AsSingle();
+
+
+            Container.BindInterfacesAndSelfTo<GameResultPresenter>().FromNewComponentOnNewGameObject().AsSingle();
+
 
             InstallExecutionOrder();
         }

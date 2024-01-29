@@ -10,7 +10,11 @@ namespace CannonFightUI
     {
         [SerializeField] private TextMeshProUGUI _coinText;
 
+
         public override void Initialize()
+        {
+        }
+        public override void AddSubViews()
         {
         }
 

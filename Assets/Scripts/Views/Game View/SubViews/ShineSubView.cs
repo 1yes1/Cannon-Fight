@@ -29,6 +29,11 @@ namespace CannonFightUI
             _canvasGroup = GetComponent<CanvasGroup>();
         }
 
+
+        public override void SetParameters(params object[] objects)
+        {
+        }
+
         public override void Show(float subViewDelay)
         {
             _delay = subViewDelay;

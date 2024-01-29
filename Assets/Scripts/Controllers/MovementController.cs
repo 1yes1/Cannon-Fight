@@ -5,7 +5,7 @@ using Zenject;
 
 namespace CannonFightBase
 {
-    public class MovementController : IFixedTickable,ITickable,IInitializable,ICannonBehaviour, ICannonDataLoader
+    public class MovementController : IFixedTickable,ITickable,IInitializable,ICannonBehaviour
     {
         private readonly Settings  _settings;
 
@@ -90,44 +90,45 @@ namespace CannonFightBase
 
         private void GetInput()
         {
-            if(GameManager.Instance.useAndroidControllers)
+#if !UNITY_EDITOR
+            // Steering Input
+            _horizontalInput = CannonJoystick.Horizontal;
+            //Debug.Log(_horizontalInput);
+
+            // Acceleration Input
+            _verticalInput = CannonJoystick.Vertical;
+
+
+
+            float localForwardVelocity = Vector3.Dot(_rigidbody.velocity, _transform.forward);
+
+            //print(localForwardVelocity);
+            // Breaking Input
+            if (_verticalInput == -1 && localForwardVelocity > 0.1f)
             {
-                // Steering Input
-                _horizontalInput = CannonJoystick.Horizontal;
-                //Debug.Log(_horizontalInput);
-
-                // Acceleration Input
-                _verticalInput = CannonJoystick.Vertical;
-
-                float localForwardVelocity = Vector3.Dot(_rigidbody.velocity, _transform.forward);
-
-                //print(localForwardVelocity);
-                // Breaking Input
-                if (_verticalInput == -1 && localForwardVelocity > 0.1f)
-                {
-                    _isBreaking = true;
-                    _verticalInput = 0;
-                    //print("Breaking");
-                }
-                else
-                {
-                    //print("Not Breaking");
-                    _isBreaking = false;
-                }
+                _isBreaking = true;
+                _verticalInput = 0;
+                //print("Breaking");
             }
             else
             {
-                // Steering Input
-                _horizontalInput = Input.GetAxis("Horizontal");
-
-                // Acceleration Input
-                _verticalInput = Input.GetAxis("Vertical");
-
-                // Breaking Input
-                _isBreaking = Input.GetKey(KeyCode.Space);
+                //print("Not Breaking");
+                _isBreaking = false;
             }
+#else
 
+            // Steering Input
+            _horizontalInput = Input.GetAxis("Horizontal");
 
+            // Acceleration Input
+            _verticalInput = Input.GetAxis("Vertical");
+
+            // Breaking Input
+            _isBreaking = Input.GetKey(KeyCode.Space);
+
+            //Debug.Log("_horizontalInput: " + _horizontalInput);
+            //Debug.Log("_verticalInput: " + _verticalInput);
+#endif
         }
 
         private void HandleMotor()
@@ -211,11 +212,6 @@ namespace CannonFightBase
                 //print("Left");
             }
 
-        }
-
-        public void SetCannonData()
-        {
-            throw new NotImplementedException();
         }
 
         [Serializable]

@@ -5,6 +5,7 @@ using System;
 using ExitGames.Client.Photon;
 using UnityEngine.SceneManagement;
 using Zenject;
+using CannonFightUI;
 
 namespace CannonFightBase
 {
@@ -16,6 +17,12 @@ namespace CannonFightBase
         public static event Action<Player> OnPlayerLeftRoomEvent;
 
         private RoomServerSettings _settings;
+
+        public static bool IsFirstFight
+        {
+            get => CloudSaveManager.GetValue<int>("goFirstFight") == 1;
+            set => CloudSaveManager.SetValue<int>("goFirstFight",(value) ? 1 : 0);
+        }
 
         public static RoomManager Instance => _instance;
 
@@ -49,23 +56,20 @@ namespace CannonFightBase
                 DontDestroyOnLoad(gameObject);
                 _instance = this;
             }
-
             PhotonNetwork.EnableCloseConnection = true;
         }
-
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
         {
             if(scene.name == "Game")
             {
-                Debug.Log("NICKNAME: " + PhotonNetwork.LocalPlayer.NickName);
                 GameEventCaller.Instance.OnGameSceneLoaded();
+                PhotonNetwork.CurrentRoom.IsOpen = false;
             }
         }
-
-        public override void OnJoinedRoom()
+        public override void OnConnected()
         {
-
+            PhotonNetwork.MaxResendsBeforeDisconnect = 4;
         }
 
         public override void OnPlayerLeftRoom(Player otherPlayer)
@@ -100,6 +104,25 @@ namespace CannonFightBase
             //}
         }
 
+        public override void OnDisconnected(DisconnectCause cause)
+        {
+            print("DISCONNECTED: "+cause.ToString());
+
+            PhotonNetwork.OfflineMode = true;
+            if(cause != DisconnectCause.DisconnectByClientLogic)
+                InGameDisconnect("Internet Connection Lost!");
+        }
+
+        public void InGameDisconnect(string warningText)
+        {
+
+            if (SceneManager.GetActiveScene().buildIndex == (int)GameScene.Game)
+            {
+                UIManager.Show<WarningView>().CreateWarning(warningText);
+                LoadSceneManager.LoadScene(GameScene.Menu,2);
+            }
+        }
+
 
         [Serializable]
         public struct Settings
@@ -122,6 +145,8 @@ namespace CannonFightBase
         public struct RoomServerSettings
         {
             public int PlayersInGame;
+
+            public float PhotonConnectTimeout;
 
             public float WaitForPlayersUntilPlayWithBots;
 

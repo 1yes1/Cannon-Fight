@@ -1,31 +1,32 @@
 using UnityEngine;
+using UnityEngine.AI;
 using Zenject;
 
 namespace CannonFightBase
 {
     public class AIStateController:IInitializable,ITickable
     {
-        private Agent _agent;
+        private readonly Agent _agent;
 
-        private AIState _currentState;
+        private readonly IdleMoveState _idleMoveState;
 
-        private IdleMoveState _idleMoveState;
+        private readonly FireState _fireState;
 
-        private FireState _fireState;
-
-        private AIEnemyDetector _enemyDetector;
+        private readonly NavMeshAgent _navMeshAgent;
 
         private AIState[] _states;
 
+        private AIState _currentState;
+
         public AIStateController(IdleMoveState idleMovingState,
                                FireState shootingState,
-                               AIEnemyDetector enemyDetector,
+                               NavMeshAgent navMeshAgent,
                                Agent agent)
         {
             _idleMoveState = idleMovingState;
             _fireState = shootingState;
-            _enemyDetector = enemyDetector;
             _agent = agent;
+            _navMeshAgent = navMeshAgent;
         }
 
         public void Initialize()
@@ -112,6 +113,16 @@ namespace CannonFightBase
                     return;
                 }
             }
+        }
+
+        public void StopAction()
+        {
+            if (_navMeshAgent == null)
+                return;
+
+            _navMeshAgent.isStopped = true;
+            _navMeshAgent.enabled = false;
+            ChangeState<IdleMoveState>();
         }
 
     }

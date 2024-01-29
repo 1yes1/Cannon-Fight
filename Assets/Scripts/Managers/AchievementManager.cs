@@ -5,20 +5,21 @@ using UnityEngine;
 
 namespace CannonFightBase
 {
-    public class AchievementManager : MonoBehaviour
+    public class AchievementManager
     {
-
         [Serializable]
-        public class Settings
+        public struct Settings
         {
-            public LevelEndSettings levelEndSettings;
+            public GameEndSettings GameEndSettings;
         }
 
         [Serializable]
-        public class LevelEndSettings
+        public struct GameEndSettings
         {
-            public int WinnerCoinMultiplier = 25;
-            public int LoserCoinMultiplier = 10;
+            public int WinnerCoinPrize;
+            public int WinnerCoinMultiplier;
+            public int LoserCoinPrize;
+            public int LoserCoinMultiplier;
         }
 
     }

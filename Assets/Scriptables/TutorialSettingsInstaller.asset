@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 271be8422bd01aa449942ec2c6104bf6, type: 3}
+  m_Name: TutorialSettingsInstaller
+  m_EditorClassIdentifier: 
+  GameTutorialSettings:
+    TutorialTexts:
+    - Type: 0
+      Text: 'Hi Welcome!
+
+        I am going to teach you how to play Cannon Fight!
+        I''m sure you will enjoy. Let''s get started!'
+    - Type: 1
+      Text: Left area of screen is using for moving. With moving your finger up-down-right-left
+        you can control your Cannon. First goal is reach that green point!
+    - Type: 2
+      Text: Right area of screen is using for aiming. With moving your finger up-down-right-left
+        you can look wherever you want. Now look that enemy!
+    - Type: 3
+      Text: 'Great!
+
+        It''s time to kill enemy! You can fire with pressing
+        button. It''s going to fire automatically most of the time. But you try it
+        yourself though!'
+    - Type: 4
+      Text: 'Cool!
+
+        Now fire and open the chest and take Damage Potion! With
+        Damage Potion you can fire 2 times powerful cannon ball. (You have to collect
+        2 potion in the game don''t forget!)'
+    - Type: 5
+      Text: Kill the enemy behind you!
+    - Type: 6
+      Text: 'Perfect!
+
+        Now open that chest and collect the Multiball Potion.
+        With multiball potion you can fire 3 cannon ball at the same time.'
+    - Type: 7
+      Text: You have to kill one enemy more. Be careful it is firing either!
+    - Type: 8
+      Text: You need health! Open that chest and collect Health Potion. You can fill
+        your health with health potion.
+    - Type: 9
+      Text: You are done! Be ready for fighting!

@@ -6,11 +6,15 @@ using UnityEngine.UI;
 
 namespace CannonFightBase
 {
-    public class AimFireJoystick : UISubView,IEventSubscriber
+    public class AimFireJoystick : UISubView, IEventSubscriber
     {
         [SerializeField] private Button _fireButton;
 
         public override void Initialize()
+        {
+        }
+
+        public override void SetParameters(params object[] objects)
         {
         }
 

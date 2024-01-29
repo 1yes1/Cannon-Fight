@@ -157,6 +157,7 @@ namespace CannonFightBase
             Vector3 direction = target - _agentView.CannonBallSpawnTransform.position;
 
             ParticleManager.CreateParticle<FireParticle>(_agentView.CannonBallSpawnTransform.position, null, false);
+            AudioManager.PlaySound(GameSound.CannonFire, _agentView.CannonBallSpawnTransform.position);
 
             //ParticleManager.CreateAndPlay(_particleSettings.FireCannonBallParticle, _agentView.CannonBallSpawnTransform, _agentView.CannonBallSpawnTransform.position);
             //ParticleManager.Instance.CreateWithFactory<CannonDamageParticle>(_particleSettings.ParticleFactory, ballPosition, null, false);

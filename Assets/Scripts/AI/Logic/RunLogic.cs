@@ -13,6 +13,12 @@ namespace CannonFightBase
 
         private int _startHealth;
 
+        // Örneðin bir kere vuruldu. Daha sonra yakýn zamanda hiç vurulmasa bile baþka biri vurunca kaçmaya çalýþýyor.
+        // Bunu önlemek için sürekli damage yemesi durumunda kaçmasýný saðlamak için koyduk bunu
+        private float _resetCountdown; 
+
+        private bool _canResetCountdown;
+
         private int _losedHealth = 0;
 
         private bool _losedHealthResetCountdown = false;
@@ -37,6 +43,7 @@ namespace CannonFightBase
             if (!_losedHealthResetCountdown)
                 StartLosedHealthCountdown();
 
+            //Debug.Log("StartLosedHealthCountdown");
             //Bu her türlü baþlasýn. Yani her hasarda Countdown 5 den geriye sarsýn. Böylelikle %40 hasar sayýmý için çok uzun süre geçmeyecek
             //_losedHealthResetCountdown = true;
         }
@@ -47,7 +54,13 @@ namespace CannonFightBase
             if (_startHealth == 0)
                 _startHealth = _health;
 
-            if (_startHealth * 0.4f < _losedHealth)
+            //Debug.Log("_startHealth: " + _startHealth);
+            //Debug.Log("_losedHealth: " + _losedHealth);
+            //Debug.Log("_startHealth * 0.4: " + (_startHealth * 0.4f));
+            _resetCountdown = 2;
+            _canResetCountdown = true;
+
+            if (_startHealth * 0.6f < _losedHealth)
             {
                 _losedHealthResetCountdown = true;
                 _losedHealthCountdown = 5;
@@ -55,8 +68,17 @@ namespace CannonFightBase
                 _controller.ChangeState<IdleMoveState>();
                 _isExecuting = true;
                 //Debug.Log("Run FROM ENEMY");
+                _canResetCountdown = false;
 
             }
+        }
+
+        private void ResetLosedHealth()
+        {
+            _losedHealth = 0;
+            _startHealth = 0;
+            _losedHealthResetCountdown = false;
+            _isExecuting = false;
         }
 
         public void Tick()
@@ -68,14 +90,23 @@ namespace CannonFightBase
 
                 if (_losedHealthCountdown <= 0)
                 {
-                    _losedHealth = 0;
-                    _startHealth = 0;
-                    _losedHealthResetCountdown = false;
+                    ResetLosedHealth();
                     _controller.SetAppropriateState<FireState>(true);
-                    _isExecuting = false;
 
                 }
             }
+
+            if(_canResetCountdown)
+            {
+                _resetCountdown -= Time.deltaTime;
+
+                if (_resetCountdown <= 0)
+                {
+                    _canResetCountdown = false;
+                    ResetLosedHealth();
+                }
+            }
+
         }
 
         public override void Dispose()

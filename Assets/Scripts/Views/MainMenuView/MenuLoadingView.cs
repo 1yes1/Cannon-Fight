@@ -11,23 +11,29 @@ namespace CannonFightUI
 {
     public class MenuLoadingView : UIView
     {
-        private SignalBus _signalBus;
-
         private AnimationSettings _animationSettings;
 
         private CanvasGroup _canvasGroup;
 
         [Inject]
-        public void Construct(AnimationSettings animationSettings,SignalBus signalBus)
+        public void Construct(AnimationSettings animationSettings)
         {
             _animationSettings = animationSettings;
-            _signalBus = signalBus;
         }
 
         public override void Initialize()
         {
-            _signalBus.Subscribe<OnCloudSavesLoadedSignal>(Hide);
             _canvasGroup = GetComponent<CanvasGroup>();
+        }
+
+        public override void AddSubViews()
+        {
+        }
+
+        public override void Show()
+        {
+            base.Show();
+            _canvasGroup.alpha = 1;
         }
 
         public override void Hide()
@@ -35,10 +41,10 @@ namespace CannonFightUI
             _canvasGroup.DOFade(_animationSettings.FadeOut).OnComplete(() =>
             {
                 gameObject.SetActive(false);
-                UIManager.Show<MainMenuView>();
             });
         }
 
+        [Serializable]
         public struct AnimationSettings
         {
             public TweenSettings FadeOut;

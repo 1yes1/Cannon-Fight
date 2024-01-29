@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8721181f6e463554db8b687d07eb98bf, type: 3}
+  m_Name: EXAMPLE_ServerSettingsInstaller
+  m_EditorClassIdentifier: 
+  ServerSettings:
+    GameServerSettings:
+      GameStartCountdown: 1
+      WaitAfterAllPlayersEnteredToGame: 0.1
+    RoomServerSettings:
+      PlayersInGame: 4
+      PhotonConnectTimeout: 0.1
+      WaitForPlayersUntilPlayWithBots: 0.1
+      WaitAfterAllPlayersEnteredToRoom: 0.1
+      WaitAfterSecondPlayerEnteredToRoom: 0.1

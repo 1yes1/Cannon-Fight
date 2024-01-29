@@ -1,3 +1,4 @@
+using CannonFightBase;
 using CannonFightExtensions;
 using CannonFightUI;
 using DG.Tweening;
@@ -19,12 +20,13 @@ namespace CannonFightUI
         [SerializeField] private Button _exitButton;
 
         private BaseViewAnimationSettings _animationSettings;
-
+        private SignalBus _signalBus;
 
         [Inject]
-        private void Construct(BaseViewAnimationSettings animationSettings)
+        private void Construct(SignalBus signalBus, BaseViewAnimationSettings animationSettings)
         {
             _animationSettings = animationSettings;
+            _signalBus = signalBus;
         }
 
         public override void Initialize()
@@ -32,8 +34,21 @@ namespace CannonFightUI
             _killCountSubView.Initialize();
             _coinGainSubView.Initialize();
             _rankSubView.Initialize();
-            _exitButton.onClick.AddListener(ExitToMainMenu);
 
+            _exitButton.onClick.AddListener(() =>
+            {
+                ExitToMainMenu();
+                _signalBus.Fire<OnButtonClickSignal>();
+            });
+
+        }
+
+
+        public override void AddSubViews()
+        {
+            UIManager.AddSubView(this,_killCountSubView);
+            UIManager.AddSubView(this,_rankSubView);
+            UIManager.AddSubView(this,_coinGainSubView);
         }
 
         public override void Show()
@@ -55,6 +70,7 @@ namespace CannonFightUI
         {
             SceneManager.LoadScene(0);
         }
+
 
         [Serializable]
         public struct BaseViewAnimationSettings

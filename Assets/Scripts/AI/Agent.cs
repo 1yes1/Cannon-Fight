@@ -22,13 +22,17 @@ namespace CannonFightBase
 
         private AgentManager _agentManager;
 
+        private AgentCarDriver _carDriver;
+
+
         public bool IsStaticAgent { get; set; }
 
         [Inject]
-        private void Construct(AIStateController aiStateController,AgentDamageHandler agentDamageHandler)
+        private void Construct(AIStateController aiStateController,AgentDamageHandler agentDamageHandler, AgentCarDriver agentCarDriver)
         {
             _agentDamageHandler = agentDamageHandler;
             _controller = aiStateController;
+            _carDriver = agentCarDriver;
         }
 
 
@@ -52,6 +56,7 @@ namespace CannonFightBase
 
         public void Die(Character attackerAgent)
         {
+            attackerAgent.GetKill();
             _agentManager.OnDie(attackerAgent);
 
             Debug.Log(attackerAgent + " killed " + name);
@@ -59,9 +64,21 @@ namespace CannonFightBase
             Destroy(gameObject);
         }
 
+        public void StopMoving()
+        {
+            _carDriver.SetBreaking(true);
+        }
+
         protected override void OnGameStart()
         {
             _controller.ChangeState<IdleMoveState>();
+        }
+
+        public void StopAction()
+        {
+            CanDoAction = false;
+            _controller.StopAction();
+            GetComponent<Rigidbody>().isKinematic = true;
         }
 
         [Serializable]

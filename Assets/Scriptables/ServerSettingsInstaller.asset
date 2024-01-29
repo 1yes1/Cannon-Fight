@@ -15,9 +15,10 @@ MonoBehaviour:
   ServerSettings:
     GameServerSettings:
       GameStartCountdown: 3
-      WaitAfterAllPlayersEnteredToGame: 2
+      WaitAfterAllPlayersEnteredToGame: 3
     RoomServerSettings:
       PlayersInGame: 4
-      WaitForPlayersUntilPlayWithBots: 1
-      WaitAfterAllPlayersEnteredToRoom: 25
-      WaitAfterSecondPlayerEnteredToRoom: 23
+      PhotonConnectTimeout: 5
+      WaitForPlayersUntilPlayWithBots: 10
+      WaitAfterAllPlayersEnteredToRoom: 3
+      WaitAfterSecondPlayerEnteredToRoom: 5

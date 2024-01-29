@@ -29,6 +29,10 @@ namespace CannonFightBase
             //_canvasGroup = GetComponent<CanvasGroup>();
         }
 
+        public override void AddSubViews()
+        {
+        }
+
         public void ShowScoreboard()
         {
             scrollMenu.UpdateItemList();

@@ -14,5 +14,9 @@ namespace CannonFightBase
         public override void Initialize()
         {
         }
+
+        public override void AddSubViews()
+        {
+        }
     }
 }

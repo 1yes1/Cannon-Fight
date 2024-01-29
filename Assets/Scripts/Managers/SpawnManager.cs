@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using Zenject;
 using Zenject.SpaceFighter;
 using static CannonFightBase.AIManager;
@@ -21,20 +22,24 @@ namespace CannonFightBase
 
         private BotPlayerItemSettings _botPlayerItemSettings;
 
-        private CannonManager.Factory _playerManagerFactory;
+        private CannonManager.Factory _cannonManagerFactory;
 
         private AgentManager.Factory _agentManagerFactory;
 
         private SpawnPoint[] _spawnPoints;
 
-        private CannonManager _playerManager;
+        private CannonManager _cannonManager;
 
         private int _spawnedPlayersCount = -1;
+
+        public static SpawnManager Instance => _instance;
+
+        public static int SpawnedPlayersCount => _instance._spawnedPlayersCount;
 
         [Inject]
         public void Construct(CannonManager.Factory factory,AgentManager.Factory agentManagerFactory, BotPlayerItemSettings botPlayerItemSettings, GameAgentSettings gameAgentSettings)
         {
-            _playerManagerFactory = factory;
+            _cannonManagerFactory = factory;
             _agentManagerFactory = agentManagerFactory;
             _botPlayerItemSettings = botPlayerItemSettings;
             _gameAgentSettings = gameAgentSettings;
@@ -43,15 +48,13 @@ namespace CannonFightBase
 
         private void OnEnable()
         {
-            GameEventReceiver.OnGameReadyToStartEvent += SpawnPlayerManager;
-            GameEventReceiver.OnGameReadyToStartEvent += SpawnBotsCheck;
+            GameEventReceiver.OnGameReadyToStartEvent += OnGameReadyToStart;
             PhotonNetwork.NetworkingClient.EventReceived += EVENT_SpawnPlayerManager;
         }
 
         private void OnDisable()
         {
-            GameEventReceiver.OnGameReadyToStartEvent -= SpawnPlayerManager;
-            GameEventReceiver.OnGameReadyToStartEvent -= SpawnBotsCheck;
+            GameEventReceiver.OnGameReadyToStartEvent -= OnGameReadyToStart;
             PhotonNetwork.NetworkingClient.EventReceived -= EVENT_SpawnPlayerManager;
         }
 
@@ -76,35 +79,44 @@ namespace CannonFightBase
             //print("PhotonNetwork.LocalPlayer.ActorNumber: " + PhotonNetwork.LocalPlayer.ActorNumber);
             //print("PhotonNetwork.CurrentRoom.PlayerCount: " + PhotonNetwork.CurrentRoom.PlayerCount);
             int index = 0;
-            if (PhotonNetwork.IsConnected)
+            if (PhotonNetwork.IsConnected && PhotonNetwork.InRoom && !GameManager.PlayWithBots)
                 index = (PhotonNetwork.LocalPlayer.ActorNumber > PhotonNetwork.CurrentRoom.PlayerCount) ? PhotonNetwork.LocalPlayer.ActorNumber - PhotonNetwork.CurrentRoom.PlayerCount : PhotonNetwork.LocalPlayer.ActorNumber - 1;
-
 
             if (GameManager.PlayWithBots)
             {
                 _instance._spawnedPlayersCount++;
                 index = _instance._spawnedPlayersCount;
             }
+
+            if (GameManager.Instance != null && GameManager.IsTutorialScene)
+                index = 0;
+
             spawnPoint = _instance._spawnPoints[index];
             spawnPoint.IsUsing = true;
             
             return spawnPoint;
         }
 
-        public void SpawnPlayerManager()
+        private void OnGameReadyToStart()
+        {
+            SpawnCannonManager();
+            SpawnBotsCheck();
+        }
+
+        public CannonManager SpawnCannonManager()
         {
             //print("----------------------Spawn Player Managers---------------------");
-            if (_playerManager != null)
-                return;
+            if (_cannonManager != null)
+                return null;
 
-            _playerManager = _playerManagerFactory.Create();
-            PhotonView photonView = _playerManager.GetComponent<PhotonView>();
+            _cannonManager = _cannonManagerFactory.Create();
+            PhotonView photonView = _cannonManager.GetComponent<PhotonView>();
 
             if (PhotonNetwork.AllocateViewID(photonView))
             {
                 object[] data = new object[]
                 {
-                    _playerManager.transform.position, _playerManager.transform.rotation, photonView.ViewID
+                    _cannonManager.transform.position, _cannonManager.transform.rotation, photonView.ViewID
                 };
                 RaiseEventOptions raiseEventOptions = new RaiseEventOptions
                 {
@@ -117,12 +129,13 @@ namespace CannonFightBase
             else
             {
                 Debug.LogError("Failed to allocate a ViewId.");
-                Destroy(_playerManager);
+                Destroy(_cannonManager);
             }
 
-            _playerManager.SetNameAndPicture(PhotonNetwork.LocalPlayer.NickName,null);
+            _cannonManager.SetNameAndPicture(UserManager.Instance.Nickname,null);
 
-            _playerManager.Initialize();
+            _cannonManager.Initialize();
+            return _cannonManager;
         }
 
         public void EVENT_SpawnPlayerManager(EventData photonEvent)
@@ -136,7 +149,7 @@ namespace CannonFightBase
                 //    SpawnPlayerManager();
                 //}
                 object[] data = (object[])photonEvent.CustomData;
-                CannonManager playerManager = _playerManagerFactory.Create();
+                CannonManager playerManager = _cannonManagerFactory.Create();
                 PhotonView photonView = playerManager.GetComponent<PhotonView>();
                 photonView.ViewID = (int)data[2];
                 //print("----------------------Spawn Player Managers Misafir---------------------");
@@ -153,14 +166,17 @@ namespace CannonFightBase
         }
 
 
-        private void SpawnBots(int count)
+        public AgentManager[] SpawnBots(int count)
         {
+            AgentManager[] result = new AgentManager[count];
             for (int i = 0; i < count; i++)
             {
                 AgentManager agentManager = _agentManagerFactory.Create();
                 agentManager.Initialize();
                 agentManager.SetNameAndPicture(_botPlayerItemSettings.Names[i], _botPlayerItemSettings.Pictures[i]);
+                result[i] = agentManager;
             }
+            return result;
         }
 
         public void TEST_SpawnBot(int spawnCount)
