@@ -17,7 +17,7 @@ namespace CannonFightUI
 
         private AnimationSettings _animationSettings;
 
-        private string _rank;
+        private int _rank;
 
 
         [Inject]
@@ -32,6 +32,7 @@ namespace CannonFightUI
 
         public override void SetParameters(params object[] objects)
         {
+            _rank = (int)objects[0];
         }
 
         public override void Show(float subViewDelay)
@@ -41,6 +42,7 @@ namespace CannonFightUI
             _background.GetComponent<Image>().DOFade(0, 0);
             _background.GetComponent<RectTransform>().DOAnchorPosX(-_animationSettings.Background.Value, 0);
             _rankText.transform.localScale = Vector3.zero;
+            _rankText.text = "Rank #" + _rank;
 
             _background.GetComponent<RectTransform>().DOAnchorPosX(_animationSettings.Background.Value, _animationSettings.Background.Duration).SetEase(_animationSettings.Background.Ease)
                 .SetDelay(_delay + _animationSettings.Background.Delay);
@@ -53,7 +55,6 @@ namespace CannonFightUI
 
         void Start()
         {
-            _rank = "You are #" + 6;
         }
 
         void Update()

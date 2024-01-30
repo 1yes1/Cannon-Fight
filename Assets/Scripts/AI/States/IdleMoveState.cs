@@ -87,7 +87,6 @@ namespace CannonFightBase
                         _carDriver.SetSteeringAmount(0);
                     }
                 }
-                //print(_navMeshAgent.remainingDistance);
             }
             else
             {
@@ -98,8 +97,6 @@ namespace CannonFightBase
                 if (_navMeshAgent.remainingDistance <= 0.75f)
                     GoNewPosition();
             }
-
-            //Debug.Log("IDLE MOVE STATE");
 
             if (_enemyDetector.FindClosestEnemy() != null && _enemyDetector.HasFireAngle())
                 _stateController.ChangeState<FireState>();

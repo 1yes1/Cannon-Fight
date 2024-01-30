@@ -33,6 +33,8 @@ namespace CannonFightUI
 
         public override void Initialize()
         {
+            _rankSubView.SetParameters(1);
+
             _killCountSubView.Initialize();
             _coinGainSubView.Initialize();
             _rankSubView.Initialize();

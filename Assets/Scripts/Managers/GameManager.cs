@@ -134,7 +134,7 @@ namespace CannonFightBase
             }
             //print("LeftCannonsCount: " + PhotonNetwork.CurrentRoom.Players.Values.Count);
 
-            if(PhotonNetwork.IsConnected)
+            if(!PhotonNetwork.OfflineMode)
                 LeftCannonsCount += PhotonNetwork.CurrentRoom.Players.Values.Count;
             else//Eğer photon bağlanmadıysa ve first fight ise kendimizi de ekleyelim
             {
@@ -238,8 +238,8 @@ namespace CannonFightBase
 
         private void Loser()
         {
-            UIManager.ShowWithDelay<DefeatedPanelView>(1.25f);
             CurrentCannon.CannonManager.SetAsLoser();
+            UIManager.ShowWithDelay<DefeatedPanelView>(1.25f);
             AudioManager.PlaySound(GameSound.Defeated,default,1.25f);
             AudioManager.PlaySound(MenuSound.MenuMusic);
             GameEventCaller.OnLoseTheGame();

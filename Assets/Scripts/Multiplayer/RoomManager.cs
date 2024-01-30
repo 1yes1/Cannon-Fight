@@ -56,7 +56,7 @@ namespace CannonFightBase
                 DontDestroyOnLoad(gameObject);
                 _instance = this;
             }
-            PhotonNetwork.EnableCloseConnection = true;
+            //PhotonNetwork.EnableCloseConnection = true;
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
@@ -64,7 +64,8 @@ namespace CannonFightBase
             if(scene.name == "Game")
             {
                 GameEventCaller.Instance.OnGameSceneLoaded();
-                PhotonNetwork.CurrentRoom.IsOpen = false;
+                if(!PhotonNetwork.OfflineMode)
+                    PhotonNetwork.CurrentRoom.IsOpen = false;
             }
         }
         public override void OnConnected()
@@ -108,7 +109,6 @@ namespace CannonFightBase
         {
             print("DISCONNECTED: "+cause.ToString());
 
-            PhotonNetwork.OfflineMode = true;
             if(cause == DisconnectCause.ClientTimeout || cause == DisconnectCause.Exception || cause == DisconnectCause.ServerTimeout)
                 InGameDisconnect("Internet Connection Lost!");
         }

@@ -83,7 +83,6 @@ namespace CannonFightUI
 
         private void OnCloudSavesLoaded(OnCloudSavesLoadedSignal onCloudSavesLoadedSignal)
         {
-            print("SetUpgradeItemValues");
             SetUpgradeItemValues();
         }
 

@@ -174,6 +174,7 @@ namespace CannonFightBase
             }
         }
 
+#if UNITY_ANDROID
         private void OnAuthanticated(SignInStatus signInStatus)
         {
             if (signInStatus == SignInStatus.Success)
@@ -181,44 +182,38 @@ namespace CannonFightBase
             else
                 OnAuthanticated(false);
         }
+#endif
 
         private void OnPlayerCloudSavesLoaded(PlayerSaveData data)
         {
 
             if (data == null)
             {
-                Debug.Log("IsFirstOpening: " + IsFirstOpening);
-
                 //Hem telefonda kayýt yok hem de cloud da yok o zaman first opening
                 if(IsFirstOpening)
                     _signalBus.Fire<OnFirstOpeningSignal>();
 
                 //Bir hata çýkmýþ ve yüklenememiþ veriler.
                 _signalBus.Fire(new OnFailedToLoadCloudSavesSignal());
-                Debug.Log("OnFailedToLoadCloudSavesSignal");
                 return;
             }
             else
             {
                 if(IsCloudSavesPreffered(data))
                 {
-                    Debug.Log("Cloud kayýtlarý daha yeni. O zaman mobile kaydedelim.");
                     SaveDatasToMobile(data);
                 }
                 else
                 {
-                    Debug.Log("Mobil kayýtlar daha yeni. O zaman cloud a kaydedelim");
                     SaveDatasToCloud();
                 }
             }
 
-            Debug.Log("CLOUD SAVE LOADED");
             _signalBus.Fire(new OnCloudSavesLoadedSignal() { PlayerSaveData = data });
         }
 
         private void SetDefaultSettings()
         {
-            Debug.Log("No Saves");
             _damageLevelSettings.SetDefaultValue();
             _fireRateLevelSettings.SetDefaultValue();
             _healthLevelSettings.SetDefaultValue();
@@ -228,8 +223,6 @@ namespace CannonFightBase
 
         private void SaveDatasToMobile(PlayerSaveData playerSaveData)
         {
-            Debug.Log("Datas Saving To Mobile");
-
             _damageLevelSettings.SetLevel(playerSaveData.CannonSaveData.DamageLevel);
             _fireRateLevelSettings.SetLevel(playerSaveData.CannonSaveData.FireRateLevel);
             _healthLevelSettings.SetLevel(playerSaveData.CannonSaveData.HealthLevel);

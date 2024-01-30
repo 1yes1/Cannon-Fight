@@ -1,7 +1,9 @@
 using CannonFightExtensions;
 using CannonFightUI;
 using DG.Tweening;
+#if UNITY_ANDROID
 using GooglePlayGames;
+#endif
 using Photon.Pun;
 using Photon.Realtime;
 using System;
@@ -74,7 +76,7 @@ namespace CannonFightBase
 
         private void AddPlayerItem()
         {
-            if (!PhotonNetwork.IsConnectedAndReady)
+            if (PhotonNetwork.OfflineMode)
             {
                 UIManager.GetView<GameLoadingView>().AddOfflinePlayerItem();
                 return;
@@ -82,19 +84,19 @@ namespace CannonFightBase
 
             foreach (Player item in PhotonNetwork.CurrentRoom.Players.Values)
             {
-                if (item.IsLocal)
-                {
-                    AddPlayerItemWithPhotos(item);
-                }
-                else
-                    UIManager.GetView<GameLoadingView>().AddPlayerItem(item);
+                //if (item.IsLocal)
+                //{
+                //    AddPlayerItemWithPhotos(item);
+                //}
+                //else
+                UIManager.GetView<GameLoadingView>().AddPlayerItem(item);
             }
 
         }
 
         private void AddPlayerItemWithPhotos(Player player)
         {
-            StartCoroutine(DownloadImage(player,PlayGamesPlatform.Instance.GetUserImageUrl()));
+            //StartCoroutine(DownloadImage(player,PlayGamesPlatform.Instance.GetUserImageUrl()));
         }
 
         private IEnumerator DownloadImage(Player player,string MediaUrl)

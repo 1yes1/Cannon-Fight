@@ -69,13 +69,5 @@ namespace CannonFightBase
         {
         }
 
-        //public void GetLevelSettings(out float price,out float value,out float valuePlus,int level = 1)
-        //{
-        //    level -= 1;
-
-        //    price = _startPrice + Mathf.Floor(level * _priceMultiplierPerLevel);
-        //    value = _startPrice + Mathf.Floor(level * _priceMultiplierPerLevel);
-        //    valuePlus = _valueMultiplierPerLevel;
-        //}
     }
 }

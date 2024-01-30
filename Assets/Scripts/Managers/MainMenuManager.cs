@@ -77,7 +77,6 @@ namespace CannonFightBase
         {
             UIManager.Show<MainMenuView>(true);
             UIManager.Show<CoinView>(false, true);
-
             _signalBus.Fire(new OnMainMenuOpenedSignal());
         }
 

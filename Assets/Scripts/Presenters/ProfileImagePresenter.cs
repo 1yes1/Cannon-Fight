@@ -1,5 +1,7 @@
 using CannonFightUI;
+#if UNITY_ANDROID
 using GooglePlayGames;
+#endif
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,7 +23,7 @@ namespace CannonFightBase
             _signalBus = signalBus;
         }
 
-        public override void Initialize()
+        public void OnEnable()
         {
             _signalBus.Subscribe<OnPlayGamesAuthanticated>(SetProfilePicture);
             _signalBus.Subscribe<OnMainMenuOpenedSignal>(OnMainMenuOpened);
@@ -41,12 +43,17 @@ namespace CannonFightBase
 
         private void SetProfilePicture(OnPlayGamesAuthanticated onPlayGamesAuthanticated)
         {
+#if UNITY_ANDROID
             if(onPlayGamesAuthanticated.IsAuthanticated)
                 StartCoroutine(DownloadImage(PlayGamesPlatform.Instance.GetUserImageUrl()));
+#endif
         }
 
         private void OnMainMenuOpened()
         {
+            if(_profileImageSubView == null)
+                _profileImageSubView = UIManager.GetSubView<ProfileImageSubView>();
+
             _profileImageSubView.SetNickname(CloudSaveManager.GetValue<string>(UserManager.NICKNAME_PREFS));
         }
 

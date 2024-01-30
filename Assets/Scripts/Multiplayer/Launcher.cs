@@ -71,13 +71,9 @@ namespace CannonFightBase
 
         }
 
-        void Start()
-        {
-        }
 
         private void OnCloudSavesResult()
         {
-            Debug.Log("Photon Try Connect");
             if (PhotonNetwork.IsConnectedAndReady)
             {
                 OnConnectedToMaster();
@@ -100,29 +96,20 @@ namespace CannonFightBase
             if (PhotonNetwork.IsConnected)
                 return;
 
-            Debug.Log("No Connection");
+            print("No Connection");
             PhotonNetwork.Disconnect();
             OnPhotonConnectResultEvent?.Invoke(false);
         }
 
         public void StartFight()
         {
-            if(PhotonNetwork.IsConnectedAndReady)
+            if(!PhotonNetwork.OfflineMode)
             {
                 JoinRoom();
             }
             else
             {
-                if (RoomManager.IsFirstFight)
-                {
-                    PlayWithBotsFirstFight();
-                    return;
-                }
-                else
-                {
-                    PlayWithBots();
-                }
-
+                PlayWithBots();
             }
         }
 
@@ -130,7 +117,9 @@ namespace CannonFightBase
         {
             PhotonNetwork.LocalPlayer.NickName = UserManager.Instance.Nickname;
 
-            PhotonNetwork.JoinRandomRoom();
+            bool isSuccess = PhotonNetwork.JoinRandomRoom();
+            if (!isSuccess && PhotonNetwork.IsConnectedAndReady)
+                OnJoinRoomFailed();
         }
 
         public void LeftRoom()
@@ -147,7 +136,6 @@ namespace CannonFightBase
 
         public override void OnConnectedToMaster()
         {
-            Debug.Log("Connected");
             OnPhotonConnectResultEvent?.Invoke(true);
         }
 
@@ -198,8 +186,6 @@ namespace CannonFightBase
             if (PhotonNetwork.IsMasterClient && !_canPlayWithBots)
             {
                 CloudSaveManager.SetValue<int>("playWithBots", 0);
-                print("PlayWithPlayers");
-
                 LoadSceneManager.PhotonLoadScene(GameScene.Game);
             }
         }
@@ -237,6 +223,11 @@ namespace CannonFightBase
             CreateRoom();
         }
 
+        public void OnJoinRoomFailed()
+        {
+            PhotonNetwork.Disconnect();
+            Invoke(nameof(OnCloudSavesResult), 2);
+        }
 
         private void CheckPlayWithBots()
         {
@@ -260,7 +251,6 @@ namespace CannonFightBase
                 //Herkesin girmesini beklemek yerine 2 kiþi veya fazla ise onun için de süre sayalým. Botlarla oynamaktan iyidir
                 _canPlayWithBots = false;
                 Invoke(nameof(PlayWithPlayers), _settings.WaitAfterSecondPlayerEnteredToRoom);
-                Debug.Log("Play with players but not all");
             }
         }
 

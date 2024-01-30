@@ -19,8 +19,6 @@ public class AgentSettingsInstaller : ScriptableObjectInstaller<AgentSettingsIns
         Container.BindInstance(AgentRotationSettings);
         Container.BindInstance(ViewSettings);
 
-
-
         Container.BindInstance(AgentTraits.MovementSettings);
         Container.BindInstance(AgentTraits.FireSettings);
         Container.BindInstance(AgentTraits.HealthSettings);

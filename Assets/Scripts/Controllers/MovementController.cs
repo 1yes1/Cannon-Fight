@@ -47,7 +47,6 @@ namespace CannonFightBase
 
             
             _maxSpeed = _cannonTraits.Speed;
-            Debug.Log("Max speed: " + _maxSpeed);
 
             _rigidbody.maxLinearVelocity = _maxSpeed;
         }
@@ -66,8 +65,6 @@ namespace CannonFightBase
 
         public void FixedTick()
         {
-            //Debug.Log("Max speed: " + _rigidbody.maxLinearVelocity);
-
             if (!_cannon.CanDoAction && !TestManager.IsTesting)
                 return;
 
@@ -89,7 +86,6 @@ namespace CannonFightBase
             if (!_cannon.CanDoAction)
                 return;
 
-            //print(_rigidbody.velocity.magnitude);
             CheckUpsideDown();
         }
 
@@ -102,8 +98,6 @@ namespace CannonFightBase
 
             // Acceleration Input
             _verticalInput = CannonJoystick.Vertical;
-
-
 
             float localForwardVelocity = Vector3.Dot(_rigidbody.velocity, _transform.forward);
 
@@ -130,9 +124,6 @@ namespace CannonFightBase
 
             // Breaking Input
             _isBreaking = Input.GetKey(KeyCode.Space);
-
-            //Debug.Log("_horizontalInput: " + _horizontalInput);
-            //Debug.Log("_verticalInput: " + _verticalInput);
 #endif
         }
 
@@ -205,18 +196,14 @@ namespace CannonFightBase
                 return;
 
             val = Vector3.Dot(_transform.right, Vector3.up);
-            //print(val);
             if (val > 0.12f)
             {
                 _rigidbody.AddTorque(-_transform.forward * _settings.UpsideDownTorque);
-                //print("Right");
             }
             else
             {
                 _rigidbody.AddTorque(_transform.forward * _settings.UpsideDownTorque);
-                //print("Left");
             }
-
         }
 
         [Serializable]

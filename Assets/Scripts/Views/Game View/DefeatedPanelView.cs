@@ -55,6 +55,8 @@ namespace CannonFightUI
         {
             base.Show();
 
+            _rankSubView.SetParameters(GameManager.Instance.LeftCannonsCount+1);
+
             transform.localScale = Vector3.zero;
             transform.DOScale(Vector3.one, _animationSettings.Panel.Duration).SetEase(_animationSettings.Panel.Ease);
             _exitButton.transform.localScale = Vector3.zero;
