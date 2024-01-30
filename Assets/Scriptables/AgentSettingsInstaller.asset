@@ -36,7 +36,7 @@ MonoBehaviour:
     ViewRadius: 25
   AgentTraits:
     MovementSettings:
-      Speed: 4
+      Speed: 3
     FireSettings:
       Damage: 10
       Rate: 0.5

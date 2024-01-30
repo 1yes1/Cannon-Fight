@@ -44,8 +44,11 @@ namespace CannonFightBase
             _photonView = _cannonView.PhotonView;
             _rigidbody = _cannonView.Rigidbody;
             _transform = _cannon.transform;
+
             
             _maxSpeed = _cannonTraits.Speed;
+            Debug.Log("Max speed: " + _maxSpeed);
+
             _rigidbody.maxLinearVelocity = _maxSpeed;
         }
 
@@ -63,6 +66,8 @@ namespace CannonFightBase
 
         public void FixedTick()
         {
+            //Debug.Log("Max speed: " + _rigidbody.maxLinearVelocity);
+
             if (!_cannon.CanDoAction && !TestManager.IsTesting)
                 return;
 

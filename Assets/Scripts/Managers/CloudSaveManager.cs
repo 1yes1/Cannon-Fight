@@ -31,11 +31,7 @@ namespace CannonFightBase
 
         private bool _isAuthanticated;
 
-        private bool _isOffline = false;
-
         public static CloudSaveManager Instance => _instance;
-
-        public static bool IsOffline => _instance._isOffline;
 
         public static bool IsFirstOpening => !HasValue(UserManager.NICKNAME_PREFS);
 
@@ -67,7 +63,7 @@ namespace CannonFightBase
             _signalBus.Subscribe<OnNicknameEnteredSignal>(OnNicknameEntered);
 
             Debug.Log("IsFirstOpeningInThisPhone: " + IsFirstOpening);
-                StartCloudConnection();
+            StartCloudConnection();
         }
 
         public void Dispose()
@@ -95,14 +91,14 @@ namespace CannonFightBase
 
         public void StartCloudConnection()
         {
-            Debug.Log("StartCloudConnection: "+ PlayGamesPlatform.Instance.IsAuthenticated());
-#if !UNITY_EDITOR
-                PlayGamesPlatform.Activate();
-                PlayGamesPlatform.Instance.Authenticate(OnAuthanticated);
-#else
+            //Play Games için domain ekleninceye kadar bu þekilde kalacak.
+//#if !UNITY_EDITOR
+                //PlayGamesPlatform.Activate();
+                //PlayGamesPlatform.Instance.Authenticate(OnAuthanticated);
+//#else
             OnAuthanticated(false);
             //Social.localUser.Authenticate(OnAuthanticated);
-#endif
+//#endif
         }
 
 
@@ -173,7 +169,6 @@ namespace CannonFightBase
                     return;
                 }
 
-                _isOffline = true;
                 _signalBus.Fire(new OnPlayGamesAuthanticated() { IsAuthanticated = false });
                 _signalBus.Fire(new OnFailedToLoadCloudSavesSignal());
             }

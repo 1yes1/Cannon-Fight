@@ -34,12 +34,15 @@ namespace CannonFightBase
 
         private int _startPlayersCount;
 
+        private bool _isGameFinished;
+
         public static GameManager Instance => _instance;
 
         public static Cannon CurrentCannon => _instance._currentCannon;
 
         public static CannonManager CurrentCannonManager => _instance._currentCannonManager;
 
+        public static bool IsGameFinished => _instance._isGameFinished;
 
         public GameEventCaller GameEventCaller { get; private set; }
 
@@ -229,6 +232,7 @@ namespace CannonFightBase
             AudioManager.PlaySound(MenuSound.MenuMusic);
             GameEventCaller.OnWinTheGame();
             GameEventCaller.OnGameFinished();
+            _isGameFinished = true;
 
         }
 
@@ -240,6 +244,8 @@ namespace CannonFightBase
             AudioManager.PlaySound(MenuSound.MenuMusic);
             GameEventCaller.OnLoseTheGame();
             GameEventCaller.OnGameFinished();
+            _isGameFinished = true;
+
         }
 
         public static void SetTutorialScene()

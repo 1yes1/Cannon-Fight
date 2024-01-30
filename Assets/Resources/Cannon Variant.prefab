@@ -126,16 +126,16 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.2
   m_SuspensionSpring:
-    spring: 12000
+    spring: 15000
     damper: 8000
     targetPosition: 0.49
   m_SuspensionDistance: 0.3
   m_ForceAppPointDistance: 0.5
   m_Mass: 15
-  m_WheelDampingRate: 1
+  m_WheelDampingRate: 3
   m_ForwardFriction:
     m_ExtremumSlip: 0.4
-    m_ExtremumValue: 1
+    m_ExtremumValue: 0.5
     m_AsymptoteSlip: 0.8
     m_AsymptoteValue: 0.5
     m_Stiffness: 0.8
@@ -197,16 +197,16 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.2
   m_SuspensionSpring:
-    spring: 12000
+    spring: 15000
     damper: 8000
     targetPosition: 0.49
   m_SuspensionDistance: 0.3
   m_ForceAppPointDistance: 0.5
   m_Mass: 15
-  m_WheelDampingRate: 1
+  m_WheelDampingRate: 3
   m_ForwardFriction:
     m_ExtremumSlip: 0.4
-    m_ExtremumValue: 1
+    m_ExtremumValue: 0.5
     m_AsymptoteSlip: 0.8
     m_AsymptoteValue: 0.5
     m_Stiffness: 0.8
@@ -365,16 +365,16 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.2
   m_SuspensionSpring:
-    spring: 12000
+    spring: 15000
     damper: 8000
     targetPosition: 0.49
   m_SuspensionDistance: 0.3
   m_ForceAppPointDistance: 0.5
   m_Mass: 15
-  m_WheelDampingRate: 1
+  m_WheelDampingRate: 3
   m_ForwardFriction:
     m_ExtremumSlip: 0.4
-    m_ExtremumValue: 1
+    m_ExtremumValue: 0.5
     m_AsymptoteSlip: 0.8
     m_AsymptoteValue: 0.5
     m_Stiffness: 0.8
@@ -467,16 +467,16 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.2
   m_SuspensionSpring:
-    spring: 12000
+    spring: 15000
     damper: 8000
     targetPosition: 0.49
   m_SuspensionDistance: 0.3
   m_ForceAppPointDistance: 0.5
   m_Mass: 15
-  m_WheelDampingRate: 1
+  m_WheelDampingRate: 3
   m_ForwardFriction:
     m_ExtremumSlip: 0.4
-    m_ExtremumValue: 1
+    m_ExtremumValue: 0.5
     m_AsymptoteSlip: 0.8
     m_AsymptoteValue: 0.5
     m_Stiffness: 0.8

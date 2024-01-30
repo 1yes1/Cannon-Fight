@@ -109,15 +109,17 @@ namespace CannonFightBase
             print("DISCONNECTED: "+cause.ToString());
 
             PhotonNetwork.OfflineMode = true;
-            if(cause != DisconnectCause.DisconnectByClientLogic)
+            if(cause == DisconnectCause.ClientTimeout || cause == DisconnectCause.Exception || cause == DisconnectCause.ServerTimeout)
                 InGameDisconnect("Internet Connection Lost!");
         }
 
         public void InGameDisconnect(string warningText)
         {
-
             if (SceneManager.GetActiveScene().buildIndex == (int)GameScene.Game)
             {
+                if (GameManager.IsGameFinished)//Oyun bittiyse gerek yok connection a
+                    return;
+
                 UIManager.Show<WarningView>().CreateWarning(warningText);
                 LoadSceneManager.LoadScene(GameScene.Menu,2);
             }
