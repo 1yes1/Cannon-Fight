@@ -74,6 +74,8 @@ namespace CannonFightBase
 
         private void OnCloudSavesResult()
         {
+            print("Try Connect: " + PhotonNetwork.IsConnectedAndReady); ;
+
             if (PhotonNetwork.IsConnectedAndReady)
             {
                 OnConnectedToMaster();
@@ -98,17 +100,22 @@ namespace CannonFightBase
 
             print("No Connection");
             PhotonNetwork.Disconnect();
+            PhotonNetwork.OfflineMode = true;
             OnPhotonConnectResultEvent?.Invoke(false);
         }
 
         public void StartFight()
         {
+            print("PhotonNetwork.OfflineMode: " + PhotonNetwork.OfflineMode);
             if(!PhotonNetwork.OfflineMode)
             {
                 JoinRoom();
+                print("Join Room");
             }
             else
             {
+                print("Play With Bots");
+
                 PlayWithBots();
             }
         }
@@ -225,6 +232,7 @@ namespace CannonFightBase
 
         public void OnJoinRoomFailed()
         {
+            print("Offline: " + PhotonNetwork.OfflineMode);
             PhotonNetwork.Disconnect();
             Invoke(nameof(OnCloudSavesResult), 2);
         }
@@ -233,6 +241,11 @@ namespace CannonFightBase
         {
             if (PhotonNetwork.IsMasterClient)
                 Invoke(nameof(PlayWithBots), _settings.WaitForPlayersUntilPlayWithBots);
+        }
+
+        public override void OnDisconnected(DisconnectCause cause)
+        {
+            PhotonNetwork.OfflineMode = true;
         }
 
         private void CheckPlayersToStart()
